@@ -7,7 +7,6 @@ POC of Book My Ticket Application
 2. Book ticket
 3. Generate recipt
 
-
 # Technology Usage
 
 1. Spring boot 3.0
@@ -17,3 +16,4 @@ POC of Book My Ticket Application
 5. Elastic search & Kibana
 6. Kafka
 7. Spring batch
+8. Spring cloud
