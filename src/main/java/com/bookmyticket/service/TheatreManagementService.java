@@ -16,17 +16,11 @@ import com.bookmyticket.entity.BookMyTicket;
 import com.bookmyticket.entity.TheatreInfo;
 import com.bookmyticket.repository.TheatreManagementRepository;
 
-import io.micrometer.observation.Observation;
-import io.micrometer.observation.ObservationRegistry;
-
 @Service
 public class TheatreManagementService {
 
 	@Autowired
 	private TheatreManagementRepository theatreInfoRepository;
-
-	@Autowired
-	private ObservationRegistry observationRegistry;
 
 	public TheatreInfo addMovieToTheatre(TheatreInfo theatreInfo) {
 
@@ -38,8 +32,7 @@ public class TheatreManagementService {
 
 			theatreInfoRepository.save(theatreInfoFromDb);
 
-			return Observation.createNotStarted("addMovieToTheatre", observationRegistry)
-					.observe(() -> theatreInfoFromDb);
+			return theatreInfoFromDb;
 
 		} else {
 
@@ -47,9 +40,8 @@ public class TheatreManagementService {
 
 			theatreInfoRepository.save(theatreInfo);
 
-			return Observation.createNotStarted("addMovieToTheatre", observationRegistry)
-					.observe(() -> theatreInfo);
-			
+			return theatreInfo;
+
 		}
 
 	}
@@ -66,8 +58,7 @@ public class TheatreManagementService {
 				.collect(Collectors.groupingBy(entry -> entry.getValue().getMovieName(),
 						Collectors.mapping(Map.Entry::getKey, Collectors.toList())));
 
-		return Observation.createNotStarted("getAllRecommendedMovies", observationRegistry)
-				.observe(() -> BookMyTicket.builder().recommendedMovies(recommendedMovies).build());
+		return BookMyTicket.builder().recommendedMovies(recommendedMovies).build();
 
 	}
 
@@ -80,8 +71,7 @@ public class TheatreManagementService {
 
 		theatreInfoRepository.save(theatreInfoFromDb);
 
-		return Observation.createNotStarted("deleteMovieFromTheatre", observationRegistry)
-				.observe(() -> theatreInfoFromDb);
+		return theatreInfoFromDb;
 
 	}
 

@@ -1,5 +1,4 @@
 server:
-   servlet.context-path: /ticketbooking
    port: 8080
    
 spring:
