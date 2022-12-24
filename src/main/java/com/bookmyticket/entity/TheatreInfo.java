@@ -1,6 +1,5 @@
 package com.bookmyticket.entity;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
@@ -36,11 +35,4 @@ public class TheatreInfo {
 		this.pincode = pincode;
 	}
 
-	public TheatreInfo(String theatreName, Integer pincode, HashSet<MovieInfo> movieDetails) {
-		super();
-		this.theatreName = theatreName;
-		this.pincode = pincode;
-		this.movieDetails = movieDetails;
-	}
-	
 }

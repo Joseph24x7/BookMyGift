@@ -29,9 +29,10 @@ public class TheatreManagementController {
 	public ResponseEntity<BookMyTicket> getAllRecommendedMovies(
 			@RequestParam(value = "theatreName", required = false) String theatreName,
 			@RequestParam(value = "pincode", required = false) Integer pincode) {
-		return new ResponseEntity<>(theatreManagementService.getAllRecommendedMovies(theatreName,pincode), HttpStatus.OK);
+		return new ResponseEntity<>(theatreManagementService.getAllRecommendedMovies(theatreName, pincode),
+				HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/deleteMovieFromTheatre")
 	public ResponseEntity<TheatreInfo> deleteMovieFromTheatre(@RequestBody TheatreInfo theatreInfo) {
 		return new ResponseEntity<>(theatreManagementService.deleteMovieFromTheatre(theatreInfo), HttpStatus.CREATED);

@@ -10,15 +10,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import com.bookmyticket.advice.ErrorEnums;
+import com.bookmyticket.advice.ServiceException;
 import com.bookmyticket.entity.BookMyTicket;
 import com.bookmyticket.entity.TheatreInfo;
 import com.bookmyticket.repository.TheatreManagementRepository;
+
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 
 @Service
 public class TheatreManagementService {
 
 	@Autowired
 	private TheatreManagementRepository theatreInfoRepository;
+
+	@Autowired
+	private ObservationRegistry observationRegistry;
 
 	public TheatreInfo addMovieToTheatre(TheatreInfo theatreInfo) {
 
@@ -30,7 +38,8 @@ public class TheatreManagementService {
 
 			theatreInfoRepository.save(theatreInfoFromDb);
 
-			return theatreInfoFromDb;
+			return Observation.createNotStarted("addMovieToTheatre", observationRegistry)
+					.observe(() -> theatreInfoFromDb);
 
 		} else {
 
@@ -38,8 +47,9 @@ public class TheatreManagementService {
 
 			theatreInfoRepository.save(theatreInfo);
 
-			return theatreInfo;
-
+			return Observation.createNotStarted("addMovieToTheatre", observationRegistry)
+					.observe(() -> theatreInfo);
+			
 		}
 
 	}
@@ -56,23 +66,23 @@ public class TheatreManagementService {
 				.collect(Collectors.groupingBy(entry -> entry.getValue().getMovieName(),
 						Collectors.mapping(Map.Entry::getKey, Collectors.toList())));
 
-		return BookMyTicket.builder().recommendedMovies(recommendedMovies).build();
+		return Observation.createNotStarted("getAllRecommendedMovies", observationRegistry)
+				.observe(() -> BookMyTicket.builder().recommendedMovies(recommendedMovies).build());
+
 	}
 
 	public TheatreInfo deleteMovieFromTheatre(TheatreInfo theatreInfo) {
 
-		TheatreInfo theatreInfoFromDb = theatreInfoRepository.getTheatreInfoByCode(theatreInfo.getTheatreCode());
+		TheatreInfo theatreInfoFromDb = theatreInfoRepository.getTheatreToDeleteMovie(theatreInfo.getTheatreCode())
+				.orElseThrow(() -> new ServiceException(ErrorEnums.THEATRE_CODE_INVALID));
 
-		if (theatreInfoFromDb != null) {
+		theatreInfoFromDb.getMovieDetails().removeAll(theatreInfo.getMovieDetails());
 
-			theatreInfoFromDb.getMovieDetails().removeAll(theatreInfo.getMovieDetails());
+		theatreInfoRepository.save(theatreInfoFromDb);
 
-			theatreInfoRepository.save(theatreInfoFromDb);
+		return Observation.createNotStarted("deleteMovieFromTheatre", observationRegistry)
+				.observe(() -> theatreInfoFromDb);
 
-		}
-		
-		return theatreInfoFromDb;
-		
 	}
 
 }

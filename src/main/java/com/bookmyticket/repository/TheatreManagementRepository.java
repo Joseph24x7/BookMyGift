@@ -1,5 +1,7 @@
 package com.bookmyticket.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -9,5 +11,8 @@ public interface TheatreManagementRepository extends MongoRepository<TheatreInfo
 
 	@Query("{theatreCode : ?0}")
 	TheatreInfo getTheatreInfoByCode(String theatreCode);
+	
+	@Query("{theatreCode : ?0}")
+	Optional<TheatreInfo> getTheatreToDeleteMovie(String theatreCode);
 	
 }

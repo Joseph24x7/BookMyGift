@@ -7,3 +7,11 @@ spring:
       mongodb:
          uri: mongodb+srv://Joseph24x7:Abcde12345@joseph24x7.0vl2a0k.mongodb.net/?retryWrites=true&w=majority&waitQueueMultiple=10&keepAlive=true
          database: TicketBooking
+         
+management:
+   endpoints:
+      web:
+         exposure:
+            include: "*"
+   health:
+      show-details: always
