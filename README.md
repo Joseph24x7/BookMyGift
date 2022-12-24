@@ -3,17 +3,13 @@ POC of Book My Ticket Application
 
 # Initial Requirements:
 
-1. Available ticket
-2. Book ticket
-3. Generate recipt
+1. Add Movie To Theatre
+2. Get All Recommended Movies
+3. Delete Movie from Theatre
 
 # Technology Usage
 
 1. Spring boot 3.0
 2. Java 17
 3. Mongo DB
-4. Deploy to Openshift 
-5. Elastic search & Kibana
-6. Kafka
-7. Spring batch
-8. Spring cloud
+4. CI : Jenkins + Sonar + Docker
