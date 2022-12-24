@@ -59,4 +59,20 @@ public class TheatreManagementService {
 		return BookMyTicket.builder().recommendedMovies(recommendedMovies).build();
 	}
 
+	public TheatreInfo deleteMovieFromTheatre(TheatreInfo theatreInfo) {
+
+		TheatreInfo theatreInfoFromDb = theatreInfoRepository.getTheatreInfoByCode(theatreInfo.getTheatreCode());
+
+		if (theatreInfoFromDb != null) {
+
+			theatreInfoFromDb.getMovieDetails().removeAll(theatreInfo.getMovieDetails());
+
+			theatreInfoRepository.save(theatreInfoFromDb);
+
+		}
+		
+		return theatreInfoFromDb;
+		
+	}
+
 }

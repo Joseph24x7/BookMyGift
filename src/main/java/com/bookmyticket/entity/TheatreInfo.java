@@ -1,6 +1,7 @@
 package com.bookmyticket.entity;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -27,7 +28,7 @@ public class TheatreInfo {
 	
 	private Integer pincode;
 	
-	private HashSet<MovieInfo> movieDetails;
+	private Set<MovieInfo> movieDetails;
 
 	public TheatreInfo(String theatreName, Integer pincode) {
 		super();
