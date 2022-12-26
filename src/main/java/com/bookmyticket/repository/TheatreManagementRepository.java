@@ -5,14 +5,14 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.bookmyticket.entity.TheatreInfo;
+import com.bookmyticket.entity.Theatre;
 
-public interface TheatreManagementRepository extends MongoRepository<TheatreInfo, Integer>{
+public interface TheatreManagementRepository extends MongoRepository<Theatre, Integer>{
 
 	@Query("{theatreCode : ?0}")
-	TheatreInfo getTheatreInfoByCode(String theatreCode);
+	Theatre getTheatreInfoByCode(String theatreCode);
 	
 	@Query("{theatreCode : ?0}")
-	Optional<TheatreInfo> getTheatreToDeleteMovie(String theatreCode);
+	Optional<Theatre> getTheatreToDeleteMovie(String theatreCode);
 	
 }

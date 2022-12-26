@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "TheatreInfo")
-public class TheatreInfo {
+public class Theatre {
 	
 	@Id
 	private ObjectId uniqueId;
@@ -27,9 +27,9 @@ public class TheatreInfo {
 	
 	private Integer pincode;
 	
-	private Set<MovieInfo> movieDetails;
+	private Set<Movie> movieDetails;
 
-	public TheatreInfo(String theatreName, Integer pincode) {
+	public Theatre(String theatreName, Integer pincode) {
 		super();
 		this.theatreName = theatreName;
 		this.pincode = pincode;

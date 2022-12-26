@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bookmyticket.entity.BookMyTicket;
-import com.bookmyticket.entity.TheatreInfo;
+import com.bookmyticket.entity.Theatre;
+import com.bookmyticket.info.BookMyTicket;
 import com.bookmyticket.service.TheatreManagementService;
 
 import io.micrometer.observation.Observation;
@@ -28,11 +28,11 @@ public class TheatreManagementController {
 	private ObservationRegistry observationRegistry;
 
 	@PostMapping("/addMovieToTheatre")
-	public ResponseEntity<TheatreInfo> addMovieToTheatre(@RequestBody TheatreInfo theatreInfo,
+	public ResponseEntity<Theatre> addMovieToTheatre(@RequestBody BookMyTicket bookMyTicket,
 			HttpServletRequest request) {
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
-				.observe(() -> new ResponseEntity<>(theatreManagementService.addMovieToTheatre(theatreInfo),
+				.observe(() -> new ResponseEntity<>(theatreManagementService.addMovieToTheatre(bookMyTicket.getTheatre()),
 						HttpStatus.CREATED));
 
 	}
@@ -49,11 +49,11 @@ public class TheatreManagementController {
 	}
 
 	@DeleteMapping("/deleteMovieFromTheatre")
-	public ResponseEntity<TheatreInfo> deleteMovieFromTheatre(@RequestBody TheatreInfo theatreInfo,
+	public ResponseEntity<Theatre> deleteMovieFromTheatre(@RequestBody BookMyTicket bookMyTicket,
 			HttpServletRequest request) {
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
-				.observe(() -> new ResponseEntity<>(theatreManagementService.deleteMovieFromTheatre(theatreInfo),
+				.observe(() -> new ResponseEntity<>(theatreManagementService.deleteMovieFromTheatre(bookMyTicket.getTheatre()),
 						HttpStatus.ACCEPTED));
 	}
 }

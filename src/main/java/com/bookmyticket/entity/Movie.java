@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieInfo {
+public class Movie {
 
 	private String movieName;
 
@@ -22,10 +22,10 @@ public class MovieInfo {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof MovieInfo)) {
+		if (!(obj instanceof Movie)) {
 			return false;
 		}
-		MovieInfo other = (MovieInfo) obj;
+		Movie other = (Movie) obj;
 		return Objects.equals(movieName, other.movieName);
 	}
 
@@ -34,7 +34,7 @@ public class MovieInfo {
 		return Objects.hash(movieName);
 	}
 
-	public MovieInfo(String movieName) {
+	public Movie(String movieName) {
 		super();
 		this.movieName = movieName;
 	}
