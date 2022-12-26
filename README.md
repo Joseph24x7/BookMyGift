@@ -1,5 +1,5 @@
 # BookMyTicket
-POC of Book My Ticket Application
+Complete Guide for Writing Realtime Applications
 
 # Initial Requirements:
 
