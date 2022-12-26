@@ -36,7 +36,7 @@ public class TheatreManagementControllerTest {
 
 	BookMyTicket infoObject = new BookMyTicket();
 
-	public String getRequestBody(BookMyTicket infoObject) throws JsonProcessingException {
+	private String getRequestBody(BookMyTicket infoObject) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -44,7 +44,7 @@ public class TheatreManagementControllerTest {
 	}
 
 	@Test
-	public void getAllRecommendedMovies() throws Exception {
+	void getAllRecommendedMovies() throws Exception {
 
 		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
 			utilities.when(() -> Observation.createNotStarted(Mockito.eq("getAllRecommendedMovies"), Mockito.any()))
@@ -57,7 +57,7 @@ public class TheatreManagementControllerTest {
 	}
 
 	@Test
-	public void addMovieToTheatre() throws Exception {
+	void addMovieToTheatre() throws Exception {
 
 		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
 			utilities.when(() -> Observation.createNotStarted(Mockito.eq("addMovieToTheatre"), Mockito.any()))
@@ -72,7 +72,7 @@ public class TheatreManagementControllerTest {
 	}
 
 	@Test
-	public void deleteMovieFromTheatre() throws Exception {
+	void deleteMovieFromTheatre() throws Exception {
 
 		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
 			utilities.when(() -> Observation.createNotStarted(Mockito.eq("deleteMovieFromTheatre"), Mockito.any()))
