@@ -4,31 +4,26 @@ public class ServiceException extends RuntimeException{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String errorDescription;
-	private ErrorEnums errorEnums;
+	private final String errorDescription;
+	private final ErrorEnums errorEnums;
 	
 	public ServiceException(ErrorEnums errorEnums) {
 		super();
-		this.setErrorEnums(errorEnums);
+		this.errorEnums = errorEnums;
+		this.errorDescription = null;
 	}
 	
 	public ServiceException(ErrorEnums errorEnums,String errorDescription) {
 		super();
-		this.setErrorEnums(errorEnums);
-		this.setErrorDescription(errorDescription);
+		this.errorEnums = errorEnums;
+		this.errorDescription = errorDescription;
 	}
 	
 	public String getErrorDescription() {
 		return errorDescription;
 	}
-	public void setErrorDescription(String errorDescription) {
-		this.errorDescription = errorDescription;
-	}
 	public ErrorEnums getErrorEnums() {
 		return errorEnums;
-	}
-	public void setErrorEnums(ErrorEnums errorEnums) {
-		this.errorEnums = errorEnums;
 	}
 	
 }
