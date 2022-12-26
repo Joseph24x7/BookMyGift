@@ -36,6 +36,9 @@ class TheatreManagementServiceTest {
 		
 		theatre = new Theatre();
 		
+		theatre.setPincode(600021);
+		theatre.setTheatreCode("PVR");
+		
 		HashSet<Movie> movieDetails=new HashSet<>();
 		movieDetails.add(new Movie("Avatar"));
 		theatre.setMovieDetails(movieDetails);
