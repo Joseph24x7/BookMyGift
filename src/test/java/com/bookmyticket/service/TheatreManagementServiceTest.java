@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,7 +21,7 @@ import com.bookmyticket.info.BookMyTicket;
 import com.bookmyticket.repository.TheatreManagementRepository;
 
 @SpringBootTest
-public class TheatreManagementServiceTest {
+class TheatreManagementServiceTest {
 	
 	@InjectMocks
 	private TheatreManagementService theatreManagementService;
@@ -28,11 +29,20 @@ public class TheatreManagementServiceTest {
 	@Mock
 	private TheatreManagementRepository theatreInfoRepository;
 	
+	Theatre theatre = null;
+	
+	@BeforeEach
+	public void init() {
+		
+		theatre = new Theatre();
+		
+		HashSet<Movie> movieDetails=new HashSet<>();
+		movieDetails.add(new Movie("Avatar"));
+		theatre.setMovieDetails(movieDetails);
+	}
+	
 	@Test
 	void addMovieToTheatreTest() {
-		
-		Theatre theatre= new Theatre();
-		theatre.setMovieDetails(new HashSet<>());
 		
 		Mockito.when(theatreInfoRepository.getTheatreInfoByCode(Mockito.any())).thenReturn(theatre);
 		
@@ -47,9 +57,6 @@ public class TheatreManagementServiceTest {
 	@Test
 	void addMovieToTheatreElseTest() {
 		
-		Theatre theatre= new Theatre();
-		theatre.setMovieDetails(new HashSet<>());
-		
 		Mockito.when(theatreInfoRepository.getTheatreInfoByCode(Mockito.any())).thenReturn(null);
 		
 		Mockito.when(theatreInfoRepository.save(theatre)).thenReturn(theatre);
@@ -62,9 +69,6 @@ public class TheatreManagementServiceTest {
 	
 	@Test
 	void deleteMovieFromTheatreTest() {
-		
-		Theatre theatre= new Theatre();
-		theatre.setMovieDetails(new HashSet<>());
 		
 		Optional<Theatre> optionalTheatre=Optional.of(theatre);
 		
@@ -81,15 +85,9 @@ public class TheatreManagementServiceTest {
 	@Test
 	void getAllRecommendedMoviesTest() {
 		
-		Theatre theatre= new Theatre();
-		HashSet<Movie> movieDetails=new HashSet<>();
-		
-		movieDetails.add(new Movie("Avatar"));
-		
-		theatre.setMovieDetails(movieDetails);
 		List<Theatre> theatreInfos = Arrays.asList(theatre);
 		
-		Example<Theatre> example = Example.of(new Theatre("PVR",600025));
+		Example<Theatre> example = Example.of(new Theatre(theatre.getTheatreCode(),theatre.getPincode()));
 		
 		Mockito.when(theatreInfoRepository.findAll(example)).thenReturn(theatreInfos);
 		

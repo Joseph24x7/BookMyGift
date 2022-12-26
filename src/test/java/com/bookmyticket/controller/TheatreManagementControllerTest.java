@@ -26,7 +26,7 @@ import io.micrometer.observation.Observation;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-public class TheatreManagementControllerTest {
+class TheatreManagementControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
