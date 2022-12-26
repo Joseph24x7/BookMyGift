@@ -23,7 +23,7 @@ public class TheatreManagementController {
 
 	@Autowired
 	private TheatreManagementService theatreManagementService;
-
+	
 	@Autowired
 	private ObservationRegistry observationRegistry;
 
@@ -31,8 +31,8 @@ public class TheatreManagementController {
 	public ResponseEntity<Theatre> addMovieToTheatre(@RequestBody BookMyTicket bookMyTicket,
 			HttpServletRequest request) {
 
-		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
-				.observe(() -> new ResponseEntity<>(theatreManagementService.addMovieToTheatre(bookMyTicket.getTheatre()),
+		return Observation.createNotStarted(request.getRequestURI().substring(1),observationRegistry).observe(
+				() -> new ResponseEntity<>(theatreManagementService.addMovieToTheatre(bookMyTicket.getTheatre()),
 						HttpStatus.CREATED));
 
 	}
@@ -53,7 +53,8 @@ public class TheatreManagementController {
 			HttpServletRequest request) {
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
-				.observe(() -> new ResponseEntity<>(theatreManagementService.deleteMovieFromTheatre(bookMyTicket.getTheatre()),
+				.observe(() -> new ResponseEntity<>(
+						theatreManagementService.deleteMovieFromTheatre(bookMyTicket.getTheatre()),
 						HttpStatus.ACCEPTED));
 	}
 }
