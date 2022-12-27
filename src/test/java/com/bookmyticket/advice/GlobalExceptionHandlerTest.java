@@ -12,7 +12,7 @@ import org.springframework.http.ProblemDetail;
 import jakarta.servlet.http.HttpServletRequest;
 
 @SpringBootTest
-public class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest {
 
 	@Mock
 	private HttpServletRequest request;
@@ -24,7 +24,7 @@ public class GlobalExceptionHandlerTest {
 	private GlobalExceptionHandler handler;
 
 	@Test
-	public void testHandleServiceException() {
+	void testHandleServiceException() {
 		
 		when(request.getRequestURI()).thenReturn("/test");
 		when(serviceException.getErrorEnums()).thenReturn(ErrorEnums.THEATRE_CODE_INVALID);
