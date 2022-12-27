@@ -40,7 +40,7 @@ class TheatreManagementServiceTest {
 		theatre.setTheatreCode("PVR");
 		
 		HashSet<Movie> movieDetails=new HashSet<>();
-		movieDetails.add(new Movie("Avatar"));
+		movieDetails.add(new Movie());
 		theatre.setMovieDetails(movieDetails);
 	}
 	

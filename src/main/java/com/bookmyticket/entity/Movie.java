@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Movie {
+	
+	private Integer availableSeatCount;
 
 	private String movieName;
-
-	private Integer availableSeatCount;
 
 	private Double ticketPrice;
 	
@@ -33,11 +33,5 @@ public class Movie {
 	public int hashCode() {
 		return Objects.hash(movieName);
 	}
-
-	public Movie(String movieName) {
-		super();
-		this.movieName = movieName;
-	}
-
 
 }
