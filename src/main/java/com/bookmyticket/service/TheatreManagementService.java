@@ -1,13 +1,12 @@
 package com.bookmyticket.service;
 
-import java.util.AbstractMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.bookmyticket.advice.ErrorEnums;
@@ -16,11 +15,16 @@ import com.bookmyticket.entity.Theatre;
 import com.bookmyticket.info.BookMyTicket;
 import com.bookmyticket.repository.TheatreManagementRepository;
 
+import io.micrometer.common.util.StringUtils;
+
 @Service
 public class TheatreManagementService {
 
 	@Autowired
 	private TheatreManagementRepository theatreInfoRepository;
+
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
 	public Theatre addMovieToTheatre(Theatre theatreInfo) {
 
@@ -46,19 +50,26 @@ public class TheatreManagementService {
 
 	}
 
-	public BookMyTicket getAllRecommendedMovies(String theatreName, Integer pincode) {
+	public BookMyTicket getAllRecommendedMovies(String theatreName, Integer pincode, String movieName) {
 
-		Example<Theatre> example = Example.of(new Theatre(theatreName, pincode));
+		Query query = new Query();
 
-		List<Theatre> theatreInfos = theatreInfoRepository.findAll(example);
+		Criteria criteria = new Criteria();
 
-		Map<String, List<Theatre>> recommendedMovies = theatreInfos.stream()
-				.flatMap(theatre -> theatre.getMovieDetails().stream()
-						.map(movie -> new AbstractMap.SimpleEntry<>(theatre, movie)))
-				.collect(Collectors.groupingBy(entry -> entry.getValue().getMovieName(),
-						Collectors.mapping(Map.Entry::getKey, Collectors.toList())));
+		if (StringUtils.isNotEmpty(movieName))
+			criteria.and("movieDetails.movieName").is(movieName);
 
-		return BookMyTicket.builder().recommendedMovies(recommendedMovies).build();
+		if (pincode != null)
+			criteria.and("pincode").is(pincode);
+
+		if (StringUtils.isNotEmpty(theatreName))
+			criteria.and("theatreName").is(theatreName);
+
+		query.addCriteria(criteria);
+
+		List<Theatre> theatreInfos = mongoTemplate.find(query, Theatre.class);
+
+		return BookMyTicket.builder().recommendedTheatres(theatreInfos).build();
 
 	}
 

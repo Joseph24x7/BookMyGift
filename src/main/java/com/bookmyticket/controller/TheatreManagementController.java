@@ -40,10 +40,11 @@ public class TheatreManagementController {
 	@GetMapping("/getAllRecommendedMovies")
 	public ResponseEntity<BookMyTicket> getAllRecommendedMovies(
 			@RequestParam(value = "theatreName", required = false) String theatreName,
+			@RequestParam(value = "movieName", required = false) String movieName,
 			@RequestParam(value = "pincode", required = false) Integer pincode, HttpServletRequest request) {
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry).observe(
-				() -> new ResponseEntity<>(theatreManagementService.getAllRecommendedMovies(theatreName, pincode),
+				() -> new ResponseEntity<>(theatreManagementService.getAllRecommendedMovies(theatreName, pincode, movieName),
 						HttpStatus.OK));
 
 	}

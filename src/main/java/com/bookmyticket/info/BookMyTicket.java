@@ -1,22 +1,23 @@
 package com.bookmyticket.info;
 
 import java.util.List;
-import java.util.Map;
 
 import com.bookmyticket.entity.Theatre;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Setter
+@Getter
 public class BookMyTicket {
 	
-	private Map<String, List<Theatre>> recommendedMovies;
+	private List<Theatre> recommendedTheatres;
 	private Theatre theatre;
 	
 }

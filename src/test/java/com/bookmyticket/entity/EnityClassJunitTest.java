@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
@@ -21,7 +23,7 @@ class EnityClassJunitTest {
 	void testMyPOJO() throws Exception {
 
 		Set<String> pojoClasses = new HashSet<>(
-				Arrays.asList("com.bookmyticket.entity.Movie", "com.bookmyticket.entity.Theatre"));
+				Arrays.asList("com.bookmyticket.info.BookMyTicket"));
 
 		for (String string : pojoClasses) {
 
@@ -58,6 +60,20 @@ class EnityClassJunitTest {
 					} else if (method.getParameters()[0].getType() == Set.class) {
 
 						method.invoke(obj, new HashSet<>());
+
+					} else if (method.getParameters()[0].getType() == List.class) {
+
+						method.invoke(obj, new ArrayList<>());
+
+					} else {
+						
+						Class<?> associatedClass = Class.forName(method.getParameters()[0].getType().toString().replace("class ",""));
+						
+						Constructor<?> associatedClassConstructpr = associatedClass.getConstructor();
+						
+						Object associatedObject = associatedClassConstructpr.newInstance();
+
+						method.invoke(obj, associatedObject);
 
 					}
 

@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.bookmyticket.entity.Movie;
 import com.bookmyticket.entity.Theatre;
@@ -28,6 +29,9 @@ class TheatreManagementServiceTest {
 	
 	@Mock
 	private TheatreManagementRepository theatreInfoRepository;
+	
+	@Mock
+	private MongoTemplate mongoTemplate;
 	
 	Theatre theatre = null;
 	
@@ -94,7 +98,7 @@ class TheatreManagementServiceTest {
 		
 		Mockito.when(theatreInfoRepository.findAll(example)).thenReturn(theatreInfos);
 		
-		BookMyTicket bookMyTicket=theatreManagementService.getAllRecommendedMovies("PVR",600025);
+		BookMyTicket bookMyTicket=theatreManagementService.getAllRecommendedMovies("PVR",600025,"Varisu");
 
 		assertNotNull(bookMyTicket);
 

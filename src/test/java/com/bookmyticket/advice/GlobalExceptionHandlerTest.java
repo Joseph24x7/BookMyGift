@@ -17,17 +17,15 @@ class GlobalExceptionHandlerTest {
 	@Mock
 	private HttpServletRequest request;
 
-	@Mock
-	private ServiceException serviceException;
-
 	@InjectMocks
 	private GlobalExceptionHandler handler;
 
 	@Test
 	void testHandleServiceException() {
 		
+		ServiceException serviceException=new ServiceException(ErrorEnums.THEATRE_CODE_INVALID);
+		
 		when(request.getRequestURI()).thenReturn("/test");
-		when(serviceException.getErrorEnums()).thenReturn(ErrorEnums.THEATRE_CODE_INVALID);
 
 		ProblemDetail result = handler.handleServiceException(serviceException, request);
 

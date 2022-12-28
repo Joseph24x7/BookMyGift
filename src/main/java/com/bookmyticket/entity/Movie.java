@@ -2,21 +2,19 @@ package com.bookmyticket.entity;
 
 import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class Movie {
-	
+
 	private Integer availableSeatCount;
 
 	private String movieName;
 
 	private Double ticketPrice;
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
