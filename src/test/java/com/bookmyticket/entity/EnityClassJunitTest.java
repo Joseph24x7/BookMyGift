@@ -23,7 +23,7 @@ class EnityClassJunitTest {
 	void testMyPOJO() throws Exception {
 
 		Set<String> pojoClasses = new HashSet<>(
-				Arrays.asList("com.bookmyticket.info.BookMyTicket"));
+				Arrays.asList("com.bookmyticket.entity.Movie", "com.bookmyticket.entity.Theatre","com.bookmyticket.info.BookMyTicket"));
 
 		for (String string : pojoClasses) {
 
