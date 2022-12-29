@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.bookmyticket.ApplicationProperty;
 import com.bookmyticket.advice.ErrorEnums;
 import com.bookmyticket.advice.ServiceException;
 import com.bookmyticket.entity.Theatre;
@@ -22,6 +23,9 @@ public class TheatreManagementService {
 
 	@Autowired
 	private TheatreManagementRepository theatreInfoRepository;
+	
+	@Autowired
+	private ApplicationProperty applicationProperty;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -51,6 +55,8 @@ public class TheatreManagementService {
 	}
 
 	public BookMyTicket getAllRecommendedMovies(String theatreName, Integer pincode, String movieName) {
+		
+		if(!applicationProperty.getGetMovieAuthenticator()) return null;
 
 		Query query = new Query();
 
