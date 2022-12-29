@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.bookmyticket.ApplicationProperty;
 import com.bookmyticket.entity.Movie;
 import com.bookmyticket.entity.Theatre;
 import com.bookmyticket.info.BookMyTicket;
@@ -33,9 +32,6 @@ class TheatreManagementServiceTest {
 	
 	@Mock
 	private MongoTemplate mongoTemplate;
-	
-	@Mock
-	private ApplicationProperty applicationProperty;
 	
 	Theatre theatre = null;
 	
@@ -95,8 +91,6 @@ class TheatreManagementServiceTest {
 	
 	@Test
 	void getAllRecommendedMoviesTest() {
-		
-		Mockito.when(applicationProperty.getGetMovieAuthenticator()).thenReturn(true);
 		
 		List<Theatre> theatreInfos = Arrays.asList(theatre);
 		
