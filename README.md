@@ -13,3 +13,5 @@ Complete Guide for Writing Realtime Applications
 2. Java 17
 3. Mongo DB
 4. CI : Jenkins + Sonar + Docker
+
+logging.pattern.console=[PREFIX] %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
