@@ -12,7 +12,12 @@ management:
       web:
          exposure:
             include: "*"
+            exclude: beans
    health:
       show-details: always
       
-get_movie: true
+logging:
+   level:
+      org.zalando.logbook: INFO
+   pattern:
+      file: '%d{yyyy-MM-dd HH:mm:ss,SSS} %5p [%t] %c [%M] - %m%n'
