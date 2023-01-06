@@ -22,13 +22,15 @@ class EnityClassJunitTest {
 	@Test
 	void testMyPOJO() throws Exception {
 
-		Set<String> pojoClasses = new HashSet<>(
-				Arrays.asList("com.bookmyticket.entity.Movie", "com.bookmyticket.entity.Theatre","com.bookmyticket.info.BookMyTicket"));
+		Set<String> pojoClasses = new HashSet<>(Arrays.asList("com.bookmyticket.entity.Movie",
+				"com.bookmyticket.entity.Theatre", "com.bookmyticket.info.BookMyTicket",
+				"com.bookmyticket.info.AuthInfo", "com.bookmyticket.info.User"));
 
 		for (String string : pojoClasses) {
 
 			Class<?> cls = Class.forName(string);
 
+			//Need to check why constructor instance is not getting created
 			Constructor<?> constructor = cls.getConstructor();
 
 			Object obj = constructor.newInstance();
@@ -61,23 +63,28 @@ class EnityClassJunitTest {
 
 						method.invoke(obj, new HashSet<>());
 
+					}  else if (method.getParameters()[0].getType() == Long.class) {
+
+						method.invoke(obj, 1L);
+
 					} else if (method.getParameters()[0].getType() == List.class) {
 
 						method.invoke(obj, new ArrayList<>());
 
 					} else {
-						
-						Class<?> associatedClass = Class.forName(method.getParameters()[0].getType().toString().replace("class ",""));
-						
+
+						Class<?> associatedClass = Class
+								.forName(method.getParameters()[0].getType().toString().replace("class ", ""));
+
 						Constructor<?> associatedClassConstructpr = associatedClass.getConstructor();
-						
+
 						Object associatedObject = associatedClassConstructpr.newInstance();
 
 						method.invoke(obj, associatedObject);
 
 					}
 
-				} 
+				}
 
 			}
 
@@ -89,11 +96,11 @@ class EnityClassJunitTest {
 
 					assertNotNull(method.invoke(obj));
 
-				}else if (method.getName().startsWith("hashCode")) {
+				} else if (method.getName().startsWith("hashCode")) {
 
 					assertNotNull(method.invoke(obj));
 
-				}else if (method.getName().startsWith("equals")) {
+				} else if (method.getName().startsWith("equals")) {
 
 					assertTrue((Boolean) method.invoke(obj, obj));
 

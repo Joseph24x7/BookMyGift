@@ -1,6 +1,6 @@
-package com.bookmyticket.security;
+package com.bookmyticket.info;
 
-public class AuthRequest {
+public class AuthInfo {
 	
 	private String userName;
 	private String password;
