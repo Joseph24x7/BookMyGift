@@ -10,13 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BookmyticketApplicationTest {
+class BookmyticketApplicationTest {
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
 	@Test
-	public void testGet() {
+	void testGet() {
 		ResponseEntity<String> response = testRestTemplate.getForEntity("/getAllRecommendedMovies",String.class);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}

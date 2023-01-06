@@ -2,6 +2,18 @@ server:
    port: 8082
    
 spring:
+   open-in-view: true
+   datasource:
+      url: jdbc:mysql://localhost:3306/cruds?useSSL=false
+      username: root
+      password: root
+   jpa:
+      hibernate:
+         ddl-auto: update
+      show-sql: true
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.MySQL5Dialect
    data:
       mongodb:
          uri: mongodb+srv://Joseph24x7:Abcde12345@joseph24x7.0vl2a0k.mongodb.net/?retryWrites=true&w=majority&waitQueueMultiple=10&keepAlive=true
@@ -20,4 +32,4 @@ logging:
    level:
       org.zalando.logbook: INFO
    pattern:
-      file: '%d{yyyy-MM-dd HH:mm:ss,SSS} %5p [%t] %c [%M] - %m%n'
+      file: '%d{yyyy-MM-dd HH:mm:ss,SSS} %5p [%t] %c [%M] - %m%n'    

@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorEnums {
 	
-	THEATRE_CODE_INVALID(HttpStatus.BAD_REQUEST,"THEATRE_CODE_INVALID","The Given Theatre Code is Invalid");
+	THEATRE_CODE_INVALID(HttpStatus.BAD_REQUEST,"THEATRE_CODE_INVALID","The Given Theatre Code is Invalid"),
+	UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED_ACCESS","Invalid Username/Password"),;
 	
 	HttpStatus httpStatus;
 	String errorCode;
