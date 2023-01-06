@@ -14,11 +14,11 @@ public class MethodLogger {
 
 	@Around("publicMethod()")
 	public Object logAround(final ProceedingJoinPoint joinPoint) throws Throwable {
-		final Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
-		logger.debug("Execution of : " + joinPoint.getSignature() + " Started");
-		Object proceed = joinPoint.proceed();
-		logger.debug("Execution of : " + joinPoint.getSignature() + " completed");
-		return proceed;
+	  final Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
+	  logger.info("Execution of {} Started", joinPoint.getSignature());
+	  Object proceed = joinPoint.proceed();
+	  logger.info("Execution of {} completed", joinPoint.getSignature());
+	  return proceed;
 	}
 	
 	@Pointcut("execution(public * com.bookmyticket..*(..))")
