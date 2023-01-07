@@ -20,9 +20,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @SpringBootApplication
 public class BookmyticketApplication implements WebMvcConfigurer {
 
-	@Autowired
-	private RequestResponseLogWriter requestResponseLogWriter;
-
 	public static void main(String[] args) {
 		SpringApplication.run(BookmyticketApplication.class, args);
 	}
@@ -39,21 +36,15 @@ public class BookmyticketApplication implements WebMvcConfigurer {
 		jsonConverter.setObjectMapper(objectMapper);
 		converters.add(jsonConverter);
 	}
-
+	
+	@Autowired
+	private RequestResponseLogWriter requestResponseLogWriter;
+	
 	@Bean
 	@Primary
 	public HttpLogWriter httpLogWriter() {
 		return requestResponseLogWriter;
 	}
-	
-	/*
-	 * @Bean public AuthenticationManager
-	 * authenticationManager(AuthenticationConfiguration
-	 * authenticationConfiguration) throws Exception { return
-	 * authenticationConfiguration.getAuthenticationManager(); }
-	 * 
-	 * @Bean public PasswordEncoder passwordEncoder() { return new
-	 * BCryptPasswordEncoder(); }
-	 */
+
 
 }

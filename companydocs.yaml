@@ -6,6 +6,24 @@ servers:
 - url: http://localhost:8082
   description: Generated server url
 paths:
+  /authenticate:
+    post:
+      tags:
+      - authentication-controller
+      operationId: generateToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthInfo'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
   /addMovieToTheatre:
     post:
       tags:
@@ -73,6 +91,13 @@ paths:
                 $ref: '#/components/schemas/Theatre'
 components:
   schemas:
+    AuthInfo:
+      type: object
+      properties:
+        userName:
+          type: string
+        password:
+          type: string
     BookMyTicket:
       type: object
       properties:
