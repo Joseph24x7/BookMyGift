@@ -13,14 +13,15 @@
  * import com.bookmyticket.info.User; import
  * com.bookmyticket.repository.UserRepository;
  * 
- * @Service public class CustomUserDetailsService implements UserDetailsService{
+ * @Service public class CustomUserDetailsService implements UserDetailsService
+ * {
  * 
  * @Autowired private UserRepository userRepository;
  * 
  * @Autowired private PasswordEncoder passwordEncoder;
  * 
  * @Override public UserDetails loadUserByUsername(String username) throws
- * UsernameNotFoundException { User user=
+ * UsernameNotFoundException { User user =
  * userRepository.findByUserName(username); return new
  * org.springframework.security.core.userdetails.User(user.getUserName(),
  * passwordEncoder.encode(user.getPassword()), new ArrayList<>()); }

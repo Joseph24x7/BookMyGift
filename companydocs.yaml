@@ -1,0 +1,121 @@
+openapi: 3.0.1
+info:
+  title: Theatre Management
+  version: 0.0.1
+servers:
+- url: http://localhost:8082
+  description: Generated server url
+paths:
+  /addMovieToTheatre:
+    post:
+      tags:
+      - theatre-management-controller
+      operationId: addMovieToTheatre
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookMyTicket'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Theatre'
+  /getAllRecommendedMovies:
+    get:
+      tags:
+      - theatre-management-controller
+      operationId: getAllRecommendedMovies
+      parameters:
+      - name: theatreName
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: movieName
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: pincode
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BookMyTicket'
+  /deleteMovieFromTheatre:
+    delete:
+      tags:
+      - theatre-management-controller
+      operationId: deleteMovieFromTheatre
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookMyTicket'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Theatre'
+components:
+  schemas:
+    BookMyTicket:
+      type: object
+      properties:
+        recommendedTheatres:
+          type: array
+          items:
+            $ref: '#/components/schemas/Theatre'
+        theatre:
+          $ref: '#/components/schemas/Theatre'
+    Movie:
+      type: object
+      properties:
+        availableSeatCount:
+          type: integer
+          format: int32
+        movieName:
+          type: string
+        ticketPrice:
+          type: number
+          format: double
+    ObjectId:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date-time
+    Theatre:
+      type: object
+      properties:
+        uniqueId:
+          $ref: '#/components/schemas/ObjectId'
+        theatreCode:
+          type: string
+        theatreName:
+          type: string
+        pincode:
+          type: integer
+          format: int32
+        movieDetails:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Movie'

@@ -1,8 +1,8 @@
 server:
    port: 8082
    
+   
 spring:
-   open-in-view: true
    datasource:
       url: jdbc:mysql://localhost:3306/cruds?useSSL=false
       username: root
@@ -30,6 +30,8 @@ management:
       
 logging:
    level:
-      org.zalando.logbook: INFO
+      org:
+         zalando.logbook: INFO
+         springdoc: INFO
    pattern:
       file: '%d{yyyy-MM-dd HH:mm:ss,SSS} %5p [%t] %c [%M] - %m%n'    

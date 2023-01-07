@@ -12,9 +12,11 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>bookmyticket</name>
 	<description>POC of Book My Ticket Application</description>
+
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
 	<dependencies>
 
 		<dependency>
@@ -24,12 +26,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -45,32 +41,30 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-inline</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.zalando</groupId>
 			<artifactId>logbook-spring-boot-starter</artifactId>
 			<version>2.14.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.13</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-logging</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-inline</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -129,9 +123,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
+					<apiDocsUrl>http://localhost:8082/v3/api-docs.yaml</apiDocsUrl>
 					<outputFileName>companydocs.yaml</outputFileName>
-					<outputDir>./generated/yaml</outputDir>
+					<outputDir>${project.basedir}</outputDir>
 					<skip>false</skip>
 				</configuration>
 			</plugin>
