@@ -25,7 +25,7 @@ class BookmyticketApplicationTest {
 	void testGet() {
 		
 		AuthInfo authInfo=new AuthInfo();
-		authInfo.setUserName("hod");
+		authInfo.setUsername("hod");
 		authInfo.setPassword("pass");
 		
 		HttpEntity<AuthInfo> requestEntity = new HttpEntity<>(authInfo);

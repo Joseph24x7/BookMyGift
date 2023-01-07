@@ -2,22 +2,31 @@
 package com.bookmyticket.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bookmyticket.TokenGenerator;
 import com.bookmyticket.info.AuthInfo;
+import com.bookmyticket.info.AuthenticationResponse;
+import com.bookmyticket.service.AuthenticationService;
 
 @RestController
+@RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 
 	@Autowired
-	private TokenGenerator tokenGenerator;
+	private AuthenticationService authenticationService;
+
+	@PostMapping("/register")
+	public ResponseEntity<AuthenticationResponse> register(@RequestBody AuthInfo request) {
+		return ResponseEntity.ok(authenticationService.register(request));
+	}
 
 	@PostMapping("/authenticate")
-	public String generateToken(@RequestBody AuthInfo authInfo) throws Exception {
-		return tokenGenerator.generateToken(authInfo.getUserName());
+	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthInfo request) {
+		return ResponseEntity.ok(authenticationService.authenticate(request));
 	}
 
 }
