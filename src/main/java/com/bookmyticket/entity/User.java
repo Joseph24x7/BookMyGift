@@ -1,4 +1,4 @@
-package com.bookmyticket.security.info;
+package com.bookmyticket.entity;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,17 +17,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "USERS")
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class User implements UserDetails {
 
 	/**

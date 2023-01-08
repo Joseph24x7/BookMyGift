@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Autowired
-	private JwtService jwtService;
+	private TokenGenerator jwtService;
 
 	@Autowired
 	private UserDetailsService userDetailsService;

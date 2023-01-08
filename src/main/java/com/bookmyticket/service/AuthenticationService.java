@@ -7,14 +7,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.bookmyticket.entity.Role;
+import com.bookmyticket.entity.User;
 import com.bookmyticket.exception.ErrorEnums;
 import com.bookmyticket.exception.ServiceException;
 import com.bookmyticket.repository.UserRepository;
-import com.bookmyticket.security.JwtService;
+import com.bookmyticket.security.TokenGenerator;
 import com.bookmyticket.security.info.AuthRequest;
 import com.bookmyticket.security.info.AuthResponse;
-import com.bookmyticket.security.info.Role;
-import com.bookmyticket.security.info.User;
 
 import jakarta.transaction.Transactional;
 
@@ -28,7 +28,7 @@ public class AuthenticationService {
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private JwtService jwtService;
+	private TokenGenerator jwtService;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
