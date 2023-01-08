@@ -1,6 +1,5 @@
 package com.bookmyticket;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,19 +16,15 @@ import com.bookmyticket.repository.UserRepository;
 @Configuration
 public class ApplicationConfig {
 
-	@Autowired
-	private UserRepository repository;
-
 	@Bean
-	public UserDetailsService userDetailsService() {
-		return username -> repository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	public UserDetailsService userDetailsService(UserRepository repository) {
+		return username -> repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	}
 
 	@Bean
-	public AuthenticationProvider authenticationProvider() {
+	public AuthenticationProvider authenticationProvider(UserRepository repository) {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(userDetailsService());
+		authProvider.setUserDetailsService(userDetailsService(repository));
 		authProvider.setPasswordEncoder(passwordEncoder());
 		return authProvider;
 	}

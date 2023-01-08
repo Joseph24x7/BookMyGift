@@ -9,6 +9,10 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ProblemDetail;
 
+import com.bookmyticket.exception.ErrorEnums;
+import com.bookmyticket.exception.GlobalExceptionHandler;
+import com.bookmyticket.exception.ServiceException;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @SpringBootTest

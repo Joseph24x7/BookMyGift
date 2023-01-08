@@ -1,4 +1,4 @@
-package com.bookmyticket.info;
+package com.bookmyticket.security.info;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+public class AuthResponse {
 
   private String token;
 }

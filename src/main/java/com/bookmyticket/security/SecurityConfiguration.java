@@ -1,4 +1,4 @@
-package com.bookmyticket;
+package com.bookmyticket.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

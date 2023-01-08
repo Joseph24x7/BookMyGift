@@ -7,16 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.bookmyticket.info.AuthInfo;
-import com.bookmyticket.info.AuthenticationResponse;
 import com.bookmyticket.info.BookMyTicket;
+import com.bookmyticket.security.info.AuthRequest;
+import com.bookmyticket.security.info.AuthResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BookmyticketApplicationTest {
@@ -25,18 +24,18 @@ class BookmyticketApplicationTest {
 	private TestRestTemplate testRestTemplate;
 
 	@Test
-	void testGet() {
+	void testGetAllRecommendedMovies() {
 
-		AuthInfo authInfo = new AuthInfo();
-		authInfo.setUsername("joseph");
-		authInfo.setPassword("user@123");
-		authInfo.setEmail("Joseph@gmail.com");
+		AuthRequest authInfo = new AuthRequest();
+		authInfo.setUsername("test");
+		authInfo.setPassword("test@123");
+		authInfo.setEmail("test@gmail.com");
 
-		HttpEntity<AuthInfo> requestEntity = new HttpEntity<>(authInfo);
+		HttpEntity<AuthRequest> requestEntity = new HttpEntity<>(authInfo);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(
-				testRestTemplate.postForEntity("/api/v1/auth/authenticate", requestEntity, AuthenticationResponse.class)
+				testRestTemplate.postForEntity("/api/v1/auth/authenticate", requestEntity, AuthResponse.class)
 						.getBody().getToken());
 
 		ResponseEntity<BookMyTicket> response = testRestTemplate.exchange("/getAllRecommendedMovies", HttpMethod.GET,
@@ -44,5 +43,5 @@ class BookmyticketApplicationTest {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
-
+	
 }

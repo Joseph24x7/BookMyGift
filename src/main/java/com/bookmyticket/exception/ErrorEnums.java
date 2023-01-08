@@ -1,4 +1,4 @@
-package com.bookmyticket.advice;
+package com.bookmyticket.exception;
 
 import org.springframework.http.HttpStatus;
 

@@ -1,4 +1,4 @@
-package com.bookmyticket;
+package com.bookmyticket.security;
 
 import java.security.Key;
 import java.util.Date;

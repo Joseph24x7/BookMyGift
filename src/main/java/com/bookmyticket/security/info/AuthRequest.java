@@ -1,11 +1,11 @@
-package com.bookmyticket.info;
+package com.bookmyticket.security.info;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthInfo {
+public class AuthRequest {
 
 	private String username;
 	private String password;

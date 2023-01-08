@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bookmyticket.info.AuthInfo;
-import com.bookmyticket.info.AuthenticationResponse;
+import com.bookmyticket.security.info.AuthRequest;
+import com.bookmyticket.security.info.AuthResponse;
 import com.bookmyticket.service.AuthenticationService;
 
 @RestController
@@ -20,12 +20,12 @@ public class AuthenticationController {
 	private AuthenticationService authenticationService;
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthenticationResponse> register(@RequestBody AuthInfo request) {
+	public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest request) {
 		return ResponseEntity.ok(authenticationService.register(request));
 	}
 
 	@PostMapping("/authenticate")
-	public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthInfo request) {
+	public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {
 		return ResponseEntity.ok(authenticationService.authenticate(request));
 	}
 

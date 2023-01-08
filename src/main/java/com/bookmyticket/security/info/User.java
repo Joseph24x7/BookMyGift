@@ -1,4 +1,4 @@
-package com.bookmyticket.info;
+package com.bookmyticket.security.info;
 
 import java.util.Collection;
 import java.util.List;

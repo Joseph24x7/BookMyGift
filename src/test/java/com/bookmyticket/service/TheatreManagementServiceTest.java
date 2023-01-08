@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.bookmyticket.entity.Movie;
 import com.bookmyticket.entity.Theatre;
 import com.bookmyticket.info.BookMyTicket;
-import com.bookmyticket.repository.TheatreManagementRepository;
+import com.bookmyticket.repository.TheatreRepository;
 
 @SpringBootTest
 class TheatreManagementServiceTest {
@@ -28,7 +28,7 @@ class TheatreManagementServiceTest {
 	private TheatreManagementService theatreManagementService;
 	
 	@Mock
-	private TheatreManagementRepository theatreInfoRepository;
+	private TheatreRepository theatreInfoRepository;
 	
 	@Mock
 	private MongoTemplate mongoTemplate;

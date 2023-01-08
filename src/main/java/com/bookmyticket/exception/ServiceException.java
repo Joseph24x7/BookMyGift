@@ -1,4 +1,4 @@
-package com.bookmyticket.advice;
+package com.bookmyticket.exception;
 
 public class ServiceException extends RuntimeException{
 	

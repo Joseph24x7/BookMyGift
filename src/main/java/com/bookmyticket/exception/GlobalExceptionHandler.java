@@ -1,4 +1,4 @@
-package com.bookmyticket.advice;
+package com.bookmyticket.exception;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ProblemDetail;

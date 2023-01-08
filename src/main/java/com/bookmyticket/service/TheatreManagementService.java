@@ -9,11 +9,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.bookmyticket.advice.ErrorEnums;
-import com.bookmyticket.advice.ServiceException;
 import com.bookmyticket.entity.Theatre;
+import com.bookmyticket.exception.ErrorEnums;
+import com.bookmyticket.exception.ServiceException;
 import com.bookmyticket.info.BookMyTicket;
-import com.bookmyticket.repository.TheatreManagementRepository;
+import com.bookmyticket.repository.TheatreRepository;
 
 import io.micrometer.common.util.StringUtils;
 
@@ -21,7 +21,7 @@ import io.micrometer.common.util.StringUtils;
 public class TheatreManagementService {
 
 	@Autowired
-	private TheatreManagementRepository theatreInfoRepository;
+	private TheatreRepository theatreInfoRepository;
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;

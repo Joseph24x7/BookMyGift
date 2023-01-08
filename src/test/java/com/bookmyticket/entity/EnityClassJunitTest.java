@@ -24,7 +24,7 @@ class EnityClassJunitTest {
 
 		Set<String> pojoClasses = new HashSet<>(Arrays.asList("com.bookmyticket.entity.Movie",
 				"com.bookmyticket.entity.Theatre", "com.bookmyticket.info.BookMyTicket",
-				"com.bookmyticket.info.AuthInfo"));
+				"com.bookmyticket.security.info.AuthRequest","com.bookmyticket.security.info.AuthResponse"));
 
 		for (String string : pojoClasses) {
 

@@ -7,14 +7,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.bookmyticket.JwtService;
-import com.bookmyticket.advice.ErrorEnums;
-import com.bookmyticket.advice.ServiceException;
-import com.bookmyticket.info.AuthInfo;
-import com.bookmyticket.info.AuthenticationResponse;
-import com.bookmyticket.info.Role;
-import com.bookmyticket.info.User;
+import com.bookmyticket.exception.ErrorEnums;
+import com.bookmyticket.exception.ServiceException;
 import com.bookmyticket.repository.UserRepository;
+import com.bookmyticket.security.JwtService;
+import com.bookmyticket.security.info.AuthRequest;
+import com.bookmyticket.security.info.AuthResponse;
+import com.bookmyticket.security.info.Role;
+import com.bookmyticket.security.info.User;
 
 import jakarta.transaction.Transactional;
 
@@ -34,7 +34,7 @@ public class AuthenticationService {
 	private AuthenticationManager authenticationManager;
 
 	@Transactional
-	public AuthenticationResponse register(AuthInfo authInfo) {
+	public AuthResponse register(AuthRequest authInfo) {
 		
 		var user = User.builder().username(authInfo.getUsername()).password(passwordEncoder.encode(authInfo.getPassword())).email(authInfo.getEmail()).role(Role.USER).build();
 		
@@ -42,10 +42,10 @@ public class AuthenticationService {
 		
 		var jwtToken = jwtService.generateToken(user);
 		
-		return AuthenticationResponse.builder().token(jwtToken).build();
+		return AuthResponse.builder().token(jwtToken).build();
 	}
 
-	public AuthenticationResponse authenticate(AuthInfo authInfo) {
+	public AuthResponse authenticate(AuthRequest authInfo) {
 		
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
 		
@@ -53,6 +53,6 @@ public class AuthenticationService {
 		
 		var jwtToken = jwtService.generateToken(user);
 		
-		return AuthenticationResponse.builder().token(jwtToken).build();
+		return AuthResponse.builder().token(jwtToken).build();
 	}
 }

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import com.bookmyticket.entity.Theatre;
 
-public interface TheatreManagementRepository extends MongoRepository<Theatre, Integer>{
+public interface TheatreRepository extends MongoRepository<Theatre, Integer>{
 
 	@Query("{theatreCode : ?0}")
 	Theatre getTheatreInfoByCode(String theatreCode);
