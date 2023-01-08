@@ -2,17 +2,12 @@ package com.bookmyticket;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.zalando.logbook.HttpLogWriter;
 
-import com.bookmyticket.logging.RequestResponseLogWriter;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +15,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 @SpringBootApplication
 public class BookmyticketApplication implements WebMvcConfigurer {
-
+	
 	public static void main(String[] args) {
 		SpringApplication.run(BookmyticketApplication.class, args);
 	}
@@ -38,14 +33,4 @@ public class BookmyticketApplication implements WebMvcConfigurer {
 		converters.add(jsonConverter);
 	}
 	
-	@Autowired
-	private RequestResponseLogWriter requestResponseLogWriter;
-	
-	@Bean
-	@Primary
-	public HttpLogWriter httpLogWriter() {
-		return requestResponseLogWriter;
-	}
-
-
 }

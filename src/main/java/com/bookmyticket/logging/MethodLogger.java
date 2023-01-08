@@ -15,9 +15,9 @@ public class MethodLogger {
 	@Around("publicMethod()")
 	public Object logAround(final ProceedingJoinPoint joinPoint) throws Throwable {
 	  final Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
-	  logger.info("Execution of {} Started", joinPoint.getSignature());
+	  logger.debug("Execution of {} Started", joinPoint.getSignature());
 	  Object proceed = joinPoint.proceed();
-	  logger.info("Execution of {} completed", joinPoint.getSignature());
+	  logger.debug("Execution of {} completed", joinPoint.getSignature());
 	  return proceed;
 	}
 	

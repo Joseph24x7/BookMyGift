@@ -29,9 +29,9 @@ management:
       show-details: always
       
 logging:
-   level:
+   level: 
       org:
-         zalando.logbook: INFO
-         springdoc: INFO
+         zalando:
+            logbook: INFO
    pattern:
       file: '%d{yyyy-MM-dd HH:mm:ss,SSS} %5p [%t] %c [%M] - %m%n'    
