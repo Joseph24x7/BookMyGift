@@ -3,7 +3,6 @@ package com.bookmyticket.service;
 import java.util.List;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -16,15 +15,14 @@ import com.bookmyticket.info.BookMyTicket;
 import com.bookmyticket.repository.TheatreRepository;
 
 import io.micrometer.common.util.StringUtils;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class TheatreManagementService {
 
-	@Autowired
-	private TheatreRepository theatreInfoRepository;
-	
-	@Autowired
-	private MongoTemplate mongoTemplate;
+	private final TheatreRepository theatreInfoRepository;
+	private final MongoTemplate mongoTemplate;
 
 	public Theatre addMovieToTheatre(Theatre theatreInfo) {
 

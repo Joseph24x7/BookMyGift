@@ -1,7 +1,6 @@
 package com.bookmyticket.service;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,21 +16,19 @@ import com.bookmyticket.security.info.AuthRequest;
 import com.bookmyticket.security.info.AuthResponse;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService {
 
-	@Autowired
-	private UserRepository repository;
+	private final UserRepository repository;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 	
-	@Autowired
-	private TokenGenerator jwtService;
+	private final TokenGenerator jwtService;
 	
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
 	@Transactional
 	public AuthResponse register(AuthRequest authInfo) {

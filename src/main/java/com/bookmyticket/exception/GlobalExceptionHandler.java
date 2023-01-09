@@ -1,6 +1,5 @@
 package com.bookmyticket.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -8,12 +7,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
-	@Autowired
-	private ObservationRegistry observationRegistry;
+	private final ObservationRegistry observationRegistry;
 
 	@ExceptionHandler(ServiceException.class)
 	public ProblemDetail handleServiceException(ServiceException serviceException, HttpServletRequest request) {

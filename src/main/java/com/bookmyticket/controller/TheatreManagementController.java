@@ -1,6 +1,5 @@
 package com.bookmyticket.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,16 +18,15 @@ import io.micrometer.observation.ObservationRegistry;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @OpenAPIDefinition(info = @Info(title = "Theatre Management", version = "0.0.1"))
+@RequiredArgsConstructor
 public class TheatreManagementController {
 
-	@Autowired
-	private TheatreManagementService theatreManagementService;
-	
-	@Autowired
-	private ObservationRegistry observationRegistry;
+	private final TheatreManagementService theatreManagementService;
+	private final ObservationRegistry observationRegistry;
 
 	@PostMapping("/addMovieToTheatre")
 	public ResponseEntity<Theatre> addMovieToTheatre(@RequestBody BookMyTicket bookMyTicket,

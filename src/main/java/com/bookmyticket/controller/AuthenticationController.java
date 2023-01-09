@@ -1,7 +1,6 @@
 
 package com.bookmyticket.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,12 +11,14 @@ import com.bookmyticket.security.info.AuthRequest;
 import com.bookmyticket.security.info.AuthResponse;
 import com.bookmyticket.service.AuthenticationService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
-	@Autowired
-	private AuthenticationService authenticationService;
+	private final AuthenticationService authenticationService;
 
 	@PostMapping("/register")
 	public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest request) {
