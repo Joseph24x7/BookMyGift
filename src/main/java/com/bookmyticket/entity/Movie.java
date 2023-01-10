@@ -2,11 +2,9 @@ package com.bookmyticket.entity;
 
 import java.util.Objects;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class Movie {
 
 	private Integer availableSeatCount;

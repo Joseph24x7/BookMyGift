@@ -1,10 +1,8 @@
 package com.bookmyticket.security.info;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class AuthRequest {
 
 	private String username;

@@ -11,10 +11,13 @@ import com.bookmyticket.security.info.AuthRequest;
 import com.bookmyticket.security.info.AuthResponse;
 import com.bookmyticket.service.AuthenticationService;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@OpenAPIDefinition(info = @Info(title = "Authentication Management", version = "0.0.1"))
 @RequiredArgsConstructor
 public class AuthenticationController {
 

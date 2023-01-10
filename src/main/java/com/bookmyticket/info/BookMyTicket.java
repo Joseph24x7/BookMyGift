@@ -6,15 +6,13 @@ import com.bookmyticket.entity.Theatre;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Setter
-@Getter
+@Data
 public class BookMyTicket {
 	
 	private List<Theatre> recommendedTheatres;
