@@ -11,8 +11,11 @@ import com.bookmyticket.security.info.AuthRequest;
 import com.bookmyticket.security.info.AuthResponse;
 import com.bookmyticket.service.AuthenticationService;
 
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,15 +25,22 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationController {
 
 	private final AuthenticationService authenticationService;
+	private final ObservationRegistry observationRegistry;
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest request) {
-		return ResponseEntity.ok(authenticationService.register(request));
+	public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
+
+		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
+				.observe(() -> ResponseEntity.ok(authenticationService.register(authRequest)));
+
 	}
 
 	@PostMapping("/authenticate")
-	public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {
-		return ResponseEntity.ok(authenticationService.authenticate(request));
+	public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
+
+		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
+				.observe(() -> ResponseEntity.ok(authenticationService.authenticate(authRequest)));
+
 	}
 
 }
