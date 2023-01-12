@@ -15,8 +15,11 @@ spring:
             dialect: org.hibernate.dialect.MySQL5Dialect
    data:
       mongodb:
-         uri: mongodb+srv://Joseph24x7:Abcde12345@joseph24x7.0vl2a0k.mongodb.net/?retryWrites=true&w=majority&waitQueueMultiple=10&keepAlive=true
+         uri: mongodb+srv://Joseph24x7:Abcde12345@joseph24x7.0vl2a0k.mongodb.net/?retryWrites=true&w=majority
          database: TicketBooking
+   redis:
+      host: redis
+      port: 49155
          
 management:
    endpoints:
