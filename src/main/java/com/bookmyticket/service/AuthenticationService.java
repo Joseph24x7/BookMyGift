@@ -1,6 +1,7 @@
 package com.bookmyticket.service;
 
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +30,9 @@ public class AuthenticationService {
 	private final TokenGenerator jwtService;
 	
 	private final AuthenticationManager authenticationManager;
-
+	
+	private final RedisTemplate<String, Object> redisTemplate;
+ 
 	@Transactional
 	public AuthResponse register(AuthRequest authInfo) {
 		
@@ -39,17 +42,32 @@ public class AuthenticationService {
 		
 		var jwtToken = jwtService.generateToken(user);
 		
+		String cacheKey = authInfo.getUsername()+":"+authInfo.getPassword();
+		
+		redisTemplate.opsForValue().set(cacheKey, authInfo);
+		
 		return AuthResponse.builder().token(jwtToken).build();
 	}
 
 	public AuthResponse authenticate(AuthRequest authInfo) {
 		
-		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
-		
-		var user = repository.findByUsername(authInfo.getUsername()).orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
-		
-		var jwtToken = jwtService.generateToken(user);
-		
-		return AuthResponse.builder().token(jwtToken).build();
+	    String cacheKey = authInfo.getUsername()+":"+authInfo.getPassword();
+	    
+	    AuthResponse authResponse = (AuthResponse) redisTemplate.opsForValue().get(cacheKey);
+	    
+	    if (authResponse != null)
+	    	return authResponse;
+	    
+	    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
+	    
+	    var user = repository.findByUsername(authInfo.getUsername()).orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
+	    
+	    var jwtToken = jwtService.generateToken(user);
+	    
+	    authResponse = AuthResponse.builder().token(jwtToken).build();
+	    
+	    redisTemplate.opsForValue().set(cacheKey, authResponse);
+	    
+	    return authResponse;
 	}
 }

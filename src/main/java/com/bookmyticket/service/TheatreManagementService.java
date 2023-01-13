@@ -3,7 +3,6 @@ package com.bookmyticket.service;
 import java.util.List;
 
 import org.bson.types.ObjectId;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -22,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TheatreManagementService {
 
-	private final TheatreRepository theatreInfoRepository;
-	private final MongoTemplate mongoTemplate;
+	private TheatreRepository theatreInfoRepository;
+	private MongoTemplate mongoTemplate;
 
 	public Theatre addMovieToTheatre(Theatre theatreInfo) {
 

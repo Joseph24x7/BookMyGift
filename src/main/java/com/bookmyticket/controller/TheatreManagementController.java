@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @OpenAPIDefinition(info = @Info(title = "Theatre Management", version = "0.0.1"))
 @RequiredArgsConstructor
 public class TheatreManagementController {
-
+	
 	private final TheatreManagementService theatreManagementService;
 	private final ObservationRegistry observationRegistry;
 
