@@ -1,7 +1,6 @@
 
 package com.bookmyticket.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,18 +27,18 @@ public class AuthenticationController {
 	private final ObservationRegistry observationRegistry;
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
+	public AuthResponse register(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
-				.observe(() -> ResponseEntity.ok(authenticationService.register(authRequest)));
+				.observe(() -> authenticationService.register(authRequest));
 
 	}
 
 	@PostMapping("/authenticate")
-	public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
+	public AuthResponse authenticate(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
-				.observe(() -> ResponseEntity.ok(authenticationService.authenticate(authRequest)));
+				.observe(() -> authenticationService.authenticate(authRequest));
 
 	}
 

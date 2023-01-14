@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @OpenAPIDefinition(info = @Info(title = "Theatre Management", version = "0.0.1"))
 @RequiredArgsConstructor
 public class TheatreManagementController {
-	
+
 	private final TheatreManagementService theatreManagementService;
 	private final ObservationRegistry observationRegistry;
 
@@ -32,21 +32,20 @@ public class TheatreManagementController {
 	public ResponseEntity<Theatre> addMovieToTheatre(@RequestBody BookMyTicket bookMyTicket,
 			HttpServletRequest request) {
 
-		return Observation.createNotStarted(request.getRequestURI().substring(1),observationRegistry).observe(
+		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry).observe(
 				() -> new ResponseEntity<>(theatreManagementService.addMovieToTheatre(bookMyTicket.getTheatre()),
 						HttpStatus.CREATED));
 
 	}
 
 	@GetMapping("/getAllRecommendedMovies")
-	public ResponseEntity<BookMyTicket> getAllRecommendedMovies(
+	public BookMyTicket getAllRecommendedMovies(
 			@RequestParam(value = "theatreName", required = false) String theatreName,
 			@RequestParam(value = "movieName", required = false) String movieName,
 			@RequestParam(value = "pincode", required = false) Integer pincode, HttpServletRequest request) {
 
-		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry).observe(
-				() -> new ResponseEntity<>(theatreManagementService.getAllRecommendedMovies(theatreName, pincode, movieName),
-						HttpStatus.OK));
+		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
+				.observe(() -> theatreManagementService.getAllRecommendedMovies(theatreName, pincode, movieName));
 
 	}
 
