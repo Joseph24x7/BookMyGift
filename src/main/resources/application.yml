@@ -3,8 +3,8 @@ server:
 
 spring:
    datasource:
-      url: jdbc:mysql://localhost:3306/cruds?useSSL=false
-      username: root
+      url: jdbc:mysql://localhost:3307/cruds?useSSL=false
+      username: mysql
       password: root
    jpa:
       hibernate:
@@ -19,7 +19,7 @@ spring:
          database: TicketBooking
    redis:
       host: redis
-      port: 49155
+      port: 6379
          
 management:
    endpoints:
