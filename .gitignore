@@ -4,3 +4,5 @@ target/
 .project
 .settings/
 log/
+.idea/
+bookmyticket.iml
