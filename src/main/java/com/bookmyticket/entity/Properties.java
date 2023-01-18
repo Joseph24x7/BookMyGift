@@ -12,7 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "PROPERTIES")
+@Table(name = "properties", schema = "myapp")
 @Data
 @NoArgsConstructor
 public class Properties implements Serializable{
@@ -24,13 +24,13 @@ public class Properties implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "PROP_ID", nullable = false)
+	@Column(name = "prop_id", nullable = false)
 	private Long propId;
 
-	@Column(name = "PROP_NAME", nullable = false)
+	@Column(name = "prop_name", nullable = false)
 	private String propName;
 
-	@Column(name = "PROP_VALUE", nullable = false)
+	@Column(name = "prop_value", nullable = false)
 	private String propValue;
 
 }

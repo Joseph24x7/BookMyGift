@@ -37,8 +37,6 @@ public class AuthenticationService {
 
 		String cacheKey = authInfo.getUsername() + ":" + authInfo.getPassword();
 
-		redisTemplate.opsForValue().set(cacheKey, authInfo);
-
 		var user = User.builder().username(authInfo.getUsername())
 				.password(passwordEncoder.encode(authInfo.getPassword())).email(authInfo.getEmail()).role(Role.USER)
 				.build();
@@ -46,8 +44,12 @@ public class AuthenticationService {
 		repository.save(user);
 
 		var jwtToken = jwtService.generateToken(user);
+		
+		AuthResponse response = AuthResponse.builder().token(jwtToken).build();
+		
+		redisTemplate.opsForValue().set(cacheKey, response);
 
-		return AuthResponse.builder().token(jwtToken).build();
+		return response;
 	}
 
 	public AuthResponse authenticate(AuthRequest authInfo) {

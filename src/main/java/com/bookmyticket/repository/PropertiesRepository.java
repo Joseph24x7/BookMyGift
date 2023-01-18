@@ -9,5 +9,5 @@ import com.bookmyticket.entity.Properties;
 public interface PropertiesRepository extends JpaRepository<Properties, Long>{
 	
 	Optional<Properties> findByPropName(String propName);
-
+	
 }
