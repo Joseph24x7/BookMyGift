@@ -50,8 +50,10 @@ class TheatreManagementServiceTest {
 	
 	@Test
 	void addMovieToTheatreTest() {
+
+		Optional<Theatre> optionalTheatre=Optional.of(theatre);
 		
-		Mockito.when(theatreInfoRepository.getTheatreInfoByCode(Mockito.any())).thenReturn(theatre);
+		Mockito.when(theatreInfoRepository.getTheatreInfoByCode(Mockito.any())).thenReturn(optionalTheatre);
 		
 		Mockito.when(theatreInfoRepository.save(theatre)).thenReturn(theatre);
 		
@@ -64,7 +66,7 @@ class TheatreManagementServiceTest {
 	@Test
 	void addMovieToTheatreElseTest() {
 		
-		Mockito.when(theatreInfoRepository.getTheatreInfoByCode(Mockito.any())).thenReturn(null);
+		Mockito.when(theatreInfoRepository.getTheatreInfoByCode(Mockito.any())).thenReturn(Optional.ofNullable(null));
 		
 		Mockito.when(theatreInfoRepository.save(theatre)).thenReturn(theatre);
 		
@@ -79,7 +81,7 @@ class TheatreManagementServiceTest {
 		
 		Optional<Theatre> optionalTheatre=Optional.of(theatre);
 		
-		Mockito.when(theatreInfoRepository.getTheatreToDeleteMovie(Mockito.any())).thenReturn(optionalTheatre);
+		Mockito.when(theatreInfoRepository.getTheatreInfoByCode(Mockito.any())).thenReturn(optionalTheatre);
 		
 		Mockito.when(theatreInfoRepository.save(optionalTheatre.get())).thenReturn(optionalTheatre.get());
 		

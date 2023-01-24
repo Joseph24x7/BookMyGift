@@ -1,6 +1,7 @@
 package com.bookmyticket.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -21,20 +22,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TheatreManagementService {
 
-	private TheatreRepository theatreInfoRepository;
-	private MongoTemplate mongoTemplate;
+	private final TheatreRepository theatreInfoRepository;
+	private final MongoTemplate mongoTemplate;
 
 	public Theatre addMovieToTheatre(Theatre theatreInfo) {
 
-		Theatre theatreInfoFromDb = theatreInfoRepository.getTheatreInfoByCode(theatreInfo.getTheatreCode());
+		Optional<Theatre> theatreInfoFromDb = theatreInfoRepository.getTheatreInfoByCode(theatreInfo.getTheatreCode());
 
-		if (theatreInfoFromDb != null) {
+		if (theatreInfoFromDb.isPresent()) {
 
-			theatreInfoFromDb.getMovieDetails().addAll(theatreInfo.getMovieDetails());
+			Theatre theatre = theatreInfoFromDb.get();
 
-			theatreInfoRepository.save(theatreInfoFromDb);
+			theatre.getMovieDetails().addAll(theatreInfo.getMovieDetails());
 
-			return theatreInfoFromDb;
+			theatreInfoRepository.save(theatre);
+
+			return theatre;
 
 		} else {
 
@@ -73,7 +76,7 @@ public class TheatreManagementService {
 
 	public Theatre deleteMovieFromTheatre(Theatre theatreInfo) {
 
-		Theatre theatreInfoFromDb = theatreInfoRepository.getTheatreToDeleteMovie(theatreInfo.getTheatreCode())
+		Theatre theatreInfoFromDb = theatreInfoRepository.getTheatreInfoByCode(theatreInfo.getTheatreCode())
 				.orElseThrow(() -> new ServiceException(ErrorEnums.THEATRE_CODE_INVALID));
 
 		theatreInfoFromDb.getMovieDetails().removeAll(theatreInfo.getMovieDetails());
