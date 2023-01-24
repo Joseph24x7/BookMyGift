@@ -58,14 +58,11 @@ public class AuthenticationService {
 
 		AuthResponse authResponse = (AuthResponse) redisTemplate.opsForValue().get(cacheKey);
 
-		if (authResponse != null)
-			return authResponse;
+		if (authResponse != null) return authResponse;
 
-		authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
+		authenticationManager .authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
 
-		var user = repository.findByUsername(authInfo.getUsername())
-				.orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
+		var user = repository.findByUsername(authInfo.getUsername()).orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
 
 		var jwtToken = jwtService.generateToken(user);
 
