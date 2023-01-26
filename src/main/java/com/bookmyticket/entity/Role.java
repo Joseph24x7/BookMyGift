@@ -1,6 +1,6 @@
 package com.bookmyticket.entity;
 
 public enum Role {
-  USER,
+  CUSTOMER,
   ADMIN
 }

@@ -1,6 +1,5 @@
 package com.bookmyticket.service;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,46 +29,33 @@ public class AuthenticationService {
 
 	private final AuthenticationManager authenticationManager;
 
-	private final RedisTemplate<String, Object> redisTemplate;
-
 	@Transactional
 	public AuthResponse register(AuthRequest authInfo) {
 
-		String cacheKey = authInfo.getUsername() + ":" + authInfo.getPassword();
+		repository.findByUsername(authInfo.getUsername()).ifPresent(u -> {
+			throw new ServiceException(ErrorEnums.USER_ALREADY_REGISTERED);
+		});
 
-		var user = User.builder().username(authInfo.getUsername())
-				.password(passwordEncoder.encode(authInfo.getPassword())).email(authInfo.getEmail()).role(Role.USER)
-				.build();
+		var user = User.builder().username(authInfo.getUsername()).password(passwordEncoder.encode(authInfo.getPassword())).email(authInfo.getEmail()).role(Role.CUSTOMER).build();
 
 		repository.save(user);
 
 		var jwtToken = jwtService.generateToken(user);
-		
-		AuthResponse response = AuthResponse.builder().token(jwtToken).build();
-		
-		redisTemplate.opsForValue().set(cacheKey, response);
 
-		return response;
+		return AuthResponse.builder().token(jwtToken).build();
+
 	}
 
 	public AuthResponse authenticate(AuthRequest authInfo) {
-
-		String cacheKey = authInfo.getUsername() + ":" + authInfo.getPassword();
-
-		AuthResponse authResponse = (AuthResponse) redisTemplate.opsForValue().get(cacheKey);
-
-		if (authResponse != null) return authResponse;
-
-		authenticationManager .authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
+		
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
 
 		var user = repository.findByUsername(authInfo.getUsername()).orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
 
 		var jwtToken = jwtService.generateToken(user);
 
-		authResponse = AuthResponse.builder().token(jwtToken).build();
+		return AuthResponse.builder().token(jwtToken).build();
 
-		redisTemplate.opsForValue().set(cacheKey, authResponse);
-
-		return authResponse;
 	}
+
 }

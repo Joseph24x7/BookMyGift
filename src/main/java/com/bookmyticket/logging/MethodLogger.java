@@ -23,7 +23,7 @@ public class MethodLogger {
 	  return proceed;
 	}
 	
-	@Pointcut("execution(public * com.bookmyticket..*(..))")
+	@Pointcut("execution(* com.bookmyticket..*(..)) && within(@org.springframework.web.bind.annotation.RestController *)")
 	public void publicMethod() {}
 
 }

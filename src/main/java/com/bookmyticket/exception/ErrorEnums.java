@@ -4,8 +4,10 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorEnums {
 	
+	USER_ALREADY_REGISTERED(HttpStatus.BAD_REQUEST,"USER_ALREADY_REGISTERED","The selected username is not available."),
 	THEATRE_CODE_INVALID(HttpStatus.BAD_REQUEST,"THEATRE_CODE_INVALID","The Given Theatre Code is Invalid"),
-	UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED_ACCESS","Invalid Username/Password"),;
+	UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"UNAUTHORIZED_ACCESS","Invalid Username/Password"),
+	GENERAL_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"GENERAL_EXCEPTION","General Exception occured");
 	
 	HttpStatus httpStatus;
 	String errorCode;
