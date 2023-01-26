@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.bookmygift.info.BookMyTicket;
-import com.bookmygift.service.TheatreManagementService;
+import com.bookmygift.service.BookMyGiftService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -32,7 +32,7 @@ class TheatreManagementControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private TheatreManagementService theatreManagementService;
+	private BookMyGiftService theatreManagementService;
 
 	BookMyTicket infoObject = new BookMyTicket();
 

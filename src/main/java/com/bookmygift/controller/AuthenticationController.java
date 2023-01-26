@@ -15,6 +15,7 @@ import io.micrometer.observation.ObservationRegistry;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,7 +28,7 @@ public class AuthenticationController {
 	private final ObservationRegistry observationRegistry;
 
 	@PostMapping("/register")
-	public AuthResponse register(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
+	public AuthResponse register(@RequestBody @Valid AuthRequest authRequest, HttpServletRequest request) {
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
 				.observe(() -> authenticationService.register(authRequest));

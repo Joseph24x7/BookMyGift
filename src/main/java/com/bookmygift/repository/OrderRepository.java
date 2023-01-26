@@ -5,11 +5,11 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.bookmygift.entity.Theatre;
+import com.bookmygift.entity.Order;
 
-public interface TheatreRepository extends MongoRepository<Theatre, Integer>{
+public interface OrderRepository extends MongoRepository<Order, String>{
 
 	@Query("{theatreCode : ?0}")
-	Optional<Theatre> getTheatreInfoByCode(String theatreCode);
+	Optional<Order> getTheatreInfoByCode(String theatreCode);
 	
 }

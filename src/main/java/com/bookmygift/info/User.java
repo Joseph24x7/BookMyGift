@@ -1,4 +1,4 @@
-package com.bookmygift.entity;
+package com.bookmygift.info;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +48,11 @@ public class User implements UserDetails {
 	private String email;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "ROLE", nullable = false)
 	private Role role;
+	
+	@Column(name = "FULL_NAME", nullable = false)
+	private String fullname;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
