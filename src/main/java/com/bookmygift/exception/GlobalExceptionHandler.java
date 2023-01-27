@@ -15,7 +15,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ProblemDetail handleServiceException(Exception exception, HttpServletRequest request) {
+	public ProblemDetail handleException(Exception exception, HttpServletRequest request) {
 
 		return populateException(ErrorEnums.GENERAL_EXCEPTION.getHttpStatus(), exception.getMessage(),
 				ErrorEnums.GENERAL_EXCEPTION.getErrorCode(), request);
@@ -43,8 +42,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler({BadCredentialsException.class,MalformedJwtException.class})
-	public ProblemDetail handleServiceException(Exception exception, HttpServletRequest request,
-			HttpServletResponse response) {
+	public ProblemDetail handleCredentialsException(Exception exception, HttpServletRequest request) {
 
 		return populateException(ErrorEnums.UNAUTHORIZED.getHttpStatus(), exception.getMessage(),
 				ErrorEnums.UNAUTHORIZED.getErrorCode(), request);
@@ -52,7 +50,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)
-	public ProblemDetail handleValidationExceptions(ConstraintViolationException ex, HttpServletRequest request) {
+	public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex, HttpServletRequest request) {
 
 		Map<String, String> errors = new HashMap<>();
 		for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
@@ -65,10 +63,9 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ProblemDetail handleValidationExceptions(Exception ex, HttpServletRequest request) {
+	public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException validationEx, HttpServletRequest request) {
 
 		Map<String, String> errors = new HashMap<>();
-		MethodArgumentNotValidException validationEx = (MethodArgumentNotValidException) ex;
 		for (FieldError error : validationEx.getBindingResult().getFieldErrors()) {
 			errors.put(error.getField(), error.getDefaultMessage());
 		}

@@ -3,7 +3,6 @@ package com.bookmygift.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -34,7 +33,7 @@ class AuthenticationControllerTest {
 	@MockBean
 	private AuthenticationService authenticationService;
 
-	AuthRequest authRequest = new AuthRequest();
+	AuthRequest authRequest;
 
 	@BeforeEach
 	void populateRequest() {
