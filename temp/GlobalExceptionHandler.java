@@ -31,16 +31,17 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ServiceException.class)
 	public ProblemDetail handleServiceException(ServiceException serviceException, HttpServletRequest request) {
 
-		return populateException(serviceException.getErrorEnums().getHttpStatus(),
-				serviceException.getErrorEnums().getErrorDescription(), serviceException.getErrorEnums().getErrorCode(), request);
+		return CommonUtils.populateException(serviceException.getErrorEnums().getHttpStatus(),
+				serviceException.getErrorEnums().getErrorDescription(), serviceException.getErrorEnums().getErrorCode(),
+				observationRegistry, request);
 
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ProblemDetail handleServiceException(Exception exception, HttpServletRequest request) {
 
-		return populateException(ErrorEnums.GENERAL_EXCEPTION.getHttpStatus(), exception.getMessage(),
-				ErrorEnums.GENERAL_EXCEPTION.getErrorCode(), request);
+		return CommonUtils.populateException(ErrorEnums.GENERAL_EXCEPTION.getHttpStatus(), exception.getMessage(),
+				ErrorEnums.GENERAL_EXCEPTION.getErrorCode(), observationRegistry, request);
 
 	}
 
@@ -48,8 +49,8 @@ public class GlobalExceptionHandler {
 	public ProblemDetail handleServiceException(Exception exception, HttpServletRequest request,
 			HttpServletResponse response) {
 
-		return populateException(ErrorEnums.UNAUTHORIZED.getHttpStatus(), exception.getMessage(),
-				ErrorEnums.UNAUTHORIZED.getErrorCode(), request);
+		return CommonUtils.populateException(ErrorEnums.UNAUTHORIZED.getHttpStatus(), exception.getMessage(),
+				ErrorEnums.UNAUTHORIZED.getErrorCode(), observationRegistry, request);
 
 	}
 
@@ -61,8 +62,8 @@ public class GlobalExceptionHandler {
 			errors.put(violation.getPropertyPath().toString(), violation.getMessage());
 		}
 
-		return populateException(HttpStatus.BAD_REQUEST, errors.toString(),
-				HttpStatus.BAD_REQUEST.getReasonPhrase(), request);
+		return CommonUtils.populateException(HttpStatus.BAD_REQUEST, errors.toString(),
+				HttpStatus.BAD_REQUEST.getReasonPhrase(), observationRegistry, request);
 
 	}
 
@@ -75,19 +76,8 @@ public class GlobalExceptionHandler {
 			errors.put(error.getField(), error.getDefaultMessage());
 		}
 
-		return populateException(HttpStatus.BAD_REQUEST, errors.toString(),
-				HttpStatus.BAD_REQUEST.getReasonPhrase(), request);
+		return CommonUtils.populateException(HttpStatus.BAD_REQUEST, errors.toString(),
+				HttpStatus.BAD_REQUEST.getReasonPhrase(), observationRegistry, request);
 	}
-	
-	public ProblemDetail populateException(HttpStatus httpStatus, String errorDescription, String errorCode, HttpServletRequest request) {
-		
-		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorDescription);
-		problemDetail.setTitle(errorCode);
-
-		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
-				.observe(() -> problemDetail);
-		
-	}
-
 	
 }

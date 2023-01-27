@@ -1,0 +1,62 @@
+package com.bookmygift.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bookmygift.entity.Order;
+import com.bookmygift.info.GiftType;
+import com.bookmygift.info.OrderStatus;
+import com.bookmygift.request.OrderRequest;
+import com.bookmygift.service.BookMyGiftService;
+import com.bookmygift.utils.CommonUtils;
+
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/v1/gift")
+@OpenAPIDefinition(info = @Info(title = "Book My Gift Management", version = "0.0.1"))
+@RequiredArgsConstructor
+public class BookMyGiftController {
+
+	private final BookMyGiftService bookMyGiftService;
+	private final ObservationRegistry observationRegistry;
+
+	@PostMapping("/placeOrder")
+	public ResponseEntity<Order> placeOrder(@RequestBody @Valid OrderRequest orderRequest, HttpServletRequest request) {
+
+		return Observation.createNotStarted(request.getHeader(CommonUtils.SERVICE_NAME), observationRegistry)
+				.observe(() -> new ResponseEntity<>(bookMyGiftService.placeOrder(orderRequest), HttpStatus.CREATED));
+
+	}
+
+	@GetMapping("/showMyOrders")
+	public List<Order> showMyOrders(@RequestParam(value = "giftType", required = false) GiftType giftType,
+			@RequestParam(value = "orderStatus", required = false) OrderStatus orderStatus, HttpServletRequest request) {
+
+		return Observation.createNotStarted(request.getHeader(CommonUtils.SERVICE_NAME), observationRegistry)
+				.observe(() -> bookMyGiftService.showMyOrders(request, giftType, orderStatus));
+
+	}
+
+	@DeleteMapping("/cancelOrder")
+	public ResponseEntity<Order> cancelOrder(@RequestParam(value = "orderId", required = true) String orderId, HttpServletRequest request) {
+
+		return Observation.createNotStarted(request.getHeader(CommonUtils.SERVICE_NAME), observationRegistry)
+				.observe(() -> new ResponseEntity<>(bookMyGiftService.cancelOrder(orderId), HttpStatus.ACCEPTED));
+	}
+}
