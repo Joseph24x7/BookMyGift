@@ -11,8 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.bookmygift.utils.CommonUtils;
-
 import io.jsonwebtoken.MalformedJwtException;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
