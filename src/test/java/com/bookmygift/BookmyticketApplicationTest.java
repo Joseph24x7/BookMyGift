@@ -57,11 +57,7 @@ class BookmyticketApplicationTest {
 			headers.setBearerAuth(testRestTemplate.postForEntity("/api/v1/auth/register", requestEntity, AuthResponse.class).getBody().getToken());
 		}
 		
-		orderRequest = new OrderRequest();
-		orderRequest.setUsername("Tommy");
-		orderRequest.setGiftType(GiftType.KEYCHAIN);
-		orderRequest.setAmountPaid(300.0D);
-		orderRequest.setEmailId("Tommy@gmail.com");
+		orderRequest = OrderRequest.builder().username("Tommy").giftType(GiftType.KEYCHAIN).amountPaid(300.0D).emailId("Tommy@gmail.com").build();
 
 	}
 

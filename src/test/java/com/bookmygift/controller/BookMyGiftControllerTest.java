@@ -40,16 +40,14 @@ class BookMyGiftControllerTest {
 	@MockBean
 	private BookMyGiftService bookMyGiftService;
 
-	OrderRequest orderRequest = new OrderRequest();
-	Order order = new Order();
+	OrderRequest orderRequest;
+	Order order;
 
 	@BeforeEach
 	void populateRequest() {
-
-		orderRequest.setUsername("Tommy");
-		orderRequest.setGiftType(GiftType.KEYCHAIN);
-		orderRequest.setAmountPaid(300.0D);
-		orderRequest.setEmailId("Tommy@gmail.com");
+		
+		order = new Order();
+		orderRequest = OrderRequest.builder().username("Tommy").giftType(GiftType.KEYCHAIN).amountPaid(300.0D).emailId("Tommy@gmail.com").build();
 
 	}
 
