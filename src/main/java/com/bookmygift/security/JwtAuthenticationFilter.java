@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			
 			final String authHeader = request.getHeader(CommonUtils.AUTHORIZATION);
-			if (request.getRequestURI().contains("/api/v1/auth")) {
+			if (request.getRequestURI().contains("/api/v1/auth") || request.getRequestURI().contains("/swagger-ui/") || request.getRequestURI().contains("/v3/api-docs")) {
 				filterChain.doFilter(request, response);
 				return;
 			}else if (StringUtils.isEmpty(authHeader)) {
