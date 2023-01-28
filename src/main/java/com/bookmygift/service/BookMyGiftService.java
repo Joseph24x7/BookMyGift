@@ -49,7 +49,7 @@ public class BookMyGiftService {
 
 		Criteria criteria = new Criteria();
 
-		criteria.and("username").is(tokenGenerator.extractUsername(request.getHeader("Authorization")));
+		criteria.and("username").is(tokenGenerator.extractUsername(request.getHeader("Authorization").replace("Bearer ", "")));
 
 		if (giftType!=null && !EnumSet.of(giftType).isEmpty())
 			criteria.and("giftType").is(giftType);
