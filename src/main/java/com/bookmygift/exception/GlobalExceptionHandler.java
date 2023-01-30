@@ -29,7 +29,9 @@ public class GlobalExceptionHandler {
 	public ProblemDetail handleServiceException(ServiceException serviceException, HttpServletRequest request) {
 
 		return populateException(serviceException.getErrorEnums().getHttpStatus(),
-				serviceException.getErrorEnums().getErrorDescription(), serviceException.getErrorEnums().getErrorCode(), request);
+				serviceException.getErrorDescription() != null ? serviceException.getErrorDescription()
+						: serviceException.getErrorEnums().getErrorDescription(),
+				serviceException.getErrorEnums().getErrorCode(), request);
 
 	}
 
@@ -41,7 +43,7 @@ public class GlobalExceptionHandler {
 
 	}
 
-	@ExceptionHandler({BadCredentialsException.class,MalformedJwtException.class})
+	@ExceptionHandler({ BadCredentialsException.class, MalformedJwtException.class })
 	public ProblemDetail handleCredentialsException(Exception exception, HttpServletRequest request) {
 
 		return populateException(ErrorEnums.UNAUTHORIZED.getHttpStatus(), exception.getMessage(),
@@ -50,39 +52,41 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)
-	public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex, HttpServletRequest request) {
+	public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex,
+			HttpServletRequest request) {
 
 		Map<String, String> errors = new HashMap<>();
 		for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
 			errors.put(violation.getPropertyPath().toString(), violation.getMessage());
 		}
 
-		return populateException(HttpStatus.BAD_REQUEST, errors.toString(),
-				HttpStatus.BAD_REQUEST.getReasonPhrase(), request);
+		return populateException(HttpStatus.BAD_REQUEST, errors.toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
+				request);
 
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException validationEx, HttpServletRequest request) {
+	public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException validationEx,
+			HttpServletRequest request) {
 
 		Map<String, String> errors = new HashMap<>();
 		for (FieldError error : validationEx.getBindingResult().getFieldErrors()) {
 			errors.put(error.getField(), error.getDefaultMessage());
 		}
 
-		return populateException(HttpStatus.BAD_REQUEST, errors.toString(),
-				HttpStatus.BAD_REQUEST.getReasonPhrase(), request);
+		return populateException(HttpStatus.BAD_REQUEST, errors.toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
+				request);
 	}
-	
-	public ProblemDetail populateException(HttpStatus httpStatus, String errorDescription, String errorCode, HttpServletRequest request) {
-		
+
+	public ProblemDetail populateException(HttpStatus httpStatus, String errorDescription, String errorCode,
+			HttpServletRequest request) {
+
 		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorDescription);
 		problemDetail.setTitle(errorCode);
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
 				.observe(() -> problemDetail);
-		
+
 	}
 
-	
 }

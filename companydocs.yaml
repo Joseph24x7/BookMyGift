@@ -1,21 +1,39 @@
 openapi: 3.0.1
 info:
-  title: Theatre Management
+  title: Authentication Management
   version: 0.0.1
 servers:
 - url: http://localhost:8082
   description: Generated server url
 paths:
-  /authenticate:
+  /placeOrder:
+    post:
+      tags:
+      - book-my-gift-controller
+      operationId: placeOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Order'
+  /api/v1/auth/register:
     post:
       tags:
       - authentication-controller
-      operationId: generateToken
+      operationId: register
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthInfo'
+              $ref: '#/components/schemas/AuthRequest'
         required: true
       responses:
         "200":
@@ -23,17 +41,17 @@ paths:
           content:
             '*/*':
               schema:
-                type: string
-  /addMovieToTheatre:
+                $ref: '#/components/schemas/AuthResponse'
+  /api/v1/auth/authenticate:
     post:
       tags:
-      - theatre-management-controller
-      operationId: addMovieToTheatre
+      - authentication-controller
+      operationId: authenticate
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookMyTicket'
+              $ref: '#/components/schemas/AuthRequest'
         required: true
       responses:
         "200":
@@ -41,106 +59,133 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/Theatre'
-  /getAllRecommendedMovies:
+                $ref: '#/components/schemas/AuthResponse'
+  /showMyOrders:
     get:
       tags:
-      - theatre-management-controller
-      operationId: getAllRecommendedMovies
+      - book-my-gift-controller
+      operationId: showMyOrders
       parameters:
-      - name: theatreName
+      - name: giftType
         in: query
         required: false
         schema:
           type: string
-      - name: movieName
+          enum:
+          - KEYCHAIN
+          - FRAME
+      - name: orderStatus
         in: query
         required: false
         schema:
           type: string
-      - name: pincode
-        in: query
-        required: false
-        schema:
-          type: integer
-          format: int32
+          enum:
+          - ORDER_RECIEVED
+          - ITEM_DISPATCHED
+          - ITEM_OUT_FOR_DELIVERY
+          - CANCELLED
       responses:
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/BookMyTicket'
-  /deleteMovieFromTheatre:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+  /cancelOrder:
     delete:
       tags:
-      - theatre-management-controller
-      operationId: deleteMovieFromTheatre
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BookMyTicket'
+      - book-my-gift-controller
+      operationId: cancelOrder
+      parameters:
+      - name: orderId
+        in: query
         required: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/Theatre'
+                $ref: '#/components/schemas/Order'
 components:
   schemas:
-    AuthInfo:
+    OrderRequest:
+      required:
+      - amountPaid
+      - emailId
+      - giftType
+      - username
       type: object
       properties:
-        userName:
+        username:
+          maxLength: 20
+          minLength: 3
           type: string
-        password:
+        emailId:
           type: string
-    BookMyTicket:
-      type: object
-      properties:
-        recommendedTheatres:
-          type: array
-          items:
-            $ref: '#/components/schemas/Theatre'
-        theatre:
-          $ref: '#/components/schemas/Theatre'
-    Movie:
-      type: object
-      properties:
-        availableSeatCount:
-          type: integer
-          format: int32
-        movieName:
+        giftType:
           type: string
-        ticketPrice:
+          enum:
+          - KEYCHAIN
+          - FRAME
+        amountPaid:
           type: number
           format: double
-    ObjectId:
+    Order:
       type: object
       properties:
-        timestamp:
-          type: integer
-          format: int32
-        date:
+        orderId:
+          type: string
+        username:
+          type: string
+        emailId:
+          type: string
+        giftType:
+          type: string
+          enum:
+          - KEYCHAIN
+          - FRAME
+        amountPaid:
+          type: number
+          format: double
+        orderStatus:
+          type: string
+          enum:
+          - ORDER_RECIEVED
+          - ITEM_DISPATCHED
+          - ITEM_OUT_FOR_DELIVERY
+          - CANCELLED
+        expectedTimeToBeDelivered:
           type: string
           format: date-time
-    Theatre:
+    AuthRequest:
+      required:
+      - email
+      - fullname
+      - password
+      - username
       type: object
       properties:
-        uniqueId:
-          $ref: '#/components/schemas/ObjectId'
-        theatreCode:
+        username:
+          maxLength: 20
+          minLength: 3
           type: string
-        theatreName:
+        password:
+          maxLength: 20
+          minLength: 8
           type: string
-        pincode:
-          type: integer
-          format: int32
-        movieDetails:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/Movie'
+        email:
+          type: string
+        fullname:
+          maxLength: 20
+          minLength: 3
+          type: string
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string

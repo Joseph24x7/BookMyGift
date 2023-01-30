@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.bookmygift.repository.UserRepository;
 
 @Configuration
-public class ApplicationConfig {
+public class ApplicationConfig{
 
 	@Bean
 	public UserDetailsService userDetailsService(UserRepository repository) {

@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,8 +57,7 @@ class BookMyGiftServiceTest {
 				.giftType(GiftType.KEYCHAIN).amountPaid(100.0D).build();
 
 		order = Order.builder().orderId("USE_" + UUID.randomUUID()).username("username").emailId("email@email.com")
-				.giftType(GiftType.FRAME).amountPaid(100.0D).orderStatus(OrderStatus.ORDER_RECIEVED)
-				.expectedTimeToBeDelivered(LocalDateTime.now().plusHours(48)).build();
+				.giftType(GiftType.FRAME).amountPaid(100.0D).orderStatus(OrderStatus.ORDER_RECIEVED).build();
 
 		orderId = "ORDER_ID";
 
