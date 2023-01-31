@@ -21,6 +21,6 @@ public class OrderQueueListener {
 
 	@RabbitListener(queues = "cancelQueue", containerFactory = "rabbitListenerContainerFactory")
 	public void handleCancelMessage(Order order) {
-		emailService.sendOrderConfirmationEmail(order);
+		emailService.cancelOrderConfirmationEmail(order);
 	}
 }

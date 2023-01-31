@@ -45,9 +45,9 @@ class BookMyGiftControllerTest {
 
 	@BeforeEach
 	void populateRequest() {
-		
+
 		order = new Order();
-		orderRequest = OrderRequest.builder().username("Tommy").giftType(GiftType.KEYCHAIN).amountPaid(300.0D).emailId("Tommy@gmail.com").build();
+		orderRequest = OrderRequest.builder().giftType(GiftType.KEYCHAIN).amountPaid(300.0D).build();
 
 	}
 
@@ -81,8 +81,9 @@ class BookMyGiftControllerTest {
 	void showMyOrdersTest() throws Exception {
 
 		// mock service method
-		Mockito.when(bookMyGiftService.showMyOrders(Mockito.any(), Mockito.eq(GiftType.KEYCHAIN),
-				Mockito.eq(OrderStatus.ORDER_RECIEVED))).thenReturn(Arrays.asList(new Order(), new Order()));
+		Mockito.when(
+				bookMyGiftService.showMyOrders(Mockito.eq(GiftType.KEYCHAIN), Mockito.eq(OrderStatus.ORDER_RECIEVED)))
+				.thenReturn(Arrays.asList(new Order(), new Order()));
 
 		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
 			utilities.when(() -> Observation.createNotStarted(Mockito.eq("showMyOrders"), Mockito.any()))

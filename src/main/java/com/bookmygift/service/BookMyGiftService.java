@@ -17,6 +17,7 @@ import com.bookmygift.exception.UncheckedFunction;
 import com.bookmygift.info.GiftType;
 import com.bookmygift.info.OrderStatus;
 import com.bookmygift.repository.OrderRepository;
+import com.bookmygift.repository.UserRepository;
 import com.bookmygift.request.OrderRequest;
 import com.bookmygift.security.TokenGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,33 +30,34 @@ import lombok.RequiredArgsConstructor;
 public class BookMyGiftService {
 
 	private final OrderRepository orderRepository;
-
+	private final UserRepository userRepository;
+	
 	private final TokenGenerator tokenGenerator;
 
 	private final RabbitTemplate rabbitTemplate;
 	private final MongoTemplate mongoTemplate;
 	private final ObjectMapper objectMapper;
+	private final HttpServletRequest request;
 
 	public Order placeOrder(OrderRequest orderRequest) {
 
-		var order = Order.builder()
-				.orderId(orderRequest.getUsername().substring(0, 3).toUpperCase() + "_" + UUID.randomUUID())
-				.username(orderRequest.getUsername()).emailId(orderRequest.getEmailId())
-				.giftType(orderRequest.getGiftType()).amountPaid(orderRequest.getAmountPaid())
-				.orderStatus(OrderStatus.ORDER_RECIEVED)
-				.build();
+		String username = tokenGenerator.extractUsername(request.getHeader("Authorization").replace("Bearer ", ""));
+		
+		var user = userRepository.findByUsername(username).orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
+
+		var order = Order.builder().orderId(username.substring(0, 3).toUpperCase() + "_" + UUID.randomUUID())
+				.username(username).emailId(user.getEmail()).giftType(orderRequest.getGiftType())
+				.amountPaid(orderRequest.getAmountPaid()).orderStatus(OrderStatus.ORDER_RECIEVED).build();
 
 		orderRepository.save(order);
 
-		String orderJson= UncheckedFunction.unchecked(t -> objectMapper.writeValueAsString(order)).apply(order);
-
-		rabbitTemplate.convertAndSend("directExchange", "orderRoutingKey", orderJson);
+		rabbitTemplate.convertAndSend("directExchange", "orderRoutingKey", UncheckedFunction.unchecked(t -> objectMapper.writeValueAsString(order)).apply(order));
 
 		return order;
 
 	}
 
-	public List<Order> showMyOrders(HttpServletRequest request, GiftType giftType, OrderStatus orderStatus) {
+	public List<Order> showMyOrders(GiftType giftType, OrderStatus orderStatus) {
 
 		Query query = new Query();
 
@@ -78,16 +80,13 @@ public class BookMyGiftService {
 
 	public Order cancelOrder(String orderId) {
 
-		Order order = orderRepository.findById(orderId)
-				.orElseThrow(() -> new ServiceException(ErrorEnums.INVALID_ORDER_ID));
+		Order order = orderRepository.findById(orderId).orElseThrow(() -> new ServiceException(ErrorEnums.INVALID_ORDER_ID));
 
 		order.setOrderStatus(OrderStatus.CANCELLED);
-		
+
 		orderRepository.save(order);
 
-		String orderJson= UncheckedFunction.unchecked(t -> objectMapper.writeValueAsString(order)).apply(order);
-
-		rabbitTemplate.convertAndSend("directExchange", "cancelRoutingKey", orderJson);
+		rabbitTemplate.convertAndSend("directExchange", "cancelRoutingKey", UncheckedFunction.unchecked(t -> objectMapper.writeValueAsString(order)).apply(order));
 
 		return order;
 

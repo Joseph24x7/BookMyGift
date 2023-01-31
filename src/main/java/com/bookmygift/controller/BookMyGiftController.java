@@ -47,7 +47,7 @@ public class BookMyGiftController {
 			HttpServletRequest request) {
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
-				.observe(() -> bookMyGiftService.showMyOrders(request, giftType, orderStatus));
+				.observe(() -> bookMyGiftService.showMyOrders(giftType, orderStatus));
 
 	}
 
