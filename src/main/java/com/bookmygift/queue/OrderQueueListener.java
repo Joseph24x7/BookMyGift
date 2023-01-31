@@ -1,9 +1,10 @@
-package com.bookmygift;
+package com.bookmygift.queue;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import com.bookmygift.entity.Order;
+import com.bookmygift.service.EmailService;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.bookmygift;
+package com.bookmygift.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

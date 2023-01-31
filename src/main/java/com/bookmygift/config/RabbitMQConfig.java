@@ -1,4 +1,4 @@
-package com.bookmygift;
+package com.bookmygift.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
