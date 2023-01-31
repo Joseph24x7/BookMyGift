@@ -2,7 +2,6 @@ package com.bookmygift.entity;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -12,8 +11,6 @@ import com.bookmygift.info.GiftType;
 import com.bookmygift.info.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Builder;
@@ -44,7 +41,6 @@ public class Order implements Serializable {
 
     private OrderStatus orderStatus;
 
-
     @JsonCreator
     public Order(@JsonProperty("orderId") String orderId, 
                  @JsonProperty("username") String username, 
@@ -62,7 +58,7 @@ public class Order implements Serializable {
     }
     
     @JsonCreator
-    public Order(String json) throws JsonParseException, JsonMappingException, IOException {
+    public Order(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         Order order = mapper.readValue(json, Order.class);
         this.orderId = order.getOrderId();
