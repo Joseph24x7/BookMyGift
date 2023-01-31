@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.bookmygift.entity.Order;
 import com.bookmygift.exception.ErrorEnums;
+import com.bookmygift.exception.ExceptionWrapper;
 import com.bookmygift.exception.ServiceException;
-import com.bookmygift.exception.UncheckedFunction;
 import com.bookmygift.info.GiftType;
 import com.bookmygift.info.OrderStatus;
 import com.bookmygift.repository.OrderRepository;
@@ -51,7 +51,7 @@ public class BookMyGiftService {
 
 		orderRepository.save(order);
 
-		rabbitTemplate.convertAndSend("directExchange", "orderRoutingKey", UncheckedFunction.unchecked(t -> objectMapper.writeValueAsString(order)).apply(order));
+		rabbitTemplate.convertAndSend("directExchange", "orderRoutingKey", ExceptionWrapper.wrapException(() -> objectMapper.writeValueAsString(order)));
 
 		return order;
 
@@ -86,7 +86,7 @@ public class BookMyGiftService {
 
 		orderRepository.save(order);
 
-		rabbitTemplate.convertAndSend("directExchange", "cancelRoutingKey", UncheckedFunction.unchecked(t -> objectMapper.writeValueAsString(order)).apply(order));
+		rabbitTemplate.convertAndSend("directExchange", "cancelRoutingKey", ExceptionWrapper.wrapException(() -> objectMapper.writeValueAsString(order)));
 
 		return order;
 
