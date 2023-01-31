@@ -36,6 +36,7 @@ public class BookMyGiftService {
 
 	private final RabbitTemplate rabbitTemplate;
 	private final MongoTemplate mongoTemplate;
+	
 	private final ObjectMapper objectMapper;
 	private final HttpServletRequest request;
 

@@ -116,17 +116,9 @@ components:
     OrderRequest:
       required:
       - amountPaid
-      - emailId
       - giftType
-      - username
       type: object
       properties:
-        username:
-          maxLength: 20
-          minLength: 3
-          type: string
-        emailId:
-          type: string
         giftType:
           type: string
           enum:
@@ -159,9 +151,6 @@ components:
           - ITEM_DISPATCHED
           - ITEM_OUT_FOR_DELIVERY
           - CANCELLED
-        expectedTimeToBeDelivered:
-          type: string
-          format: date-time
     AuthRequest:
       required:
       - email
