@@ -125,6 +125,7 @@ components:
           - KEYCHAIN
           - FRAME
         amountPaid:
+          minimum: 300
           type: number
           format: double
     Order:

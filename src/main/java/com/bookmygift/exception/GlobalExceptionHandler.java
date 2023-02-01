@@ -1,6 +1,8 @@
 package com.bookmygift.exception;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -55,9 +57,9 @@ public class GlobalExceptionHandler {
 	public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex,
 			HttpServletRequest request) {
 
-		Map<String, String> errors = new HashMap<>();
+		List<String> errors = new ArrayList<>();
 		for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-			errors.put(violation.getPropertyPath().toString(), violation.getMessage());
+			errors.add(violation.getMessage());
 		}
 
 		return populateException(HttpStatus.BAD_REQUEST, errors.toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -69,9 +71,9 @@ public class GlobalExceptionHandler {
 	public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException validationEx,
 			HttpServletRequest request) {
 
-		Map<String, String> errors = new HashMap<>();
+		List<String> errors = new ArrayList<>();
 		for (FieldError error : validationEx.getBindingResult().getFieldErrors()) {
-			errors.put(error.getField(), error.getDefaultMessage());
+			errors.add(error.getDefaultMessage());
 		}
 
 		return populateException(HttpStatus.BAD_REQUEST, errors.toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),

@@ -82,7 +82,7 @@ class BookMyGiftControllerTest {
 
 		// mock service method
 		Mockito.when(
-				bookMyGiftService.showMyOrders(Mockito.eq(GiftType.KEYCHAIN), Mockito.eq(OrderStatus.ORDER_RECIEVED)))
+				bookMyGiftService.showMyOrders(Mockito.any(GiftType.class), Mockito.any(OrderStatus.class)))
 				.thenReturn(Arrays.asList(new Order(), new Order()));
 
 		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
