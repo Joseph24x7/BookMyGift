@@ -1,0 +1,87 @@
+package com.bookmygift.config;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Component
+@Qualifier("logFilter")
+public class LogFilter extends OncePerRequestFilter {
+
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
+
+		MyHttpServletRequestWrapper requestWrapper = new MyHttpServletRequestWrapper(request);
+
+		log.info("Request payload: {}", new String(requestWrapper.getBody(), StandardCharsets.UTF_8));
+
+		filterChain.doFilter(requestWrapper, response);
+
+		log.info("Responded with {} status", response.getStatus());
+
+	}
+
+}
+
+@Slf4j
+class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
+
+	private byte[] body;
+
+	public byte[] getBody() {
+		return body;
+	}
+
+	public MyHttpServletRequestWrapper(HttpServletRequest request) {
+		super(request);
+		try {
+			body = org.apache.commons.io.IOUtils.toByteArray(request.getInputStream());
+		} catch (IOException ex) {
+			body = new byte[0];
+			log.warn("IOException occured at ",ex);
+		}
+	}
+
+	@Override
+	public ServletInputStream getInputStream(){
+		return new ServletInputStream() {
+			ByteArrayInputStream bais = new ByteArrayInputStream(body);
+
+			@Override
+			public int read() throws IOException {
+				return bais.read();
+			}
+
+			@Override
+			public boolean isFinished() {
+				return bais.available() == 0;
+			}
+
+			@Override
+			public boolean isReady() {
+				 return true;
+			}
+
+			@Override
+			public void setReadListener(ReadListener listener) {
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
+
+}

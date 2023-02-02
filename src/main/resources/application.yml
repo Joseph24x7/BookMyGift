@@ -1,5 +1,7 @@
 server:
    port: 8082
+   main:
+      allow-bean-definition-overriding: true
 
 spring:
    datasource:
@@ -46,4 +48,5 @@ logging:
    pattern:
       file: '%d{yyyy-MM-dd HH:mm:ss,SSS} %5p [%t] %c [%M] - %m%n'
    level:
-      com.bookmygift: INFO
+      com.bookmygift: DEBUG
+      org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG

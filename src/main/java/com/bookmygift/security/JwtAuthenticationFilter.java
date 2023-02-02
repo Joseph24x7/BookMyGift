@@ -2,6 +2,7 @@ package com.bookmygift.security;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@Qualifier("JwtAuthenticationFilter")
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final TokenGenerator jwtService;

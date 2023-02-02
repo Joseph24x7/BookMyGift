@@ -15,12 +15,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.bookmygift.repository.UserRepository;
 
-@Configuration
-public class ApplicationConfig{
+import lombok.RequiredArgsConstructor;
 
+@Configuration
+@RequiredArgsConstructor
+public class ApplicationConfig{
+	
 	@Bean
 	public UserDetailsService userDetailsService(UserRepository repository) {
-		return username -> repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+		return username -> repository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	}
 
 	@Bean
@@ -40,12 +44,12 @@ public class ApplicationConfig{
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-	    RedisTemplate<String, Object> template = new RedisTemplate<>();
-	    template.setConnectionFactory(connectionFactory);
-	    return template;
+		RedisTemplate<String, Object> template = new RedisTemplate<>();
+		template.setConnectionFactory(connectionFactory);
+		return template;
 	}
-
+	
 }
