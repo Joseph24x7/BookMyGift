@@ -8,6 +8,8 @@ services:
       POSTGRES_DB: myuser
     ports:
       - 5432:5432
+    networks:
+      - mynetwork
   redis:
     image: redis:latest
     ports:
