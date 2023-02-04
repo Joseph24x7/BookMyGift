@@ -5,7 +5,7 @@ server:
 
 spring:
    datasource:
-      url: jdbc:postgresql://localhost:5432/myuser
+      url: jdbc:postgresql://bookmygift-postgres-1:5432/myuser
       username: myuser
       password: mypassword
    jpa:
