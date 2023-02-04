@@ -16,3 +16,19 @@ services:
     image: sonarqube:latest
     ports:
       - 9000:9000
+  rabbitmq:
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+  postfix:
+    image: postfixadmin:latest
+    environment:
+      POSTFIX_SMTP_HOST: smtp.gmail.com
+      POSTFIX_SMTP_PORT: 587
+      POSTFIX_SMTP_USERNAME: rabbitmqdocker@gmail.com
+      POSTFIX_SMTP_PASSWORD: sosiqoxkyqtktxhs
+      POSTFIX_SMTP_AUTH: true
+      POSTFIX_SMTP_STARTTLS_ENABLE: true
