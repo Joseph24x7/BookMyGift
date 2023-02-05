@@ -3,9 +3,6 @@ server:
    main:
       allow-bean-definition-overriding: true
 
-networks:
-  mynetwork: 53d6e7a07ee6b364cadafeb0f7131f2f3e1993fe04b8d9afd0f40fa72a0f7efb
-
 spring:
    datasource:
       url: jdbc:postgresql://localhost:5432/myuser
