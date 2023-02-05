@@ -1,9 +1,10 @@
-package com.bookmygift.config;
+package com.bookmygift.logging;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,11 +29,11 @@ public class LogFilter extends OncePerRequestFilter {
 
 		MyHttpServletRequestWrapper requestWrapper = new MyHttpServletRequestWrapper(request);
 
-		log.info("Request payload: {}", new String(requestWrapper.getBody(), StandardCharsets.UTF_8));
+		log.debug("Request payload: {}", new String(requestWrapper.getBody(), StandardCharsets.UTF_8));
 
 		filterChain.doFilter(requestWrapper, response);
 
-		log.info("Responded with {} status", response.getStatus());
+		log.debug("Responded with {} status", response.getStatus());
 
 	}
 
@@ -50,7 +51,7 @@ class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
 	public MyHttpServletRequestWrapper(HttpServletRequest request) {
 		super(request);
 		try {
-			body = org.apache.commons.io.IOUtils.toByteArray(request.getInputStream());
+			body = IOUtils.toByteArray(request.getInputStream());
 		} catch (IOException ex) {
 			body = new byte[0];
 			log.warn("IOException occured at ",ex);

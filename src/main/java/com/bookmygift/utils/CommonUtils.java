@@ -15,8 +15,9 @@ public class CommonUtils {
 	
 	public static HttpServletRequest getRequest() {
 		
-		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		return requestAttributes.getRequest();
+		var requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		
+		return requestAttributes!=null ? requestAttributes.getRequest() : null;
 		
 	}
 	

@@ -9,7 +9,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -45,26 +44,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		try {
 			
-			final String authHeader = request.getHeader(CommonUtils.AUTHORIZATION);
+			final var authHeader = request.getHeader(CommonUtils.AUTHORIZATION);
 			if (request.getRequestURI().contains("/api/v1/auth") || request.getRequestURI().contains("/swagger-ui/") || request.getRequestURI().contains("/v3/api-docs")) {
+				
 				filterChain.doFilter(request, response);
 				return;
+				
 			}else if (StringUtils.isEmpty(authHeader)) {
+				
 				throw new ServiceException(ErrorEnums.TOKEN_REQUIRED);
+				
 			}
 
-			final String jwt;
-			final String username;
-
-			jwt = authHeader.replace("Bearer ", "");
-			username = jwtService.extractUsername(jwt);
+			final var jwt = authHeader.replace("Bearer ", "");
+			final var username = jwtService.extractUsername(jwt);
+			
 			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-				UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+				
+				var userDetails = this.userDetailsService.loadUserByUsername(username);
+				
 				if (jwtService.isTokenValid(jwt, userDetails)) {
-					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
-							null, userDetails.getAuthorities());
+					
+					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+					
 					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					
 					SecurityContextHolder.getContext().setAuthentication(authToken);
+					
 				}
 			}
 			filterChain.doFilter(request, response);
@@ -87,7 +93,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private ProblemDetail populateException(HttpStatus httpStatus, String errorDescription, String errorCode,
 			HttpServletRequest request) {
 
-		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorDescription);
+		var problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorDescription);
+		
 		problemDetail.setTitle(errorCode);
 
 		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry).observe(() -> problemDetail);

@@ -29,7 +29,7 @@ public class TokenGenerator {
 	}
 
 	public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-		final Claims claims = extractAllClaims(token);
+		final var claims = extractAllClaims(token);
 		return claimsResolver.apply(claims);
 	}
 
@@ -45,7 +45,7 @@ public class TokenGenerator {
 	}
 
 	public boolean isTokenValid(String token, UserDetails userDetails) {
-		final String username = extractUsername(token);
+		final var username = extractUsername(token);
 		return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
 	}
 
@@ -62,7 +62,7 @@ public class TokenGenerator {
 	}
 
 	private Key getSignInKey() {
-		byte[] keyBytes = Decoders.BASE64.decode(propertiesRepository.findByPropName("SECRET_KEY").orElseThrow().getPropValue());
+		var keyBytes = Decoders.BASE64.decode(propertiesRepository.findByPropName("SECRET_KEY").orElseThrow().getPropValue());
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 }

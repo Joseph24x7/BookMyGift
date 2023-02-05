@@ -81,7 +81,7 @@ public class BookMyGiftService {
 
 	public Order cancelOrder(String orderId) {
 
-		Order order = orderRepository.findById(orderId).orElseThrow(() -> new ServiceException(ErrorEnums.INVALID_ORDER_ID));
+		var order = orderRepository.findById(orderId).orElseThrow(() -> new ServiceException(ErrorEnums.INVALID_ORDER_ID));
 
 		order.setOrderStatus(OrderStatus.CANCELLED);
 

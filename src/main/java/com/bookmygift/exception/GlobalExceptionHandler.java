@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
 			errors.add(violation.getMessage());
 		}
 
-		return populateException(HttpStatus.BAD_REQUEST, errors.toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
+		return populateException(HttpStatus.BAD_REQUEST, List.copyOf(errors).toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
 				request);
 
 	}
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
 			errors.add(error.getDefaultMessage());
 		}
 
-		return populateException(HttpStatus.BAD_REQUEST, errors.toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
+		return populateException(HttpStatus.BAD_REQUEST, List.copyOf(errors).toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
 				request);
 	}
 

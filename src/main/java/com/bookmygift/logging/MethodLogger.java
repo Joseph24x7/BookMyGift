@@ -18,7 +18,7 @@ public class MethodLogger {
 	public Object logAround(final ProceedingJoinPoint joinPoint) throws Throwable {
 	  final Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
 	  logger.debug("Execution of {} Started", joinPoint.getSignature());
-	  Object proceed = joinPoint.proceed();
+	  var proceed = joinPoint.proceed();
 	  logger.debug("Execution of {} completed", joinPoint.getSignature());
 	  return proceed;
 	}
