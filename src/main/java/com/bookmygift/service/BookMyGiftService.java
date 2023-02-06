@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.bookmygift.entity.Order;
 import com.bookmygift.exception.ErrorEnums;
-import com.bookmygift.exception.ExceptionWrapper;
 import com.bookmygift.exception.ServiceException;
 import com.bookmygift.info.GiftType;
 import com.bookmygift.info.OrderStatus;
@@ -20,10 +20,12 @@ import com.bookmygift.repository.OrderRepository;
 import com.bookmygift.repository.UserRepository;
 import com.bookmygift.request.OrderRequest;
 import com.bookmygift.security.TokenGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class BookMyGiftService {
 	private final ObjectMapper objectMapper;
 	private final HttpServletRequest request;
 
+	@SneakyThrows({JsonProcessingException.class, AmqpException.class})
 	public Order placeOrder(OrderRequest orderRequest) {
 
 		String username = tokenGenerator.extractUsername(request.getHeader("Authorization").replace("Bearer ", ""));
@@ -52,7 +55,7 @@ public class BookMyGiftService {
 
 		orderRepository.save(order);
 
-		rabbitTemplate.convertAndSend("directExchange", "orderRoutingKey", ExceptionWrapper.wrapException(() -> objectMapper.writeValueAsString(order)));
+		rabbitTemplate.convertAndSend("directExchange", "orderRoutingKey", objectMapper.writeValueAsString(order));
 
 		return order;
 
@@ -79,6 +82,7 @@ public class BookMyGiftService {
 
 	}
 
+	@SneakyThrows({JsonProcessingException.class, AmqpException.class})
 	public Order cancelOrder(String orderId) {
 
 		var order = orderRepository.findById(orderId).orElseThrow(() -> new ServiceException(ErrorEnums.INVALID_ORDER_ID));
@@ -87,7 +91,7 @@ public class BookMyGiftService {
 
 		orderRepository.save(order);
 
-		rabbitTemplate.convertAndSend("directExchange", "cancelRoutingKey", ExceptionWrapper.wrapException(() -> objectMapper.writeValueAsString(order)));
+		rabbitTemplate.convertAndSend("directExchange", "cancelRoutingKey", objectMapper.writeValueAsString(order));
 
 		return order;
 

@@ -3,6 +3,7 @@ package com.bookmygift.security;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -16,7 +17,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.bookmygift.exception.ErrorEnums;
 import com.bookmygift.exception.ServiceException;
-import com.bookmygift.utils.CommonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micrometer.common.util.StringUtils;
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		try {
 			
-			final var authHeader = request.getHeader(CommonUtils.AUTHORIZATION);
+			final var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 			if (request.getRequestURI().contains("/api/v1/auth") || request.getRequestURI().contains("/swagger-ui/") || request.getRequestURI().contains("/v3/api-docs")) {
 				
 				filterChain.doFilter(request, response);

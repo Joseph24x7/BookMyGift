@@ -11,8 +11,6 @@ public class CommonUtils {
 
 	}
 
-	public static final String AUTHORIZATION = "Authorization";
-	
 	public static HttpServletRequest getRequest() {
 		
 		var requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
