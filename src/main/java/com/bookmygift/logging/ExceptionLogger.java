@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExceptionLogger {
 	
-	@AfterThrowing(pointcut = "execution(* com.bookmygift..*(..)) && within(@org.springframework.web.bind.annotation.RestController *)", throwing = "ex")
+	@AfterThrowing(pointcut = "execution(public * com.bookmygift..*(..)))", throwing = "ex")
     public void logException(Exception ex) {
         log.error("An exception was thrown: {}", ex);
     }
