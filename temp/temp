@@ -1,0 +1,27 @@
+<build>
+  <plugins>
+    <plugin>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-codegen-maven-plugin</artifactId>
+      <version>3.0.21</version>
+      <executions>
+        <execution>
+          <goals>
+            <goal>generate</goal>
+          </goals>
+          <configuration>
+            <inputSpec>path/to/swagger.yaml</inputSpec>
+            <language>java</language>
+            <configOptions>
+              <dateLibrary>java8</dateLibrary>
+            </configOptions>
+            <modelPackage>com.example.models</modelPackage>
+            <apiPackage>com.example.apis</apiPackage>
+            <invokerPackage>com.example.invoker</invokerPackage>
+            <output>path/to/output/directory</output>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
