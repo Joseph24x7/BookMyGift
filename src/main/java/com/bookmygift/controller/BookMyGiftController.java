@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bookmygift.entity.Order;
 import com.bookmygift.info.GiftType;
 import com.bookmygift.info.OrderStatus;
-import com.bookmygift.request.OrderRequest;
+import com.bookmygift.reqresp.OrderRequest;
 import com.bookmygift.service.BookMyGiftService;
 
 import io.micrometer.observation.Observation;

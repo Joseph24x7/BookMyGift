@@ -31,8 +31,8 @@ import com.bookmygift.info.OrderStatus;
 import com.bookmygift.info.User;
 import com.bookmygift.repository.OrderRepository;
 import com.bookmygift.repository.UserRepository;
-import com.bookmygift.request.OrderRequest;
-import com.bookmygift.security.TokenGenerator;
+import com.bookmygift.reqresp.OrderRequest;
+import com.bookmygift.utils.TokenGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;

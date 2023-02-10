@@ -1,4 +1,4 @@
-package com.bookmygift.security;
+package com.bookmygift.utils;
 
 import java.security.Key;
 import java.util.Date;

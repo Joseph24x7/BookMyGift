@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.bookmygift.entity.Order;
 import com.bookmygift.info.GiftType;
 import com.bookmygift.info.OrderStatus;
-import com.bookmygift.request.OrderRequest;
+import com.bookmygift.reqresp.OrderRequest;
 import com.bookmygift.service.BookMyGiftService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

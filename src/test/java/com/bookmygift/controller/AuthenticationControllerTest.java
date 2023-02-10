@@ -14,8 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.bookmygift.security.info.AuthRequest;
-import com.bookmygift.security.info.AuthResponse;
+import com.bookmygift.reqresp.AuthRequest;
+import com.bookmygift.reqresp.AuthResponse;
 import com.bookmygift.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

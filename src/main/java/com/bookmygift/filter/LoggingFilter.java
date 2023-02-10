@@ -1,4 +1,4 @@
-package com.bookmygift.logging;
+package com.bookmygift.filter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @Qualifier("logFilter")
-public class LogFilter extends OncePerRequestFilter {
+public class LoggingFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

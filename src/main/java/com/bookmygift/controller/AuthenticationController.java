@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bookmygift.security.info.AuthRequest;
-import com.bookmygift.security.info.AuthResponse;
+import com.bookmygift.reqresp.AuthRequest;
+import com.bookmygift.reqresp.AuthResponse;
 import com.bookmygift.service.AuthenticationService;
 
 import io.micrometer.observation.Observation;

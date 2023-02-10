@@ -18,8 +18,8 @@ import com.bookmygift.info.GiftType;
 import com.bookmygift.info.OrderStatus;
 import com.bookmygift.repository.OrderRepository;
 import com.bookmygift.repository.UserRepository;
-import com.bookmygift.request.OrderRequest;
-import com.bookmygift.security.TokenGenerator;
+import com.bookmygift.reqresp.OrderRequest;
+import com.bookmygift.utils.TokenGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

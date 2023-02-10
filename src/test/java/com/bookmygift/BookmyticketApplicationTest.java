@@ -21,9 +21,9 @@ import com.bookmygift.info.GiftType;
 import com.bookmygift.info.OrderStatus;
 import com.bookmygift.repository.OrderRepository;
 import com.bookmygift.repository.UserRepository;
-import com.bookmygift.request.OrderRequest;
-import com.bookmygift.security.info.AuthRequest;
-import com.bookmygift.security.info.AuthResponse;
+import com.bookmygift.reqresp.AuthRequest;
+import com.bookmygift.reqresp.AuthResponse;
+import com.bookmygift.reqresp.OrderRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BookmyticketApplicationTest {

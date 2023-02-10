@@ -1,4 +1,4 @@
-package com.bookmygift.security.info;
+package com.bookmygift.reqresp;
 
 import java.io.Serializable;
 

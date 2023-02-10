@@ -1,4 +1,4 @@
-package com.bookmygift.request;
+package com.bookmygift.reqresp;
 
 import com.bookmygift.info.GiftType;
 

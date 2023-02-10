@@ -24,9 +24,9 @@ import com.bookmygift.exception.ServiceException;
 import com.bookmygift.info.Role;
 import com.bookmygift.info.User;
 import com.bookmygift.repository.UserRepository;
-import com.bookmygift.security.TokenGenerator;
-import com.bookmygift.security.info.AuthRequest;
-import com.bookmygift.security.info.AuthResponse;
+import com.bookmygift.reqresp.AuthRequest;
+import com.bookmygift.reqresp.AuthResponse;
+import com.bookmygift.utils.TokenGenerator;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
