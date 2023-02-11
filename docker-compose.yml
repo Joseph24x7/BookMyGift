@@ -1,6 +1,18 @@
 version: '3'
 services:
+  web:
+    image: joseph24x7/bookmygift:latest
+    container_name: web
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myuser
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=mypassword
   postgres:
+    container_name: postgres
     image: postgres:latest
     environment:
       POSTGRES_USER: myuser
