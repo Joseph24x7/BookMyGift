@@ -67,7 +67,7 @@ class AuthenticationServiceTest {
 	@Test
 	void testRegister() {
 
-		when(repository.findByUsername(authRequest.getUsername())).thenReturn(Optional.empty());
+		when(repository.findByUsernameAndEmail(authRequest.getUsername(),authRequest.getEmail())).thenReturn(Optional.empty());
 		
 		when(passwordEncoder.encode(authRequest.getPassword())).thenReturn("encodedPassword");
 		
@@ -82,7 +82,7 @@ class AuthenticationServiceTest {
 	@Test
 	void testRegisterInvalid() {
 
-		when(repository.findByUsername(authRequest.getUsername())).thenReturn(Optional.of(user));
+		when(repository.findByUsernameAndEmail(authRequest.getUsername(),authRequest.getEmail())).thenReturn(Optional.of(user));
 		
 		assertThrows(ServiceException.class, () -> authenticationService.register(authRequest));
 	    

@@ -55,8 +55,8 @@ public class User implements UserDetails {
 	private String email;
 
 	@NotNull(message = "Role is required")
+	@Column(name = "ROLE", nullable = false,columnDefinition = "user_role")
 	@Enumerated(EnumType.STRING)
-	@Column(name = "ROLE", nullable = false)
 	private Role role;
 
 	@NotBlank(message = "Full Name is required")

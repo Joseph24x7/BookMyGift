@@ -35,7 +35,7 @@ public class AuthenticationService {
 	@Transactional
 	public AuthResponse register(AuthRequest authInfo) {
 
-		repository.findByUsername(authInfo.getUsername()).ifPresent(u -> {
+		repository.findByUsernameAndEmail(authInfo.getUsername(),authInfo.getEmail()).ifPresent(u -> {
 			throw new ServiceException(ErrorEnums.USER_ALREADY_REGISTERED);
 		});
 
@@ -56,11 +56,9 @@ public class AuthenticationService {
 
 	public AuthResponse authenticate(AuthRequest authInfo) {
 
-		authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
 
-		var user = repository.findByUsername(authInfo.getUsername())
-				.orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
+		var user = repository.findByUsername(authInfo.getUsername()).orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
 
 		var jwtToken = jwtService.generateToken(user);
 

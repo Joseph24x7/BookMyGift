@@ -5,4 +5,4 @@ target/
 .settings/
 log/
 .idea/
-bookmyticket.iml
+data/
