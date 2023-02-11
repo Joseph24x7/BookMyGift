@@ -7,10 +7,15 @@ services:
       - "8082:8082"
     depends_on:
       - postgres
+      - rabbitmq
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/myuser
       - SPRING_DATASOURCE_USERNAME=myuser
       - SPRING_DATASOURCE_PASSWORD=mypassword
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=password
+
   postgres:
     container_name: postgres
     image: postgres:latest
@@ -23,6 +28,7 @@ services:
       - 5432:5432
     volumes:
        - ./data:/var/lib/postgresql/data
+
   redis:
     image: redis:latest
     ports:
@@ -31,7 +37,10 @@ services:
     image: sonarqube:latest
     ports:
       - 9000:9000
+      
   rabbitmq:
+    hostname: localhost
+    container_name: rabbitmq
     image: rabbitmq:latest
     ports:
       - "5672:5672"
@@ -41,6 +50,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=password
       - RABBITMQ_ERLANG_COOKIE='secretpass'
       - RABBITMQ_USE_LONGNAME=true
+
   postfix:
     image: postfixadmin:latest
     environment:
