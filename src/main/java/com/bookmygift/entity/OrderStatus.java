@@ -1,4 +1,4 @@
-package com.bookmygift.info;
+package com.bookmygift.entity;
 
 public enum OrderStatus {
 	

@@ -12,9 +12,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.bookmygift.repository.UserRepository;
 
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -49,6 +51,11 @@ public class ApplicationConfig{
 		RedisTemplate<String, Object> template = new RedisTemplate<>();
 		template.setConnectionFactory(connectionFactory);
 		return template;
+	}
+	
+	@Bean
+	public Validator validator() {
+	    return new LocalValidatorFactoryBean();
 	}
 	
 }

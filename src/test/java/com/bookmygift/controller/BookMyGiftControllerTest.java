@@ -19,9 +19,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.bookmygift.entity.GiftType;
 import com.bookmygift.entity.Order;
-import com.bookmygift.info.GiftType;
-import com.bookmygift.info.OrderStatus;
+import com.bookmygift.entity.OrderStatus;
 import com.bookmygift.reqresp.OrderRequest;
 import com.bookmygift.service.BookMyGiftService;
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -11,11 +11,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.bookmygift.entity.GiftType;
 import com.bookmygift.entity.Order;
+import com.bookmygift.entity.OrderStatus;
 import com.bookmygift.exception.ErrorEnums;
 import com.bookmygift.exception.ServiceException;
-import com.bookmygift.info.GiftType;
-import com.bookmygift.info.OrderStatus;
 import com.bookmygift.repository.OrderRepository;
 import com.bookmygift.repository.UserRepository;
 import com.bookmygift.reqresp.OrderRequest;

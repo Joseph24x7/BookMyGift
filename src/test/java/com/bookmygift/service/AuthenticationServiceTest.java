@@ -20,12 +20,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.bookmygift.entity.Role;
+import com.bookmygift.entity.User;
 import com.bookmygift.exception.ServiceException;
-import com.bookmygift.info.Role;
-import com.bookmygift.info.User;
 import com.bookmygift.repository.UserRepository;
 import com.bookmygift.reqresp.AuthRequest;
 import com.bookmygift.reqresp.AuthResponse;
+import com.bookmygift.utils.CommonUtils;
 import com.bookmygift.utils.TokenGenerator;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,6 +45,9 @@ class AuthenticationServiceTest {
 	@Mock
 	private AuthenticationManager authenticationManager;
 	
+	@Mock
+	private CommonUtils commonUtils;
+	
 	@InjectMocks
 	private AuthenticationService authenticationService;
 
@@ -53,7 +57,7 @@ class AuthenticationServiceTest {
 	@BeforeEach
 	void populateRequest() {
 
-		authRequest = AuthRequest.builder().username("username").password("password").email("user@email.com")
+		authRequest = AuthRequest.builder().username("username").password("Password123@").email("user@email.com")
 				.fullname("tommy").build();
 
 		user = User.builder().username("john").password("encodedPassword").email("john@example.com").role(Role.CUSTOMER)

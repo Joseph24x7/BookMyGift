@@ -1,6 +1,6 @@
 package com.bookmygift.reqresp;
 
-import com.bookmygift.info.GiftType;
+import com.bookmygift.entity.GiftType;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

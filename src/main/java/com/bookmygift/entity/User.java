@@ -1,4 +1,4 @@
-package com.bookmygift.info;
+package com.bookmygift.entity;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +15,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +29,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Valid
 public class User implements UserDetails {
 
 	/**
@@ -39,20 +43,41 @@ public class User implements UserDetails {
 	private Long userId;
 
 	@Column(name = "PASSWORD", nullable = false)
+	@NotBlank(message = "Password is required")
 	private String password;
 
 	@Column(name = "USERNAME", nullable = false)
+	@NotBlank(message = "Username is required")
 	private String username;
 
+	@NotNull(message = "Email is required")
 	@Column(name = "EMAIL", nullable = false)
 	private String email;
 
+	@NotNull(message = "Role is required")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "ROLE", nullable = false)
 	private Role role;
-	
+
+	@NotBlank(message = "Full Name is required")
 	@Column(name = "FULL_NAME", nullable = false)
 	private String fullname;
+
+	@NotNull(message = "Account Non Expired is required")
+	@Column(name = "ACCOUNT_NON_EXPIRED", nullable = false)
+	private Boolean accountNonExpired;
+
+	@NotNull(message = "Account Non Locked is required")
+	@Column(name = "ACCOUNT_NON_LOCKED", nullable = false)
+	private Boolean accountNonLocked;
+
+	@NotNull(message = "Credentials Non Expired is required")
+	@Column(name = "CREDENTIALS_NON_EXPIRED", nullable = false)
+	private Boolean credentialsNonExpired;
+
+	@NotNull(message = "Enabled is required")
+	@Column(name = "ENABLED", nullable = false)
+	private Boolean enabled;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -61,22 +86,22 @@ public class User implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return accountNonExpired;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return accountNonLocked;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return credentialsNonExpired;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return enabled;
 	}
 
 }

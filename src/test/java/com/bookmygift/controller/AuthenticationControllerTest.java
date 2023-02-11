@@ -37,7 +37,7 @@ class AuthenticationControllerTest {
 
 	@BeforeEach
 	void populateRequest() {
-		authRequest = AuthRequest.builder().username("username").password("password").email("user@email.com")
+		authRequest = AuthRequest.builder().username("username").password("Password123@").email("user@email.com")
 				.fullname("tommy").build();
 	}
 

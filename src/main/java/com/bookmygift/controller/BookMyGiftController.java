@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bookmygift.entity.GiftType;
 import com.bookmygift.entity.Order;
-import com.bookmygift.info.GiftType;
-import com.bookmygift.info.OrderStatus;
+import com.bookmygift.entity.OrderStatus;
 import com.bookmygift.reqresp.OrderRequest;
 import com.bookmygift.service.BookMyGiftService;
 

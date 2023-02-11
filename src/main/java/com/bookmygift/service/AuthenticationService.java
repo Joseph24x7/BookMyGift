@@ -5,13 +5,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.bookmygift.entity.Role;
+import com.bookmygift.entity.User;
 import com.bookmygift.exception.ErrorEnums;
 import com.bookmygift.exception.ServiceException;
-import com.bookmygift.info.Role;
-import com.bookmygift.info.User;
 import com.bookmygift.repository.UserRepository;
 import com.bookmygift.reqresp.AuthRequest;
 import com.bookmygift.reqresp.AuthResponse;
+import com.bookmygift.utils.CommonUtils;
 import com.bookmygift.utils.TokenGenerator;
 
 import jakarta.transaction.Transactional;
@@ -29,6 +30,8 @@ public class AuthenticationService {
 
 	private final AuthenticationManager authenticationManager;
 
+	private final CommonUtils commonUtils;
+
 	@Transactional
 	public AuthResponse register(AuthRequest authInfo) {
 
@@ -38,7 +41,10 @@ public class AuthenticationService {
 
 		var user = User.builder().username(authInfo.getUsername())
 				.password(passwordEncoder.encode(authInfo.getPassword())).email(authInfo.getEmail()).role(Role.CUSTOMER)
-				.fullname(authInfo.getFullname()).build();
+				.fullname(authInfo.getFullname()).enabled(true).accountNonExpired(true).accountNonLocked(true)
+				.credentialsNonExpired(true).build();
+
+		commonUtils.validate(user);
 
 		repository.save(user);
 
@@ -50,9 +56,11 @@ public class AuthenticationService {
 
 	public AuthResponse authenticate(AuthRequest authInfo) {
 
-		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
+		authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(authInfo.getUsername(), authInfo.getPassword()));
 
-		var user = repository.findByUsername(authInfo.getUsername()).orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
+		var user = repository.findByUsername(authInfo.getUsername())
+				.orElseThrow(() -> new ServiceException(ErrorEnums.UNAUTHORIZED));
 
 		var jwtToken = jwtService.generateToken(user);
 

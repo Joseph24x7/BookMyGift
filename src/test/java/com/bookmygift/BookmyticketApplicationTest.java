@@ -16,9 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Commit;
 import org.springframework.util.MultiValueMap;
 
+import com.bookmygift.entity.GiftType;
 import com.bookmygift.entity.Order;
-import com.bookmygift.info.GiftType;
-import com.bookmygift.info.OrderStatus;
+import com.bookmygift.entity.OrderStatus;
 import com.bookmygift.repository.OrderRepository;
 import com.bookmygift.repository.UserRepository;
 import com.bookmygift.reqresp.AuthRequest;
@@ -45,7 +45,7 @@ class BookmyticketApplicationTest {
 	@BeforeEach
 	void populateRequest() {
 		
-		authRequest = AuthRequest.builder().username("testUsername").password("testPassword").email("test@email.com").fullname("TestName").build();
+		authRequest = AuthRequest.builder().username("testUsername").password("Password123@").email("test@email.com").fullname("TestName").build();
 		
 		requestEntity = new HttpEntity<>(authRequest);
 		

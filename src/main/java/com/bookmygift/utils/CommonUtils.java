@@ -1,20 +1,26 @@
 package com.bookmygift.utils;
 
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import java.util.Set;
 
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
 public class CommonUtils {
+	
+	private final Validator validator;
 
-	public static HttpServletRequest getRequest() {
-		
-		var requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		return requestAttributes!=null ? requestAttributes.getRequest() : null;
-		
+	public Set<ConstraintViolation<?>> validate(Object object) {
+		Set<ConstraintViolation<Object>> violations = validator.validate(object);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+		return null;
 	}
 
 }
