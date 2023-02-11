@@ -46,8 +46,9 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=password
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=password
       - RABBITMQ_ERLANG_COOKIE='secretpass'
       - RABBITMQ_USE_LONGNAME=true
 
