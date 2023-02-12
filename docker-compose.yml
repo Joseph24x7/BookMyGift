@@ -15,8 +15,8 @@ services:
       - SPRING_RABBITMQ_PORT=5672
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=password
-      - SPRING_RABBITMQ_HOST=rabbitmq     
-  
+      - SPRING_RABBITMQ_HOST=rabbitmq
+
   nginx:
      image: nginx:latest
      ports:
