@@ -16,7 +16,14 @@ services:
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=password
       - SPRING_RABBITMQ_HOST=rabbitmq     
-
+  
+  nginx:
+     image: nginx:latest
+     ports:
+       - 80:80
+     volumes:
+       - ./nginx.conf:/etc/nginx/nginx.conf
+  
   postgres:
     container_name: postgres
     image: postgres:latest
@@ -39,7 +46,6 @@ services:
       - 9000:9000
       
   rabbitmq:
-    hostname: rabbitmq
     container_name: rabbitmq
     image: rabbitmq:latest
     ports:
