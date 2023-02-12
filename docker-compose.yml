@@ -16,26 +16,9 @@ services:
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=password
       - SPRING_RABBITMQ_HOST=rabbitmq
-  web1:
-    extends:
-      service: web
-    container_name: web1
-    ports:
-      - "8083:8082"
-  web2:
-    extends:
-      service: web
-    container_name: web2
-    ports:
-      - "8084:8082"
-  web3:
-    extends:
-      service: web
-    container_name: web3
-    ports:
-      - "8085:8082"
-      
+
   nginx:
+     container_name: nginx
      image: nginx:latest
      ports:
        - 80:80
