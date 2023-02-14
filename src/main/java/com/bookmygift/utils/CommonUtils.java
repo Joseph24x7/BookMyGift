@@ -12,15 +12,14 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class CommonUtils {
-	
+
 	private final Validator validator;
 
-	public Set<ConstraintViolation<?>> validate(Object object) {
+	public void validate(Object object) {
 		Set<ConstraintViolation<Object>> violations = validator.validate(object);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
-		return null;
 	}
 
 }
