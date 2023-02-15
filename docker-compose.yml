@@ -63,7 +63,7 @@ services:
     environment:
       POSTFIX_SMTP_HOST: smtp.gmail.com
       POSTFIX_SMTP_PORT: 587
-      POSTFIX_SMTP_USERNAME: rabbitmqdocker@gmail.com
-      POSTFIX_SMTP_PASSWORD: sosiqoxkyqtktxhs
+      POSTFIX_SMTP_USERNAME: gmail.com
+      POSTFIX_SMTP_PASSWORD: password
       POSTFIX_SMTP_AUTH: true
       POSTFIX_SMTP_STARTTLS_ENABLE: true
