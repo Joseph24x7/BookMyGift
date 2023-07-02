@@ -61,7 +61,7 @@ class BookmyticketApplicationTest {
         ResponseEntity<Order> placeOrderResponse = testRestTemplate.exchange("/placeOrder", HttpMethod.POST, new HttpEntity<>(orderRequest, headers), Order.class);
         assertEquals(HttpStatus.CREATED, placeOrderResponse.getStatusCode());
 
-        String urlGet = "/showMyOrders?giftType=" + GiftType.KEYCHAIN.toString() + "&orderStatus=" + OrderStatus.ORDER_RECIEVED.toString();
+        String urlGet = "/showMyOrders?giftType=" + GiftType.KEYCHAIN + "&orderStatus=" + OrderStatus.ORDER_RECEIVED;
         ResponseEntity<String> getOrder = testRestTemplate.exchange(urlGet, HttpMethod.GET, request, String.class);
         assertEquals(HttpStatus.OK, getOrder.getStatusCode());
 

@@ -64,7 +64,7 @@ class BookMyGiftServiceTest {
         orderRequest = OrderRequest.builder().giftType(GiftType.KEYCHAIN).amountPaid(100.0D).build();
 
         order = Order.builder().orderId("USE_" + UUID.randomUUID()).username("username").emailId("email@email.com")
-                .giftType(GiftType.FRAME).amountPaid(100.0D).orderStatus(OrderStatus.ORDER_RECIEVED).build();
+                .giftType(GiftType.FRAME).amountPaid(100.0D).orderStatus(OrderStatus.ORDER_RECEIVED).build();
 
         orderId = "ORDER_ID";
 
@@ -95,7 +95,7 @@ class BookMyGiftServiceTest {
 
         when(mongoTemplate.find(Mockito.any(Query.class), eq(Order.class))).thenReturn(expectedOrders);
 
-        List<Order> actualOrders = bookMyGiftService.showMyOrders(GiftType.KEYCHAIN, OrderStatus.ORDER_RECIEVED);
+        List<Order> actualOrders = bookMyGiftService.showMyOrders(GiftType.KEYCHAIN, OrderStatus.ORDER_RECEIVED);
 
         assertEquals(expectedOrders, actualOrders);
 

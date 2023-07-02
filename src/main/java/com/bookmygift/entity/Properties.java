@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
@@ -15,6 +16,7 @@ public class Properties implements Serializable {
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id

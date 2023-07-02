@@ -9,13 +9,13 @@ public enum ErrorEnums {
     THEATRE_CODE_INVALID(HttpStatus.BAD_REQUEST, "THEATRE_CODE_INVALID", "The Given Theatre Code is Invalid"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED_ACCESS", "Invalid Username/Password"),
     TOKEN_REQUIRED(HttpStatus.UNAUTHORIZED, "TOKEN_REQUIRED", "Please provide the token for authorization"),
-    GENERAL_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "GENERAL_EXCEPTION", "General Exception occured");
+    GENERAL_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "GENERAL_EXCEPTION", "General Exception occurred");
 
-    HttpStatus httpStatus;
-    String errorCode;
-    String errorDescription;
+    final HttpStatus httpStatus;
+    final String errorCode;
+    final String errorDescription;
 
-    private ErrorEnums(HttpStatus httpStatus, String errorCode, String errorDescription) {
+    ErrorEnums(HttpStatus httpStatus, String errorCode, String errorDescription) {
         this.httpStatus = httpStatus;
         this.errorCode = errorCode;
         this.errorDescription = errorDescription;

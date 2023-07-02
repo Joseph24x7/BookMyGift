@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 
 @Getter
@@ -21,6 +22,7 @@ import java.io.Serializable;
 @Document(collection = "OrderInfo")
 public class Order implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id

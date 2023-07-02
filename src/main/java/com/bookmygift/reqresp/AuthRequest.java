@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Getter
@@ -21,6 +22,7 @@ public class AuthRequest implements Serializable {
     /**
      *
      */
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @NotBlank(message = "Username is required")

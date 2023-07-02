@@ -12,7 +12,7 @@ public class ExceptionLogger {
 
     @AfterThrowing(pointcut = "execution(public * com.bookmygift..*(..)))", throwing = "ex")
     public void logException(Exception ex) {
-        log.error("An exception was thrown: {}", ex);
+        log.error("An exception was thrown: ", ex);
     }
 
 }

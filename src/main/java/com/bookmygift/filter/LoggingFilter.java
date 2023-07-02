@@ -49,7 +49,7 @@ class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
             body = IOUtils.toByteArray(request.getInputStream());
         } catch (IOException ex) {
             body = new byte[0];
-            log.warn("IOException occured at ", ex);
+            log.warn("IOException occurred at ", ex);
         }
     }
 
@@ -60,10 +60,10 @@ class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public ServletInputStream getInputStream() {
         return new ServletInputStream() {
-            ByteArrayInputStream bais = new ByteArrayInputStream(body);
+            final ByteArrayInputStream bais = new ByteArrayInputStream(body);
 
             @Override
-            public int read() throws IOException {
+            public int read() {
                 return bais.read();
             }
 

@@ -86,7 +86,7 @@ class BookMyGiftControllerTest {
 
         // perform get request
         mockMvc.perform(get("/showMyOrders").param("giftType", GiftType.KEYCHAIN.toString()).param("orderStatus",
-                OrderStatus.ORDER_RECIEVED.toString())).andExpect(status().isOk());
+                OrderStatus.ORDER_RECEIVED.toString())).andExpect(status().isOk());
 
     }
 

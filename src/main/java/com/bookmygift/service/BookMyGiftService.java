@@ -49,7 +49,7 @@ public class BookMyGiftService {
 
         var order = Order.builder().orderId(username.substring(0, 3).toUpperCase() + "_" + UUID.randomUUID())
                 .username(username).emailId(user.getEmail()).giftType(orderRequest.getGiftType())
-                .amountPaid(orderRequest.getAmountPaid()).orderStatus(OrderStatus.ORDER_RECIEVED).build();
+                .amountPaid(orderRequest.getAmountPaid()).orderStatus(OrderStatus.ORDER_RECEIVED).build();
 
         orderRepository.save(order);
 

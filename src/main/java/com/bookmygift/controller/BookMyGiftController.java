@@ -45,7 +45,7 @@ public class BookMyGiftController {
     }
 
     @DeleteMapping("/cancelOrder")
-    public ResponseEntity<Order> cancelOrder(@RequestParam(value = "orderId", required = true) String orderId, HttpServletRequest request) {
+    public ResponseEntity<Order> cancelOrder(@RequestParam(value = "orderId") String orderId, HttpServletRequest request) {
 
         return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
                 .observe(() -> new ResponseEntity<>(bookMyGiftService.cancelOrder(orderId), HttpStatus.ACCEPTED));
