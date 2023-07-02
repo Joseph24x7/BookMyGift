@@ -11,17 +11,19 @@ import com.bookmygift.reqresp.OrderRequest;
 import com.bookmygift.utils.TokenGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,12 +33,9 @@ public class BookMyGiftService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-
     private final TokenGenerator tokenGenerator;
-
     private final RabbitTemplate rabbitTemplate;
-    private final MongoTemplate mongoTemplate;
-
+    private final EntityManager entityManager;
     private final ObjectMapper objectMapper;
     private final HttpServletRequest request;
 
@@ -61,29 +60,33 @@ public class BookMyGiftService {
 
     public List<Order> showMyOrders(GiftType giftType, OrderStatus orderStatus) {
 
-        Query query = new Query();
+        String username = tokenGenerator.extractUsername(request.getHeader("Authorization").replace("Bearer ", ""));
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
+        Root<Order> root = criteriaQuery.from(Order.class);
 
-        Criteria criteria = new Criteria();
+        Predicate usernamePredicate = criteriaBuilder.equal(root.get("username"), username);
+        criteriaQuery.where(usernamePredicate);
 
-        criteria.and("username")
-                .is(tokenGenerator.extractUsername(request.getHeader("Authorization").replace("Bearer ", "")));
+        if (giftType != null) {
+            Predicate giftTypePredicate = criteriaBuilder.equal(root.get("giftType"), giftType);
+            criteriaQuery.where(criteriaBuilder.and(usernamePredicate, giftTypePredicate));
+        }
 
-        if (giftType != null && !EnumSet.of(giftType).isEmpty())
-            criteria.and("giftType").is(giftType);
+        if (orderStatus != null) {
+            Predicate orderStatusPredicate = criteriaBuilder.equal(root.get("orderStatus"), orderStatus);
+            criteriaQuery.where(criteriaBuilder.and(usernamePredicate, orderStatusPredicate));
+        }
 
-        if (orderStatus != null && !EnumSet.of(orderStatus).isEmpty())
-            criteria.and("orderStatus").is(orderStatus);
-
-        query.addCriteria(criteria);
-
-        return mongoTemplate.find(query, Order.class);
+        TypedQuery<Order> query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
 
     }
 
     @SneakyThrows({JsonProcessingException.class, AmqpException.class})
     public Order cancelOrder(String orderId) {
 
-        var order = orderRepository.findById(orderId).orElseThrow(() -> new ServiceException(ErrorEnums.INVALID_ORDER_ID));
+        var order = orderRepository.findByOrderId(orderId).orElseThrow(() -> new ServiceException(ErrorEnums.INVALID_ORDER_ID));
 
         order.setOrderStatus(OrderStatus.CANCELLED);
 

@@ -3,40 +3,50 @@ package com.bookmygift.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Getter
-@Setter
+
+@Data
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "OrderInfo")
+@Entity
+@Table(name = "OrderInfo")
 public class Order implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
     private String orderId;
 
-    @Indexed(unique = true)
+    @Column(unique = true)
     private String username;
 
+    @Column(unique = true)
     private String emailId;
 
+    @Column
+    @Enumerated(EnumType.STRING)
     private GiftType giftType;
 
+    @Column
     private Double amountPaid;
 
+    @Column
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @JsonCreator

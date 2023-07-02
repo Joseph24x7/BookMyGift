@@ -1,6 +1,5 @@
 package com.bookmygift.exception;
 
-import io.jsonwebtoken.MalformedJwtException;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +8,6 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,14 +37,6 @@ public class GlobalExceptionHandler {
 
         return populateException(ErrorEnums.GENERAL_EXCEPTION.getHttpStatus(), exception.getMessage(),
                 ErrorEnums.GENERAL_EXCEPTION.getErrorCode(), request);
-
-    }
-
-    @ExceptionHandler({BadCredentialsException.class, MalformedJwtException.class})
-    public ProblemDetail handleCredentialsException(Exception exception, HttpServletRequest request) {
-
-        return populateException(ErrorEnums.UNAUTHORIZED.getHttpStatus(), exception.getMessage(),
-                ErrorEnums.UNAUTHORIZED.getErrorCode(), request);
 
     }
 

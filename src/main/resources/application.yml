@@ -13,13 +13,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  data:
-    mongodb:
-      uri: mongodb+srv://Joseph24x7:Abcde12345@joseph24x7.0vl2a0k.mongodb.net/?retryWrites=true&w=majority
-      database: BookMyGift
-  redis:
-    host: redis
-    port: 6379
   rabbitmq:
     host: localhost
     port: 5672
