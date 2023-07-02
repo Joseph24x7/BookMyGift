@@ -18,12 +18,12 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
 
   nginx:
-     container_name: nginx
-     image: nginx:latest
-     ports:
-       - 80:80
-     volumes:
-       - ./nginx.conf:/etc/nginx/nginx.conf
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
   
   postgres:
     container_name: postgres
@@ -35,7 +35,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-       - ./data:/var/lib/postgresql/data
+      - ./data:/var/lib/postgresql/data
 
   redis:
     image: redis:latest
@@ -45,7 +45,7 @@ services:
     image: sonarqube:latest
     ports:
       - 9000:9000
-      
+
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:latest

@@ -1,8 +1,12 @@
 package com.bookmygift.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import com.bookmygift.reqresp.AuthRequest;
+import com.bookmygift.reqresp.AuthResponse;
+import com.bookmygift.service.AuthenticationService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import io.micrometer.observation.Observation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -14,72 +18,64 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.bookmygift.reqresp.AuthRequest;
-import com.bookmygift.reqresp.AuthResponse;
-import com.bookmygift.service.AuthenticationService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
-import io.micrometer.observation.Observation;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 class AuthenticationControllerTest {
 
-	@Autowired
-	private MockMvc mockMvc;
+    AuthRequest authRequest;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private AuthenticationService authenticationService;
 
-	@MockBean
-	private AuthenticationService authenticationService;
+    @BeforeEach
+    void populateRequest() {
+        authRequest = AuthRequest.builder().username("username").password("Password123@").email("user@email.com")
+                .fullname("tommy").build();
+    }
 
-	AuthRequest authRequest;
+    private String getRequestBody(AuthRequest infoObject) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        return objectMapper.writeValueAsString(infoObject);
+    }
 
-	@BeforeEach
-	void populateRequest() {
-		authRequest = AuthRequest.builder().username("username").password("Password123@").email("user@email.com")
-				.fullname("tommy").build();
-	}
+    @Test
+    void registerTest() throws Exception {
 
-	private String getRequestBody(AuthRequest infoObject) throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-		return objectMapper.writeValueAsString(infoObject);
-	}
+        // mock service method
+        Mockito.when(authenticationService.register(authRequest)).thenReturn(new AuthResponse());
 
-	@Test
-	void registerTest() throws Exception {
+        try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
+            utilities.when(() -> Observation.createNotStarted(Mockito.eq("register"), Mockito.any()))
+                    .thenReturn(Observation.NOOP);
 
-		// mock service method
-		Mockito.when(authenticationService.register(authRequest)).thenReturn(new AuthResponse());
+        }
 
-		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
-			utilities.when(() -> Observation.createNotStarted(Mockito.eq("register"), Mockito.any()))
-					.thenReturn(Observation.NOOP);
+        // perform post request
+        mockMvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON).content(getRequestBody(authRequest))).andExpect(status().isOk());
 
-		}
+    }
 
-		// perform post request
-		mockMvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON).content(getRequestBody(authRequest))).andExpect(status().isOk());
+    @Test
+    void authenticateTest() throws Exception {
 
-	}
-	
-	@Test
-	void authenticateTest() throws Exception {
+        // mock service method
+        Mockito.when(authenticationService.authenticate(authRequest)).thenReturn(new AuthResponse());
 
-		// mock service method
-		Mockito.when(authenticationService.authenticate(authRequest)).thenReturn(new AuthResponse());
+        try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
+            utilities.when(() -> Observation.createNotStarted(Mockito.eq("authenticate"), Mockito.any()))
+                    .thenReturn(Observation.NOOP);
 
-		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
-			utilities.when(() -> Observation.createNotStarted(Mockito.eq("authenticate"), Mockito.any()))
-					.thenReturn(Observation.NOOP);
+        }
 
-		}
+        // perform post request
+        mockMvc.perform(post("/api/v1/auth/authenticate").contentType(MediaType.APPLICATION_JSON).content(getRequestBody(authRequest))).andExpect(status().isOk());
 
-		// perform post request
-		mockMvc.perform(post("/api/v1/auth/authenticate").contentType(MediaType.APPLICATION_JSON).content(getRequestBody(authRequest))).andExpect(status().isOk());
-
-	}
+    }
 
 }

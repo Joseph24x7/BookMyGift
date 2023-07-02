@@ -1,5 +1,8 @@
 package com.bookmygift.config;
 
+import com.bookmygift.repository.UserRepository;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -14,48 +17,43 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import com.bookmygift.repository.UserRepository;
-
-import jakarta.validation.Validator;
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @RequiredArgsConstructor
-public class ApplicationConfig{
-	
-	@Bean
-	public UserDetailsService userDetailsService(UserRepository repository) {
-		return username -> repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-	}
+public class ApplicationConfig {
 
-	@Bean
-	public AuthenticationProvider authenticationProvider(UserRepository repository) {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(userDetailsService(repository));
-		authProvider.setPasswordEncoder(passwordEncoder());
-		return authProvider;
-	}
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository repository) {
+        return username -> repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-		return config.getAuthenticationManager();
-	}
+    @Bean
+    public AuthenticationProvider authenticationProvider(UserRepository repository) {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService(repository));
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
-	@Bean
-	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-		RedisTemplate<String, Object> template = new RedisTemplate<>();
-		template.setConnectionFactory(connectionFactory);
-		return template;
-	}
-	
-	@Bean
-	public Validator validator() {
-	    return new LocalValidatorFactoryBean();
-	}
-	
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        return template;
+    }
+
+    @Bean
+    public Validator validator() {
+        return new LocalValidatorFactoryBean();
+    }
+
 }

@@ -1,20 +1,18 @@
 package com.bookmygift.entity;
 
-import java.io.IOException;
-import java.io.Serializable;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.IOException;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -40,13 +38,13 @@ public class Order implements Serializable {
     private OrderStatus orderStatus;
 
     @JsonCreator
-    public Order(@JsonProperty("orderId") String orderId, 
-                 @JsonProperty("username") String username, 
-                 @JsonProperty("emailId") String emailId, 
-                 @JsonProperty("giftType") GiftType giftType, 
-                 @JsonProperty("amountPaid") Double amountPaid, 
+    public Order(@JsonProperty("orderId") String orderId,
+                 @JsonProperty("username") String username,
+                 @JsonProperty("emailId") String emailId,
+                 @JsonProperty("giftType") GiftType giftType,
+                 @JsonProperty("amountPaid") Double amountPaid,
                  @JsonProperty("orderStatus") OrderStatus orderStatus
-                ) {
+    ) {
         this.orderId = orderId;
         this.username = username;
         this.emailId = emailId;
@@ -54,7 +52,7 @@ public class Order implements Serializable {
         this.amountPaid = amountPaid;
         this.orderStatus = orderStatus;
     }
-    
+
     @JsonCreator
     public Order(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();

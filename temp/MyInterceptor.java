@@ -25,8 +25,8 @@ public class MyInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        
-		log.info("Request URI: {}", request.getURI());
+
+        log.info("Request URI: {}", request.getURI());
         log.info("Request method: {}", request.getMethod());
         log.info("Request headers: {}", request.getHeaders());
         log.info("Request body: {}", new String(body, StandardCharsets.UTF_8));
@@ -35,10 +35,10 @@ public class MyInterceptor implements ClientHttpRequestInterceptor {
 
         log.info("Response status code: {}", response.getStatusCode());
         log.info("Response headers: {}", response.getHeaders());
-		
-		//Read the response body from the input stream
-		InputStream inputStream = response.getBody();
-		String responseBody = new BufferedReader(new InputStreamReader(inputStream)) .lines().collect(Collectors.joining("\n"));
+
+        //Read the response body from the input stream
+        InputStream inputStream = response.getBody();
+        String responseBody = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining("\n"));
         log.info("Response body: {}", responseBody);
 
         return response;

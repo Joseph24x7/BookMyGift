@@ -8,21 +8,21 @@ import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class CommonUtils {
-	
-	private CommonUtils() {
-		
-	}
-	
-	public static final String SERVICE_NAME="ServiceName";
 
-	public static ProblemDetail populateException(HttpStatus httpStatus, String errorDescription, String errorCode, ObservationRegistry observationRegistry, HttpServletRequest request) {
-		
-		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorDescription);
-		problemDetail.setTitle(errorCode);
+    public static final String SERVICE_NAME = "ServiceName";
 
-		return Observation.createNotStarted(request.getHeader(CommonUtils.SERVICE_NAME), observationRegistry)
-				.observe(() -> problemDetail);
-		
-	}
+    private CommonUtils() {
+
+    }
+
+    public static ProblemDetail populateException(HttpStatus httpStatus, String errorDescription, String errorCode, ObservationRegistry observationRegistry, HttpServletRequest request) {
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorDescription);
+        problemDetail.setTitle(errorCode);
+
+        return Observation.createNotStarted(request.getHeader(CommonUtils.SERVICE_NAME), observationRegistry)
+                .observe(() -> problemDetail);
+
+    }
 
 }

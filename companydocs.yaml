@@ -3,13 +3,13 @@ info:
   title: Authentication Management
   version: 0.0.1
 servers:
-- url: http://localhost:8082
-  description: Generated server url
+  - url: http://localhost:8082
+    description: Generated server url
 paths:
   /placeOrder:
     post:
       tags:
-      - book-my-gift-controller
+        - book-my-gift-controller
       operationId: placeOrder
       requestBody:
         content:
@@ -27,7 +27,7 @@ paths:
   /api/v1/auth/register:
     post:
       tags:
-      - authentication-controller
+        - authentication-controller
       operationId: register
       requestBody:
         content:
@@ -45,7 +45,7 @@ paths:
   /api/v1/auth/authenticate:
     post:
       tags:
-      - authentication-controller
+        - authentication-controller
       operationId: authenticate
       requestBody:
         content:
@@ -63,27 +63,27 @@ paths:
   /showMyOrders:
     get:
       tags:
-      - book-my-gift-controller
+        - book-my-gift-controller
       operationId: showMyOrders
       parameters:
-      - name: giftType
-        in: query
-        required: false
-        schema:
-          type: string
-          enum:
-          - KEYCHAIN
-          - FRAME
-      - name: orderStatus
-        in: query
-        required: false
-        schema:
-          type: string
-          enum:
-          - ORDER_RECIEVED
-          - ITEM_DISPATCHED
-          - ITEM_OUT_FOR_DELIVERY
-          - CANCELLED
+        - name: giftType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - KEYCHAIN
+              - FRAME
+        - name: orderStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - ORDER_RECIEVED
+              - ITEM_DISPATCHED
+              - ITEM_OUT_FOR_DELIVERY
+              - CANCELLED
       responses:
         "200":
           description: OK
@@ -96,14 +96,14 @@ paths:
   /cancelOrder:
     delete:
       tags:
-      - book-my-gift-controller
+        - book-my-gift-controller
       operationId: cancelOrder
       parameters:
-      - name: orderId
-        in: query
-        required: true
-        schema:
-          type: string
+        - name: orderId
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -115,15 +115,15 @@ components:
   schemas:
     OrderRequest:
       required:
-      - amountPaid
-      - giftType
+        - amountPaid
+        - giftType
       type: object
       properties:
         giftType:
           type: string
           enum:
-          - KEYCHAIN
-          - FRAME
+            - KEYCHAIN
+            - FRAME
         amountPaid:
           minimum: 300
           type: number
@@ -140,24 +140,24 @@ components:
         giftType:
           type: string
           enum:
-          - KEYCHAIN
-          - FRAME
+            - KEYCHAIN
+            - FRAME
         amountPaid:
           type: number
           format: double
         orderStatus:
           type: string
           enum:
-          - ORDER_RECIEVED
-          - ITEM_DISPATCHED
-          - ITEM_OUT_FOR_DELIVERY
-          - CANCELLED
+            - ORDER_RECIEVED
+            - ITEM_DISPATCHED
+            - ITEM_OUT_FOR_DELIVERY
+            - CANCELLED
     AuthRequest:
       required:
-      - email
-      - fullname
-      - password
-      - username
+        - email
+        - fullname
+        - password
+        - username
       type: object
       properties:
         username:

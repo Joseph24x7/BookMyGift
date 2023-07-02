@@ -1,11 +1,13 @@
 package com.bookmygift.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
+import com.bookmygift.entity.Role;
+import com.bookmygift.entity.User;
+import com.bookmygift.exception.ServiceException;
+import com.bookmygift.repository.UserRepository;
+import com.bookmygift.reqresp.AuthRequest;
+import com.bookmygift.reqresp.AuthResponse;
+import com.bookmygift.utils.CommonUtils;
+import com.bookmygift.utils.TokenGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,89 +22,80 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.bookmygift.entity.Role;
-import com.bookmygift.entity.User;
-import com.bookmygift.exception.ServiceException;
-import com.bookmygift.repository.UserRepository;
-import com.bookmygift.reqresp.AuthRequest;
-import com.bookmygift.reqresp.AuthResponse;
-import com.bookmygift.utils.CommonUtils;
-import com.bookmygift.utils.TokenGenerator;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 class AuthenticationServiceTest {
 
-	@Mock
-	private UserRepository repository;
+    AuthRequest authRequest;
+    User user;
+    @Mock
+    private UserRepository repository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private TokenGenerator jwtService;
+    @Mock
+    private AuthenticationManager authenticationManager;
+    @Mock
+    private CommonUtils commonUtils;
+    @InjectMocks
+    private AuthenticationService authenticationService;
 
-	@Mock
-	private PasswordEncoder passwordEncoder;
+    @BeforeEach
+    void populateRequest() {
 
-	@Mock
-	private TokenGenerator jwtService;
+        authRequest = AuthRequest.builder().username("username").password("Password123@").email("user@email.com")
+                .fullname("tommy").build();
 
-	@Mock
-	private AuthenticationManager authenticationManager;
-	
-	@Mock
-	private CommonUtils commonUtils;
-	
-	@InjectMocks
-	private AuthenticationService authenticationService;
+        user = User.builder().username("john").password("encodedPassword").email("john@example.com").role(Role.CUSTOMER)
+                .fullname("John Doe").build();
+    }
 
-	AuthRequest authRequest;
-	User user;
+    @Test
+    void testRegister() {
 
-	@BeforeEach
-	void populateRequest() {
+        when(repository.findByUsernameAndEmail(authRequest.getUsername(), authRequest.getEmail())).thenReturn(Optional.empty());
 
-		authRequest = AuthRequest.builder().username("username").password("Password123@").email("user@email.com")
-				.fullname("tommy").build();
+        when(passwordEncoder.encode(authRequest.getPassword())).thenReturn("encodedPassword");
 
-		user = User.builder().username("john").password("encodedPassword").email("john@example.com").role(Role.CUSTOMER)
-				.fullname("John Doe").build();
-	}
+        when(jwtService.generateToken(Mockito.any())).thenReturn("jwtToken");
 
-	@Test
-	void testRegister() {
+        AuthResponse authResponse = authenticationService.register(authRequest);
 
-		when(repository.findByUsernameAndEmail(authRequest.getUsername(),authRequest.getEmail())).thenReturn(Optional.empty());
-		
-		when(passwordEncoder.encode(authRequest.getPassword())).thenReturn("encodedPassword");
-		
-		when(jwtService.generateToken(Mockito.any())).thenReturn("jwtToken");
-		
-		AuthResponse authResponse = authenticationService.register(authRequest);
-	    
-	    assertEquals("jwtToken", authResponse.getToken());
+        assertEquals("jwtToken", authResponse.getToken());
 
-	}
-	
-	@Test
-	void testRegisterInvalid() {
+    }
 
-		when(repository.findByUsernameAndEmail(authRequest.getUsername(),authRequest.getEmail())).thenReturn(Optional.of(user));
-		
-		assertThrows(ServiceException.class, () -> authenticationService.register(authRequest));
-	    
-	}
-	
-	@Test
-	void testAuthenticate() {
-		
-		when(repository.findByUsername(authRequest.getUsername())).thenReturn(Optional.of(user));
-		
-		Authentication auth = new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword());
-		
-		when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()))).thenReturn(auth);
-		
-		when(jwtService.generateToken(Mockito.any())).thenReturn("jwtToken");
-		
-		AuthResponse authResponse = authenticationService.authenticate(authRequest);
-	    
-	    assertEquals("jwtToken", authResponse.getToken());
+    @Test
+    void testRegisterInvalid() {
 
-	}
-	
+        when(repository.findByUsernameAndEmail(authRequest.getUsername(), authRequest.getEmail())).thenReturn(Optional.of(user));
+
+        assertThrows(ServiceException.class, () -> authenticationService.register(authRequest));
+
+    }
+
+    @Test
+    void testAuthenticate() {
+
+        when(repository.findByUsername(authRequest.getUsername())).thenReturn(Optional.of(user));
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword());
+
+        when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()))).thenReturn(auth);
+
+        when(jwtService.generateToken(Mockito.any())).thenReturn("jwtToken");
+
+        AuthResponse authResponse = authenticationService.authenticate(authRequest);
+
+        assertEquals("jwtToken", authResponse.getToken());
+
+    }
+
 }

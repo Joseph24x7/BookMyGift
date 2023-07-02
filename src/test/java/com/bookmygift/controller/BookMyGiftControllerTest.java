@@ -1,13 +1,14 @@
-
 package com.bookmygift.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-
+import com.bookmygift.entity.GiftType;
+import com.bookmygift.entity.Order;
+import com.bookmygift.entity.OrderStatus;
+import com.bookmygift.reqresp.OrderRequest;
+import com.bookmygift.service.BookMyGiftService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import io.micrometer.observation.Observation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -19,99 +20,91 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.bookmygift.entity.GiftType;
-import com.bookmygift.entity.Order;
-import com.bookmygift.entity.OrderStatus;
-import com.bookmygift.reqresp.OrderRequest;
-import com.bookmygift.service.BookMyGiftService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import java.util.Arrays;
 
-import io.micrometer.observation.Observation;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 class BookMyGiftControllerTest {
 
-	@Autowired
-	private MockMvc mockMvc;
+    OrderRequest orderRequest;
+    Order order;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private BookMyGiftService bookMyGiftService;
 
-	@MockBean
-	private BookMyGiftService bookMyGiftService;
+    @BeforeEach
+    void populateRequest() {
 
-	OrderRequest orderRequest;
-	Order order;
+        order = new Order();
+        orderRequest = OrderRequest.builder().giftType(GiftType.KEYCHAIN).amountPaid(300.0D).build();
 
-	@BeforeEach
-	void populateRequest() {
+    }
 
-		order = new Order();
-		orderRequest = OrderRequest.builder().giftType(GiftType.KEYCHAIN).amountPaid(300.0D).build();
+    private String getRequestBody(OrderRequest infoObject) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        return objectMapper.writeValueAsString(infoObject);
+    }
 
-	}
+    @Test
+    void placeOrderTest() throws Exception {
 
-	private String getRequestBody(OrderRequest infoObject) throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-		return objectMapper.writeValueAsString(infoObject);
-	}
+        // mock service method
+        Mockito.when(bookMyGiftService.placeOrder(orderRequest)).thenReturn(order);
 
-	@Test
-	void placeOrderTest() throws Exception {
+        try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
+            utilities.when(() -> Observation.createNotStarted(Mockito.eq("placeOrder"), Mockito.any()))
+                    .thenReturn(Observation.NOOP);
 
-		// mock service method
-		Mockito.when(bookMyGiftService.placeOrder(orderRequest)).thenReturn(order);
+        }
 
-		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
-			utilities.when(() -> Observation.createNotStarted(Mockito.eq("placeOrder"), Mockito.any()))
-					.thenReturn(Observation.NOOP);
+        // perform post request
+        mockMvc.perform(
+                        post("/placeOrder").contentType(MediaType.APPLICATION_JSON).content(getRequestBody(orderRequest)))
+                .andExpect(status().isCreated());
 
-		}
+    }
 
-		// perform post request
-		mockMvc.perform(
-				post("/placeOrder").contentType(MediaType.APPLICATION_JSON).content(getRequestBody(orderRequest)))
-				.andExpect(status().isCreated());
+    @Test
+    void showMyOrdersTest() throws Exception {
 
-	}
+        // mock service method
+        Mockito.when(
+                        bookMyGiftService.showMyOrders(Mockito.any(GiftType.class), Mockito.any(OrderStatus.class)))
+                .thenReturn(Arrays.asList(new Order(), new Order()));
 
-	@Test
-	void showMyOrdersTest() throws Exception {
+        try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
+            utilities.when(() -> Observation.createNotStarted(Mockito.eq("showMyOrders"), Mockito.any()))
+                    .thenReturn(Observation.NOOP);
 
-		// mock service method
-		Mockito.when(
-				bookMyGiftService.showMyOrders(Mockito.any(GiftType.class), Mockito.any(OrderStatus.class)))
-				.thenReturn(Arrays.asList(new Order(), new Order()));
+        }
 
-		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
-			utilities.when(() -> Observation.createNotStarted(Mockito.eq("showMyOrders"), Mockito.any()))
-					.thenReturn(Observation.NOOP);
+        // perform get request
+        mockMvc.perform(get("/showMyOrders").param("giftType", GiftType.KEYCHAIN.toString()).param("orderStatus",
+                OrderStatus.ORDER_RECIEVED.toString())).andExpect(status().isOk());
 
-		}
+    }
 
-		// perform get request
-		mockMvc.perform(get("/showMyOrders").param("giftType", GiftType.KEYCHAIN.toString()).param("orderStatus",
-				OrderStatus.ORDER_RECIEVED.toString())).andExpect(status().isOk());
+    @Test
+    void cancelOrderTest() throws Exception {
 
-	}
+        // mock service method
+        Mockito.when(bookMyGiftService.cancelOrder(Mockito.anyString())).thenReturn(new Order());
 
-	@Test
-	void cancelOrderTest() throws Exception {
+        try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
+            utilities.when(() -> Observation.createNotStarted(Mockito.eq("cancelOrder"), Mockito.any()))
+                    .thenReturn(Observation.NOOP);
 
-		// mock service method
-		Mockito.when(bookMyGiftService.cancelOrder(Mockito.anyString())).thenReturn(new Order());
+        }
 
-		try (MockedStatic<Observation> utilities = Mockito.mockStatic(Observation.class)) {
-			utilities.when(() -> Observation.createNotStarted(Mockito.eq("cancelOrder"), Mockito.any()))
-					.thenReturn(Observation.NOOP);
+        // perform get request
+        mockMvc.perform(delete("/cancelOrder").param("orderId", "orderId")).andExpect(status().isAccepted());
 
-		}
-
-		// perform get request
-		mockMvc.perform(delete("/cancelOrder").param("orderId", "orderId")).andExpect(status().isAccepted());
-
-	}
+    }
 
 }

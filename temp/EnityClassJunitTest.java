@@ -1,4 +1,3 @@
-
 package com.bookmygift.entity;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -20,97 +19,97 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class EnityClassJunitTest {
 
-	@Test
-	void testMyPOJO() throws Exception {
+    @Test
+    void testMyPOJO() throws Exception {
 
-		Set<String> pojoClasses = new HashSet<>( Arrays.asList("com.bookmygift.entity.Properties","com.bookmygift.security.info.AuthRequest","com.bookmygift.security.info.AuthResponse"));
+        Set<String> pojoClasses = new HashSet<>(Arrays.asList("com.bookmygift.entity.Properties", "com.bookmygift.security.info.AuthRequest", "com.bookmygift.security.info.AuthResponse"));
 
-		for (String string : pojoClasses) {
+        for (String string : pojoClasses) {
 
-			Class<?> cls = Class.forName(string);
+            Class<?> cls = Class.forName(string);
 
-			// Need to check why constructor instance is not getting created
-			Constructor<?> constructor = cls.getConstructor();
+            // Need to check why constructor instance is not getting created
+            Constructor<?> constructor = cls.getConstructor();
 
-			Object obj = constructor.newInstance();
+            Object obj = constructor.newInstance();
 
-			Method[] methods = cls.getDeclaredMethods();
+            Method[] methods = cls.getDeclaredMethods();
 
-			for (Method method : methods) {
+            for (Method method : methods) {
 
-				method.setAccessible(true);
+                method.setAccessible(true);
 
-				if (method.getName().startsWith("set")) {
+                if (method.getName().startsWith("set")) {
 
-					if (method.getParameters()[0].getType() == Integer.class) {
+                    if (method.getParameters()[0].getType() == Integer.class) {
 
-						method.invoke(obj, 100);
+                        method.invoke(obj, 100);
 
-					} else if (method.getParameters()[0].getType() == String.class) {
+                    } else if (method.getParameters()[0].getType() == String.class) {
 
-						method.invoke(obj, new String("Sample String"));
+                        method.invoke(obj, new String("Sample String"));
 
-					} else if (method.getParameters()[0].getType() == Double.class) {
+                    } else if (method.getParameters()[0].getType() == Double.class) {
 
-						method.invoke(obj, 1000D);
+                        method.invoke(obj, 1000D);
 
-					} else if (method.getParameters()[0].getType() == ObjectId.class) {
+                    } else if (method.getParameters()[0].getType() == ObjectId.class) {
 
-						method.invoke(obj, ObjectId.get());
+                        method.invoke(obj, ObjectId.get());
 
-					} else if (method.getParameters()[0].getType() == Set.class) {
+                    } else if (method.getParameters()[0].getType() == Set.class) {
 
-						method.invoke(obj, new HashSet<>());
+                        method.invoke(obj, new HashSet<>());
 
-					} else if (method.getParameters()[0].getType() == Long.class) {
+                    } else if (method.getParameters()[0].getType() == Long.class) {
 
-						method.invoke(obj, 1L);
+                        method.invoke(obj, 1L);
 
-					} else if (method.getParameters()[0].getType() == List.class) {
+                    } else if (method.getParameters()[0].getType() == List.class) {
 
-						method.invoke(obj, new ArrayList<>());
+                        method.invoke(obj, new ArrayList<>());
 
-					} else {
+                    } else {
 
-						Class<?> associatedClass = Class
-								.forName(method.getParameters()[0].getType().toString().replace("class ", ""));
+                        Class<?> associatedClass = Class
+                                .forName(method.getParameters()[0].getType().toString().replace("class ", ""));
 
-						Constructor<?> associatedClassConstructpr = associatedClass.getConstructor();
+                        Constructor<?> associatedClassConstructpr = associatedClass.getConstructor();
 
-						Object associatedObject = associatedClassConstructpr.newInstance();
+                        Object associatedObject = associatedClassConstructpr.newInstance();
 
-						method.invoke(obj, associatedObject);
+                        method.invoke(obj, associatedObject);
 
-					}
+                    }
 
-				}
+                }
 
-			}
+            }
 
-			for (Method method : methods) {
+            for (Method method : methods) {
 
-				method.setAccessible(true);
+                method.setAccessible(true);
 
-				if (method.getName().startsWith("get")) {
+                if (method.getName().startsWith("get")) {
 
-					assertNotNull(method.invoke(obj));
+                    assertNotNull(method.invoke(obj));
 
-				} else if (method.getName().startsWith("hashCode")) {
+                } else if (method.getName().startsWith("hashCode")) {
 
-					assertNotNull(method.invoke(obj));
+                    assertNotNull(method.invoke(obj));
 
-				} else if (method.getName().startsWith("equals")) {
+                } else if (method.getName().startsWith("equals")) {
 
-					assertTrue((Boolean) method.invoke(obj, obj));
+                    assertTrue((Boolean) method.invoke(obj, obj));
 
-					assertFalse((Boolean) method.invoke(obj, "Non Movie Object"));
+                    assertFalse((Boolean) method.invoke(obj, "Non Movie Object"));
 
-				}
+                }
 
-			}
+            }
 
-		}
+        }
 
-	}
+    }
 
 }

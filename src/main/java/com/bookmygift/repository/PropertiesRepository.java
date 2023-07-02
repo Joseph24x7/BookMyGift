@@ -1,13 +1,12 @@
 package com.bookmygift.repository;
 
-import java.util.Optional;
-
+import com.bookmygift.entity.Properties;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.bookmygift.entity.Properties;
+import java.util.Optional;
 
-public interface PropertiesRepository extends JpaRepository<Properties, Long>{
-	
-	Optional<Properties> findByPropName(String propName);
-	
+public interface PropertiesRepository extends JpaRepository<Properties, Long> {
+
+    Optional<Properties> findByPropName(String propName);
+
 }

@@ -11,19 +11,20 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@ConditionalOnProperty(name = "logging.level.com.bookmygift", havingValue = "DEBUG" )
+@ConditionalOnProperty(name = "logging.level.com.bookmygift", havingValue = "DEBUG")
 public class MethodLogger {
 
-	@Around("publicMethod()")
-	public Object logAround(final ProceedingJoinPoint joinPoint) throws Throwable {
-	  final Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
-	  logger.debug("Execution of {} Started", joinPoint.getSignature());
-	  var proceed = joinPoint.proceed();
-	  logger.debug("Execution of {} completed", joinPoint.getSignature());
-	  return proceed;
-	}
-	
-	@Pointcut("execution(* com.bookmygift..*(..)) && within(@org.springframework.web.bind.annotation.RestController *)")
-	public void publicMethod() {}
+    @Around("publicMethod()")
+    public Object logAround(final ProceedingJoinPoint joinPoint) throws Throwable {
+        final Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
+        logger.debug("Execution of {} Started", joinPoint.getSignature());
+        var proceed = joinPoint.proceed();
+        logger.debug("Execution of {} completed", joinPoint.getSignature());
+        return proceed;
+    }
+
+    @Pointcut("execution(* com.bookmygift..*(..)) && within(@org.springframework.web.bind.annotation.RestController *)")
+    public void publicMethod() {
+    }
 
 }

@@ -1,16 +1,16 @@
-
 package com.bookmygift.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
+import com.bookmygift.entity.GiftType;
+import com.bookmygift.entity.Order;
+import com.bookmygift.entity.OrderStatus;
+import com.bookmygift.entity.User;
+import com.bookmygift.exception.ServiceException;
+import com.bookmygift.repository.OrderRepository;
+import com.bookmygift.repository.UserRepository;
+import com.bookmygift.reqresp.OrderRequest;
+import com.bookmygift.utils.TokenGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,111 +24,100 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
-import com.bookmygift.entity.GiftType;
-import com.bookmygift.entity.Order;
-import com.bookmygift.entity.OrderStatus;
-import com.bookmygift.entity.User;
-import com.bookmygift.exception.ServiceException;
-import com.bookmygift.repository.OrderRepository;
-import com.bookmygift.repository.UserRepository;
-import com.bookmygift.reqresp.OrderRequest;
-import com.bookmygift.utils.TokenGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-import jakarta.servlet.http.HttpServletRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.STRICT_STUBS)
 class BookMyGiftServiceTest {
 
-	@InjectMocks
-	private BookMyGiftService bookMyGiftService;
+    OrderRequest orderRequest;
+    Order order;
+    String orderId;
+    @InjectMocks
+    private BookMyGiftService bookMyGiftService;
+    @Mock
+    private OrderRepository orderRepository;
+    @Mock
+    private MongoTemplate mongoTemplate;
+    @Mock
+    private TokenGenerator tokenGenerator;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private RabbitTemplate rabbitTemplate;
+    @Mock
+    private ObjectMapper objectMapper;
+    @Mock
+    private HttpServletRequest request;
 
-	@Mock
-	private OrderRepository orderRepository;
+    @BeforeEach
+    void populateRequestResponse() {
 
-	@Mock
-	private MongoTemplate mongoTemplate;
+        orderRequest = OrderRequest.builder().giftType(GiftType.KEYCHAIN).amountPaid(100.0D).build();
 
-	@Mock
-	private TokenGenerator tokenGenerator;
-	
-	@Mock
-	private UserRepository userRepository;
-	
-	@Mock
-	private RabbitTemplate rabbitTemplate;
-	
-	@Mock
-	private ObjectMapper objectMapper;
-	
-	@Mock
-	private HttpServletRequest request;
+        order = Order.builder().orderId("USE_" + UUID.randomUUID()).username("username").emailId("email@email.com")
+                .giftType(GiftType.FRAME).amountPaid(100.0D).orderStatus(OrderStatus.ORDER_RECIEVED).build();
 
-	OrderRequest orderRequest;
-	Order order;
-	String orderId;
+        orderId = "ORDER_ID";
 
-	@BeforeEach
-	void populateRequestResponse() {
+    }
 
-		orderRequest = OrderRequest.builder().giftType(GiftType.KEYCHAIN).amountPaid(100.0D).build();
+    @Test
+    void placeOrderTest() {
 
-		order = Order.builder().orderId("USE_" + UUID.randomUUID()).username("username").emailId("email@email.com")
-				.giftType(GiftType.FRAME).amountPaid(100.0D).orderStatus(OrderStatus.ORDER_RECIEVED).build();
+        when(request.getHeader(anyString())).thenReturn("Bearer some_token");
 
-		orderId = "ORDER_ID";
+        when(tokenGenerator.extractUsername(anyString())).thenReturn("test_user");
 
-	}
+        Mockito.when(userRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.of(new User()));
 
-	@Test
-	void placeOrderTest() {
-		
-		when(request.getHeader(anyString())).thenReturn("Bearer some_token");
-		
-		when(tokenGenerator.extractUsername(anyString())).thenReturn("test_user");
-		
-		Mockito.when(userRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.of(new User()));
-		
-		Order order =bookMyGiftService.placeOrder(orderRequest);
+        Order order = bookMyGiftService.placeOrder(orderRequest);
 
-		assertEquals(order.getGiftType(), bookMyGiftService.placeOrder(orderRequest).getGiftType());
-	}
+        assertEquals(order.getGiftType(), bookMyGiftService.placeOrder(orderRequest).getGiftType());
+    }
 
-	@Test
-	void showMyOrdersTest() throws Exception {
+    @Test
+    void showMyOrdersTest() throws Exception {
 
-		when(request.getHeader(anyString())).thenReturn("Bearer some_token");
-		
-		when(tokenGenerator.extractUsername(anyString())).thenReturn("test_user");
+        when(request.getHeader(anyString())).thenReturn("Bearer some_token");
 
-		List<Order> expectedOrders = List.of(order);
+        when(tokenGenerator.extractUsername(anyString())).thenReturn("test_user");
 
-		when(mongoTemplate.find(Mockito.any(Query.class), eq(Order.class))).thenReturn(expectedOrders);
+        List<Order> expectedOrders = List.of(order);
 
-		List<Order> actualOrders = bookMyGiftService.showMyOrders(GiftType.KEYCHAIN, OrderStatus.ORDER_RECIEVED);
+        when(mongoTemplate.find(Mockito.any(Query.class), eq(Order.class))).thenReturn(expectedOrders);
 
-		assertEquals(expectedOrders, actualOrders);
+        List<Order> actualOrders = bookMyGiftService.showMyOrders(GiftType.KEYCHAIN, OrderStatus.ORDER_RECIEVED);
 
-	}
+        assertEquals(expectedOrders, actualOrders);
 
-	@Test
-	void cancelOrderTest() {
+    }
 
-		when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+    @Test
+    void cancelOrderTest() {
 
-		Order result = bookMyGiftService.cancelOrder(orderId);
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
-		assertEquals(OrderStatus.CANCELLED, result.getOrderStatus());
+        Order result = bookMyGiftService.cancelOrder(orderId);
 
-	}
+        assertEquals(OrderStatus.CANCELLED, result.getOrderStatus());
 
-	@Test
-	void cancelOrderInvalidIdTest() {
+    }
 
-		when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+    @Test
+    void cancelOrderInvalidIdTest() {
 
-		assertThrows(ServiceException.class, () -> bookMyGiftService.cancelOrder(orderId));
-	}
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+
+        assertThrows(ServiceException.class, () -> bookMyGiftService.cancelOrder(orderId));
+    }
 
 }
