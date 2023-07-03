@@ -1,24 +1,22 @@
 package com.bookmygift.reqresp;
 
+import com.bookmygift.entity.User;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse implements Serializable {
+@JsonInclude(value = Include.NON_NULL)
+public class AuthResponse {
 
-    /**
-     *
-     */
-    @Serial
-    private static final long serialVersionUID = 1L;
-    private String token;
+	private String token;
+	private AuthenticationStatus authenticationStatus;
+	private User user;
 
 }
