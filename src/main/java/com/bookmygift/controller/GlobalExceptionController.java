@@ -1,5 +1,7 @@
-package com.bookmygift.exception;
+package com.bookmygift.controller;
 
+import com.bookmygift.exception.ErrorEnums;
+import com.bookmygift.exception.ServiceException;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +20,7 @@ import java.util.List;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
-public class GlobalExceptionHandler {
+public class GlobalExceptionController {
 
     private final ObservationRegistry observationRegistry;
 
@@ -26,7 +28,7 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleServiceException(ServiceException serviceException, HttpServletRequest request) {
 
         return populateException(serviceException.getErrorEnums().getHttpStatus(),
-                serviceException.getErrorDescription() != null ? serviceException.getErrorDescription()
+                serviceException.getMessage() != null ? serviceException.getMessage()
                         : serviceException.getErrorEnums().getErrorDescription(),
                 serviceException.getErrorEnums().getErrorCode(), request);
 

@@ -66,22 +66,6 @@
 
         <!-- ########################################## -->
 
-        <!-- Junits starts-->
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-inline</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- ########################################## -->
-
         <!-- database / caching dependencies start-->
 
         <dependency>
@@ -110,14 +94,6 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
-        <!-- ########################################## -->
-
-        <!-- Spring security dependencies start-->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
-        </dependency>
         <!-- ########################################## -->
 
     </dependencies>
