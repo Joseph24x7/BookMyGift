@@ -1,83 +1,77 @@
 package com.bookmygift.controller;
 
+import com.bookmygift.exception.BadRequestException;
 import com.bookmygift.exception.ErrorEnums;
-import com.bookmygift.exception.ServiceException;
-import io.micrometer.observation.Observation;
-import io.micrometer.observation.ObservationRegistry;
-import jakarta.servlet.http.HttpServletRequest;
+import com.bookmygift.exception.UnAuthorizedException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
-@RequiredArgsConstructor
 public class GlobalExceptionController {
 
-    private final ObservationRegistry observationRegistry;
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ProblemDetail handleServiceException(BadRequestException exception) {
+        return populateException(HttpStatus.BAD_REQUEST, exception.getErrorEnums());
+    }
 
-    @ExceptionHandler(ServiceException.class)
-    public ProblemDetail handleServiceException(ServiceException serviceException, HttpServletRequest request) {
-
-        return populateException(serviceException.getErrorEnums().getHttpStatus(),
-                serviceException.getMessage() != null ? serviceException.getMessage()
-                        : serviceException.getErrorEnums().getErrorDescription(),
-                serviceException.getErrorEnums().getErrorCode(), request);
-
+    @ExceptionHandler(UnAuthorizedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ProblemDetail handleServiceException(UnAuthorizedException exception) {
+        return populateException(HttpStatus.BAD_REQUEST, exception.getErrorEnums());
     }
 
     @ExceptionHandler(Exception.class)
-    public ProblemDetail handleException(Exception exception, HttpServletRequest request) {
-
-        return populateException(ErrorEnums.GENERAL_EXCEPTION.getHttpStatus(), exception.getMessage(),
-                ErrorEnums.GENERAL_EXCEPTION.getErrorCode(), request);
-
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ProblemDetail handleException(Exception exception) {
+        return populateException(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR.name(), exception.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex,
-                                                            HttpServletRequest request) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex) {
 
         List<String> errors = new ArrayList<>();
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
             errors.add(violation.getMessage());
         }
 
-        return populateException(HttpStatus.BAD_REQUEST, List.copyOf(errors).toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                request);
+        return populateException(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.name(), List.copyOf(errors).toString());
 
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException validationEx,
-                                                               HttpServletRequest request) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException validationEx) {
 
         List<String> errors = new ArrayList<>();
         for (FieldError error : validationEx.getBindingResult().getFieldErrors()) {
             errors.add(error.getDefaultMessage());
         }
 
-        return populateException(HttpStatus.BAD_REQUEST, List.copyOf(errors).toString(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                request);
+        return populateException(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.name(), List.copyOf(errors).toString());
     }
 
-    public ProblemDetail populateException(HttpStatus httpStatus, String errorDescription, String errorCode,
-                                           HttpServletRequest request) {
+    public ProblemDetail populateException(HttpStatus httpStatus, ErrorEnums errorEnums) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorEnums.getErrorDescription());
+        problemDetail.setTitle(errorEnums.getErrorCode());
+        return problemDetail;
+    }
 
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorDescription);
+    public ProblemDetail populateException(HttpStatus httpStatus, String errorCode, String errorMessage) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorMessage);
         problemDetail.setTitle(errorCode);
-
-        return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry)
-                .observe(() -> problemDetail);
-
+        return problemDetail;
     }
 
 }

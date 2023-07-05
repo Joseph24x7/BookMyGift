@@ -3,15 +3,15 @@ package com.bookmygift.exception;
 import lombok.Getter;
 
 @Getter
-public class ServiceException extends RuntimeException {
+public class BadRequestException extends RuntimeException {
 
     private final ErrorEnums errorEnums;
 
-    public ServiceException(ErrorEnums errorEnums) {
+    public BadRequestException(ErrorEnums errorEnums) {
         this.errorEnums = errorEnums;
     }
 
-    public ServiceException(ErrorEnums errorEnums, String errorMessage, Throwable e) {
+    public BadRequestException(ErrorEnums errorEnums, String errorMessage, Throwable e) {
         super(errorMessage, e);
         this.errorEnums = errorEnums;
     }

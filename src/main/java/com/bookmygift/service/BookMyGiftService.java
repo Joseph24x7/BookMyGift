@@ -3,8 +3,8 @@ package com.bookmygift.service;
 import com.bookmygift.entity.GiftType;
 import com.bookmygift.entity.Order;
 import com.bookmygift.entity.OrderStatus;
+import com.bookmygift.exception.BadRequestException;
 import com.bookmygift.exception.ErrorEnums;
-import com.bookmygift.exception.ServiceException;
 import com.bookmygift.repository.OrderRepository;
 import com.bookmygift.reqresp.OrderRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -80,7 +80,7 @@ public class BookMyGiftService {
     @SneakyThrows({JsonProcessingException.class, AmqpException.class})
     public Order cancelOrder(String orderId) {
 
-        var order = orderRepository.findByOrderId(orderId).orElseThrow(() -> new ServiceException(ErrorEnums.INVALID_ORDER_ID));
+        var order = orderRepository.findByOrderId(orderId).orElseThrow(() -> new BadRequestException(ErrorEnums.INVALID_ORDER_ID));
 
         order.setOrderStatus(OrderStatus.CANCELLED);
 

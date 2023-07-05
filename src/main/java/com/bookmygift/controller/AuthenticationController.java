@@ -25,16 +25,12 @@ public class AuthenticationController {
 
 	@PostMapping("/register")
 	public AuthResponse register(@RequestBody @Valid AuthRequest authRequest) {
-
 		return authenticationService.registerUser(authRequest);
-
 	}
 
 	@PostMapping("/authenticate")
 	public AuthResponse authenticate(@RequestBody AuthRequest authRequest) {
-
 		return authenticationService.authenticate(authRequest, false);
-
 	}
 
 	@PostMapping("/verify")

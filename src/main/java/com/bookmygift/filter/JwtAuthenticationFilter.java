@@ -1,12 +1,10 @@
 package com.bookmygift.filter;
 
 import com.bookmygift.exception.ErrorEnums;
-import com.bookmygift.exception.ServiceException;
+import com.bookmygift.exception.UnAuthorizedException;
 import com.bookmygift.utils.TokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;
-import io.micrometer.observation.Observation;
-import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,7 +30,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final TokenUtil tokenUtil;
-	private final ObservationRegistry observationRegistry;
 	private final UserDetailsService userDetailsService;
 	private final ObjectMapper objectMapper;
 
@@ -51,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			} else if (StringUtils.isEmpty(authHeader)) {
 
-				throw new ServiceException(ErrorEnums.AUTHORIZATION_REQUIRED);
+				throw new UnAuthorizedException(ErrorEnums.AUTHORIZATION_REQUIRED);
 
 			}
 
@@ -74,29 +71,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 			filterChain.doFilter(request, response);
 
-		} catch (ServiceException e) {
-
-			response.setStatus(e.getErrorEnums().getHttpStatus().value());
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-			response.getWriter().write(objectMapper.writeValueAsString(populateException(e.getErrorEnums().getHttpStatus(), e.getMessage(), e.getErrorEnums().getErrorCode(), request)));
-
+		} catch (UnAuthorizedException e) {
+			populateResponse(response, e.getErrorEnums().getErrorCode(), e.getMessage());
 		} catch (Exception e) {
-
-			response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-			response.getWriter().write(objectMapper.writeValueAsString(populateException(ErrorEnums.INVALID_CREDENTIALS.getHttpStatus(), e.getMessage(), ErrorEnums.INVALID_CREDENTIALS.getErrorCode(), request)));
+			populateResponse(response, ErrorEnums.INVALID_CREDENTIALS.getErrorCode(), e.getMessage());
 		}
-
 	}
 
-	private ProblemDetail populateException(HttpStatus httpStatus, String errorDescription, String errorCode,
-											HttpServletRequest request) {
-
-		var problemDetail = ProblemDetail.forStatusAndDetail(httpStatus, errorDescription);
-
+	private void populateResponse(HttpServletResponse response, String errorCode, String errorMessage) throws IOException {
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, errorMessage);
 		problemDetail.setTitle(errorCode);
-
-		return Observation.createNotStarted(request.getRequestURI().substring(1), observationRegistry).observe(() -> problemDetail);
-
+		response.getWriter().write(objectMapper.writeValueAsString(problemDetail));
 	}
+
 }
