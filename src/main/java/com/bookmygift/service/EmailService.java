@@ -1,6 +1,7 @@
 package com.bookmygift.service;
 
 import com.bookmygift.entity.Order;
+import com.bookmygift.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -33,6 +34,32 @@ public class EmailService {
                 + "Thank you for choosing My Company Name, and we hope to have the opportunity to serve you again in the future.\n\n"
                 + "Warm Regards,\n"
                 + "The My Company Name Team");
+        javaMailSender.send(mailMessage);
+    }
+
+    public void sendOtpEmail(User user) {
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("OTP for Login");
+        mailMessage.setFrom("Book My Gift Team <" + user.getEmail() + ">");
+        mailMessage.setText("Dear " + user.getFullName() + ",\n\n Your OTP for login is: " + user.getTwoFaCode()
+                + ".\n\n" + "Please enter this OTP to proceed with your login.\n\n" + "Thank you for choosing us.\n\n"
+                + "Warm Regards,\n" + "Book My Gift Team");
+
+        javaMailSender.send(mailMessage);
+    }
+
+    public void sendVerificationSuccessEmail(User user) {
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("OTP for Login");
+        mailMessage.setFrom("Book My Gift Team <" + user.getEmail() + ">");
+        mailMessage.setText(
+                "Dear " + user.getFullName() + ",\n\n Your verification is sucessful. Please enjoy using Bookmygift."
+                        + "\n\n" + "Thank you for choosing us.\n\n" + "Warm Regards,\n" + "Book My Gift Team");
+
         javaMailSender.send(mailMessage);
     }
 

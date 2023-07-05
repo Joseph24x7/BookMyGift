@@ -1,6 +1,10 @@
 package com.bookmygift.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -15,7 +19,10 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableRabbit
 @Configuration
+@RequiredArgsConstructor
 public class RabbitMQConfig {
+
+    private final ObjectMapper objectMapper;
 
     @Bean
     public Queue orderQueue() {
@@ -25,6 +32,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue cancelQueue() {
         return new Queue("cancelQueue", false);
+    }
+
+    @Bean
+    public Queue sendOtp() {
+        return new Queue("sendOtpQueue", false);
     }
 
     @Bean
@@ -43,6 +55,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Binding sendOtpBinding(Queue sendOtp, DirectExchange directExchange) {
+        return BindingBuilder.bind(sendOtp).to(directExchange).with("sendOtpRoutingKey");
+    }
+
+    @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
@@ -51,6 +68,11 @@ public class RabbitMQConfig {
 
     @Bean
     public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter(new ObjectMapper());
+        JsonMapper jsonMapper = new JsonMapper();
+        jsonMapper.registerModule(new JavaTimeModule());
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.disable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
+        return new Jackson2JsonMessageConverter(jsonMapper);
     }
 }
