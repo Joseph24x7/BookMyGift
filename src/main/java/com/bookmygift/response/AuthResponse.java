@@ -1,4 +1,4 @@
-package com.bookmygift.reqresp;
+package com.bookmygift.response;
 
 import com.bookmygift.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;

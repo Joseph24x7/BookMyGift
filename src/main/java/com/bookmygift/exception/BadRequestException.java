@@ -1,5 +1,6 @@
 package com.bookmygift.exception;
 
+import com.bookmygift.utils.ErrorEnums;
 import lombok.Getter;
 
 @Getter

@@ -3,23 +3,19 @@ package com.bookmygift.service;
 import com.bookmygift.entity.Role;
 import com.bookmygift.entity.User;
 import com.bookmygift.exception.BadRequestException;
-import com.bookmygift.exception.ErrorEnums;
 import com.bookmygift.exception.UnAuthorizedException;
 import com.bookmygift.repository.UserRepository;
-import com.bookmygift.reqresp.AuthRequest;
-import com.bookmygift.reqresp.AuthResponse;
-import com.bookmygift.reqresp.AuthenticationStatus;
-import com.bookmygift.reqresp.VerifyRequest;
+import com.bookmygift.request.AuthRequest;
+import com.bookmygift.request.VerifyRequest;
+import com.bookmygift.response.AuthResponse;
+import com.bookmygift.response.AuthenticationStatus;
+import com.bookmygift.utils.ErrorEnums;
 import com.bookmygift.utils.TokenUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,9 +35,8 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final TokenUtil tokenUtil;
     private final AuthenticationManager authenticationManager;
-    private final RabbitTemplate rabbitTemplate;
-    private final ObjectMapper objectMapper;
     private final Validator validator;
+    private final QueueService queueService;
 
     public AuthResponse registerUser(AuthRequest authRequest) {
 
@@ -51,7 +46,7 @@ public class AuthenticationService {
 
         User user = createUser(authRequest, username);
 
-        sendOtp(user);
+        queueService.sendOtp(user);
 
         String jwtToken = tokenUtil.generateToken(user);
 
@@ -66,7 +61,7 @@ public class AuthenticationService {
 
             user.toBuilder().twoFaCode(generateTwoFaCode()).twoFaExpiry(getExpiryTimeForTwoFa()).build();
 
-            sendOtp(user);
+            queueService.sendOtp(user);
 
             userRepository.save(user);
         }
@@ -84,14 +79,9 @@ public class AuthenticationService {
             throw new UnAuthorizedException(ErrorEnums.INVALID_2FA_CODE);
         }
 
-        sendSuccessNotification(authResponse);
+        queueService.sendSuccessNotification(authResponse.getUser());
 
         return authResponse;
-    }
-
-    @SneakyThrows({JsonProcessingException.class})
-    private void sendSuccessNotification(AuthResponse authResponse) {
-        rabbitTemplate.convertAndSend("directExchange", "sendVerifySuccessRoutingKey", objectMapper.writeValueAsString(authResponse.getUser()));
     }
 
     private User validateUser(AuthRequest authRequest) {
@@ -119,11 +109,6 @@ public class AuthenticationService {
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
-    }
-
-    @SneakyThrows({JsonProcessingException.class})
-    private void sendOtp(User user) {
-        rabbitTemplate.convertAndSend("directExchange", "sendOtpRoutingKey", objectMapper.writeValueAsString(user));
     }
 
     private String generateTwoFaCode() {

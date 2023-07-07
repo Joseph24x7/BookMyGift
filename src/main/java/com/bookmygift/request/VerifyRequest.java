@@ -1,4 +1,4 @@
-package com.bookmygift.reqresp;
+package com.bookmygift.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

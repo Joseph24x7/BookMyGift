@@ -16,6 +16,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.IOException;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,11 +27,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
-	/**
-	 *
-	 */
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -82,9 +82,9 @@ public class User implements UserDetails {
 
 	@JsonCreator
 	public User(@JsonProperty("userId") Long userId, @JsonProperty("username") String username,
-				@JsonProperty("email") String email, @JsonProperty("fullName") String fullName,
-				@JsonProperty("role") Role role, @JsonProperty("twoFaCode") String twoFaCode,
-				@JsonProperty("twoFaExpiry") String twoFaExpiry) {
+				@JsonProperty("email") @NotNull String email, @JsonProperty("fullName") String fullName,
+				@JsonProperty("role") @NotNull Role role, @JsonProperty("twoFaCode") @NotNull String twoFaCode,
+				@JsonProperty("twoFaExpiry") @NotNull String twoFaExpiry) {
 
 		this.userId = userId;
 		this.username = username;

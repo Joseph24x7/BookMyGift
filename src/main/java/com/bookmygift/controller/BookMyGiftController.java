@@ -1,8 +1,8 @@
 package com.bookmygift.controller;
 
 import com.bookmygift.entity.Order;
-import com.bookmygift.reqresp.PlaceOrderRequest;
-import com.bookmygift.reqresp.ShowOrderRequest;
+import com.bookmygift.request.PlaceOrderRequest;
+import com.bookmygift.request.ShowOrderRequest;
 import com.bookmygift.service.BookMyGiftService;
 import com.bookmygift.utils.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;

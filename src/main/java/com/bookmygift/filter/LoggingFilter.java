@@ -7,6 +7,7 @@ import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 public class LoggingFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         MyHttpServletRequestWrapper requestWrapper = new MyHttpServletRequestWrapper(request);
@@ -60,16 +61,16 @@ class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public ServletInputStream getInputStream() {
         return new ServletInputStream() {
-            final ByteArrayInputStream bais = new ByteArrayInputStream(body);
+            final ByteArrayInputStream byteArrayStream = new ByteArrayInputStream(body);
 
             @Override
             public int read() {
-                return bais.read();
+                return byteArrayStream.read();
             }
 
             @Override
             public boolean isFinished() {
-                return bais.available() == 0;
+                return byteArrayStream.available() == 0;
             }
 
             @Override

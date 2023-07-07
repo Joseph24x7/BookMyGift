@@ -1,8 +1,8 @@
 package com.bookmygift.controller;
 
-import com.bookmygift.reqresp.AuthRequest;
-import com.bookmygift.reqresp.AuthResponse;
-import com.bookmygift.reqresp.VerifyRequest;
+import com.bookmygift.request.AuthRequest;
+import com.bookmygift.request.VerifyRequest;
+import com.bookmygift.response.AuthResponse;
 import com.bookmygift.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

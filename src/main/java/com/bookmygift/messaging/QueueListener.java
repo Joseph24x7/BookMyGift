@@ -1,4 +1,4 @@
-package com.bookmygift.queue;
+package com.bookmygift.messaging;
 
 import com.bookmygift.entity.Order;
 import com.bookmygift.entity.User;

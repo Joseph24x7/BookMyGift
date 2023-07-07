@@ -1,10 +1,11 @@
-package com.bookmygift.exception;
+package com.bookmygift.utils;
 
 public enum ErrorEnums {
 
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "Invalid email or password."),
     INVALID_2FA_CODE("INVALID_2FA_CODE", "Invalid Two Factor Authentication code. Please enter a valid code and try again."),
     AUTHORIZATION_REQUIRED("AUTHORIZATION_REQUIRED", "Authorization token is required. Please provide a valid token to proceed."),
+    AUTHORIZATION_FAILED("AUTHORIZATION_FAILED", "Authentication Failed. Please contact the Administrator"),
     USER_ALREADY_REGISTERED("USER_ALREADY_REGISTERED", "The selected username or email is not available."),
     INVALID_ORDER_ID("INVALID_ORDER_ID", "The Order Id is Invalid"),
     THEATRE_CODE_INVALID("THEATRE_CODE_INVALID", "The Given Theatre Code is Invalid"),

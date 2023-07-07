@@ -1,7 +1,8 @@
 package com.bookmygift.filter;
 
-import com.bookmygift.exception.ErrorEnums;
 import com.bookmygift.exception.UnAuthorizedException;
+import com.bookmygift.response.ErrorResponse;
+import com.bookmygift.utils.ErrorEnums;
 import com.bookmygift.utils.TokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ProblemDetail;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,23 +65,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             } else {
 
-                throw new UnAuthorizedException(ErrorEnums.AUTHORIZATION_REQUIRED);
+                throw new UnAuthorizedException(ErrorEnums.TOKEN_REQUIRED);
 
             }
 
         } catch (UnAuthorizedException e) {
-            populateResponse(response, e.getErrorEnums().getErrorCode(), e.getMessage());
+            populateResponse(response, e.getErrorEnums(), e.getMessage());
         } catch (Exception e) {
-            populateResponse(response, ErrorEnums.INVALID_CREDENTIALS.getErrorCode(), e.getMessage());
+            populateResponse(response, ErrorEnums.AUTHORIZATION_FAILED, e.getMessage());
         }
     }
 
-    private void populateResponse(HttpServletResponse response, String errorCode, String errorMessage) throws IOException {
+    private void populateResponse(HttpServletResponse response, ErrorEnums errorEnums, String errorMessage) throws IOException {
+        ErrorResponse errorResponse = ErrorResponse.builder().errorType(errorEnums.getErrorCode()).
+                errorDescription(errorEnums.getErrorDescription()).errorDetail(errorMessage).build();
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, errorMessage);
-        problemDetail.setTitle(errorCode);
-        response.getWriter().write(objectMapper.writeValueAsString(problemDetail));
     }
 
 }
