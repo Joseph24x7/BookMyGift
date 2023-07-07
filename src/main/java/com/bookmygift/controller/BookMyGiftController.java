@@ -23,15 +23,13 @@ public class BookMyGiftController {
     @PostMapping("/placeOrder")
     @ResponseStatus(HttpStatus.CREATED)
     public Order placeOrder(@RequestBody @Valid PlaceOrderRequest orderRequest, HttpServletRequest servletRequest) {
-        String username = tokenUtil.extractUsernameFromRequest(servletRequest);
-        orderRequest.setUsername(username);
+        orderRequest.setUsername(tokenUtil.extractUsernameFromRequest(servletRequest));
         return bookMyGiftService.placeOrder(orderRequest);
     }
 
     @GetMapping("/showMyOrders")
     public List<Order> showMyOrders(@ModelAttribute ShowOrderRequest orderRequest, HttpServletRequest servletRequest) {
-        String username = tokenUtil.extractUsernameFromRequest(servletRequest);
-        orderRequest.setUsername(username);
+        orderRequest.setUsername(tokenUtil.extractUsernameFromRequest(servletRequest));
         return bookMyGiftService.showMyOrders(orderRequest);
     }
 

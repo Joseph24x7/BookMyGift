@@ -2,6 +2,7 @@ package com.bookmygift.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ public class PlaceOrderRequest {
     @Pattern(regexp = "^(KEYCHAIN|FRAME)$", message = "Oops! It seems you've entered an invalid gift type. Only KEYCHAIN and FRAME are allowed.")
     private String giftType;
 
+    @NotNull(message = "Please specify the amount.")
     private Double amountPaid;
 
     @JsonProperty

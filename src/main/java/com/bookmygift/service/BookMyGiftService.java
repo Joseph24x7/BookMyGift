@@ -11,13 +11,6 @@ import com.bookmygift.repository.UserRepository;
 import com.bookmygift.request.PlaceOrderRequest;
 import com.bookmygift.request.ShowOrderRequest;
 import com.bookmygift.utils.ErrorEnums;
-import io.micrometer.common.util.StringUtils;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +22,6 @@ import java.util.UUID;
 public class BookMyGiftService {
 
     private final OrderRepository orderRepository;
-    private final EntityManager entityManager;
     private final UserRepository userRepository;
     private final QueueService queueService;
 
@@ -39,9 +31,7 @@ public class BookMyGiftService {
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
 
-        Order order = Order.builder().orderId(username.substring(0, 3).toUpperCase() + "_" + UUID.randomUUID())
-                .username(username).emailId(user.getEmail()).giftType(GiftType.valueOf(orderRequest.getGiftType()))
-                .amountPaid(orderRequest.getAmountPaid()).orderStatus(OrderStatus.ORDER_RECEIVED).build();
+        Order order = Order.builder().orderId(username.substring(0, 3).toUpperCase() + "_" + UUID.randomUUID()).username(username).emailId(user.getEmail()).giftType(GiftType.valueOf(orderRequest.getGiftType())).amountPaid(orderRequest.getAmountPaid()).orderStatus(OrderStatus.ORDER_RECEIVED).build();
 
         orderRepository.save(order);
 
@@ -52,28 +42,7 @@ public class BookMyGiftService {
     }
 
     public List<Order> showMyOrders(ShowOrderRequest orderRequest) {
-
-        String username = orderRequest.getUsername();
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
-        Root<Order> root = criteriaQuery.from(Order.class);
-
-        Predicate usernamePredicate = criteriaBuilder.equal(root.get("username"), username);
-        criteriaQuery.where(usernamePredicate);
-
-        if (StringUtils.isNotBlank(String.valueOf(orderRequest.getGiftType()))) {
-            Predicate giftTypePredicate = criteriaBuilder.equal(root.get("giftType"), orderRequest.getGiftType());
-            criteriaQuery.where(criteriaBuilder.and(usernamePredicate, giftTypePredicate));
-        }
-
-        if (StringUtils.isNotBlank(String.valueOf(orderRequest.getOrderStatus()))) {
-            Predicate orderStatusPredicate = criteriaBuilder.equal(root.get("orderStatus"), orderRequest.getOrderStatus());
-            criteriaQuery.where(criteriaBuilder.and(usernamePredicate, orderStatusPredicate));
-        }
-
-        TypedQuery<Order> query = entityManager.createQuery(criteriaQuery);
-        return query.getResultList();
-
+        return orderRepository.findOrdersByCriteria(orderRequest);
     }
 
     public Order cancelOrder(String orderId, String username) {

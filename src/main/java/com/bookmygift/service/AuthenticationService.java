@@ -11,10 +11,8 @@ import com.bookmygift.response.AuthResponse;
 import com.bookmygift.response.AuthenticationStatus;
 import com.bookmygift.utils.ErrorEnums;
 import com.bookmygift.utils.TokenUtil;
+import com.bookmygift.utils.ValidatorUtil;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,27 +22,32 @@ import org.springframework.stereotype.Service;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
-import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenUtil tokenUtil;
     private final AuthenticationManager authenticationManager;
-    private final Validator validator;
     private final QueueService queueService;
+    private final ValidatorUtil validatorUtil;
 
     public AuthResponse registerUser(AuthRequest authRequest) {
 
         String username = getUsernameFromEmail(authRequest.getEmail());
 
-        checkIfUsernameExists(username);
+        userRepository.findByUsername(username).ifPresent(u -> {
+            throw new BadRequestException(ErrorEnums.USER_ALREADY_REGISTERED);
+        });
 
-        User user = createUser(authRequest, username);
+        User user = User.builder().username(username).password(passwordEncoder.encode(authRequest.getPassword())).email(authRequest.getEmail()).role(Role.CUSTOMER).fullName(authRequest.getFullName()).twoFaCode(generateTwoFaCode()).twoFaExpiry(getExpiryTimeForTwoFa()).build();
+
+        validatorUtil.validate(user);
+
+        userRepository.save(user);
 
         queueService.sendOtp(user);
 
@@ -55,7 +58,11 @@ public class AuthenticationService {
 
     public AuthResponse authenticate(AuthRequest authRequest, boolean isVerification) {
 
-        User user = validateUser(authRequest);
+        String username = getUsernameFromEmail(authRequest.getEmail());
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, authRequest.getPassword()));
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
 
         if (!isVerification) {
 
@@ -75,40 +82,27 @@ public class AuthenticationService {
 
         AuthResponse authResponse = authenticate(verifyRequest, true);
 
-        if (!(authResponse.getAuthenticationStatus().equals(AuthenticationStatus.SUCCESS) && authResponse.getUser().getTwoFaCode().equalsIgnoreCase(verifyRequest.getTwoFaCode()))) {
+        User user = authResponse.getUser();
+
+        if (user.isVerified()) {
+            throw new BadRequestException(ErrorEnums.TWO_FA_ALREADY_VERIFIED);
+
+        } else if (!(authResponse.getAuthenticationStatus().equals(AuthenticationStatus.SUCCESS) && user.getTwoFaCode().equalsIgnoreCase(verifyRequest.getTwoFaCode()))) {
             throw new UnAuthorizedException(ErrorEnums.INVALID_2FA_CODE);
+
+        } else {
+
+            userRepository.save(user.toBuilder().isVerified(Boolean.TRUE).build());
+
+            queueService.sendSuccessNotification(authResponse.getUser());
+
+            return authResponse;
+
         }
-
-        queueService.sendSuccessNotification(authResponse.getUser());
-
-        return authResponse;
-    }
-
-    private User validateUser(AuthRequest authRequest) {
-
-        String username = getUsernameFromEmail(authRequest.getEmail());
-
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, authRequest.getPassword()));
-
-        return userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
-
     }
 
     private String getUsernameFromEmail(String email) {
         return email.substring(0, email.indexOf('@'));
-    }
-
-    private void checkIfUsernameExists(String username) {
-        userRepository.findByUsername(username).ifPresent(u -> {
-            throw new BadRequestException(ErrorEnums.USER_ALREADY_REGISTERED);
-        });
-    }
-
-    private void validate(Object object) {
-        Set<ConstraintViolation<Object>> violations = validator.validate(object);
-        if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
-        }
     }
 
     private String generateTwoFaCode() {
@@ -121,17 +115,6 @@ public class AuthenticationService {
 
     private AuthResponse createAuthResponse(User user, String jwtToken) {
         return AuthResponse.builder().token(jwtToken).user(user).authenticationStatus(AuthenticationStatus.SUCCESS).build();
-    }
-
-    private User createUser(AuthRequest authRequest, String username) {
-
-        User user = User.builder().username(username).password(passwordEncoder.encode(authRequest.getPassword())).email(authRequest.getEmail()).role(Role.CUSTOMER).fullName(authRequest.getFullName()).twoFaCode(generateTwoFaCode()).twoFaExpiry(getExpiryTimeForTwoFa()).build();
-
-        validate(user);
-
-        userRepository.save(user);
-
-        return user;
     }
 
 }

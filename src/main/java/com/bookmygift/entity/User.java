@@ -57,25 +57,28 @@ public class User implements UserDetails, Serializable {
 	@Column(name = "ROLE", nullable = false)
 	@NotNull(message = "Role is required")
 	@Enumerated(EnumType.STRING)
-	private Role role;
+    private Role role;
 
-	@NotNull(message = "twoFaCode is required")
-	@Column(name = "TWO_FA_CODE")
-	private String twoFaCode;
+    @NotNull(message = "twoFaCode is required")
+    @Column(name = "TWO_FA_CODE")
+    private String twoFaCode;
 
-	@NotNull(message = "twoFaExpiry is required")
-	@Column(name = "TWO_FA_EXPIRY")
-	private String twoFaExpiry;
+    @NotNull(message = "twoFaExpiry is required")
+    @Column(name = "TWO_FA_EXPIRY")
+    private String twoFaExpiry;
 
-	@JsonCreator
-	public User(String json) throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		User user = mapper.readValue(json, User.class);
-		this.userId = user.getUserId();
-		this.username = user.getUsername();
-		this.email = user.getEmail();
-		this.fullName = user.getFullName();
-		this.role = user.getRole();
+    @Column(name = "IS_VERIFIED")
+    private boolean isVerified;
+
+    @JsonCreator
+    public User(String json) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        User user = mapper.readValue(json, User.class);
+        this.userId = user.getUserId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.fullName = user.getFullName();
+        this.role = user.getRole();
 		this.twoFaCode = user.getTwoFaCode();
 		this.twoFaExpiry = user.getTwoFaExpiry();
 	}
