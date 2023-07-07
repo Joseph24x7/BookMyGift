@@ -1,37 +1,44 @@
 package com.bookmygift.controller;
 
 import com.bookmygift.entity.Order;
-import com.bookmygift.reqresp.OrderRequest;
+import com.bookmygift.reqresp.PlaceOrderRequest;
+import com.bookmygift.reqresp.ShowOrderRequest;
 import com.bookmygift.service.BookMyGiftService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
+import com.bookmygift.utils.TokenUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@OpenAPIDefinition(info = @Info(title = "Book My Gift Management", version = "0.0.1"))
 @RequiredArgsConstructor
 public class BookMyGiftController {
 
     private final BookMyGiftService bookMyGiftService;
+    private final TokenUtil tokenUtil;
 
     @PostMapping("/placeOrder")
-    public ResponseEntity<Order> placeOrder(@RequestBody @Valid OrderRequest orderRequest) {
-        return new ResponseEntity<>(bookMyGiftService.placeOrder(orderRequest), HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Order placeOrder(@RequestBody @Valid PlaceOrderRequest orderRequest, HttpServletRequest servletRequest) {
+        String username = tokenUtil.extractUsernameFromRequest(servletRequest);
+        orderRequest.setUsername(username);
+        return bookMyGiftService.placeOrder(orderRequest);
     }
 
     @GetMapping("/showMyOrders")
-    public List<Order> showMyOrders(@ModelAttribute OrderRequest orderRequest) {
-        return bookMyGiftService.showMyOrders(orderRequest.getGiftType(), orderRequest.getOrderStatus());
+    public List<Order> showMyOrders(@ModelAttribute ShowOrderRequest orderRequest, HttpServletRequest servletRequest) {
+        String username = tokenUtil.extractUsernameFromRequest(servletRequest);
+        orderRequest.setUsername(username);
+        return bookMyGiftService.showMyOrders(orderRequest);
     }
 
     @DeleteMapping("/cancelOrder")
-    public ResponseEntity<Order> cancelOrder(@ModelAttribute OrderRequest orderRequest) {
-        return new ResponseEntity<>(bookMyGiftService.cancelOrder(orderRequest.getOrderId()), HttpStatus.ACCEPTED);
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Order cancelOrder(@RequestParam(name = "orderId") String orderId, HttpServletRequest servletRequest) {
+        String username = tokenUtil.extractUsernameFromRequest(servletRequest);
+        return bookMyGiftService.cancelOrder(orderId, username);
     }
 }

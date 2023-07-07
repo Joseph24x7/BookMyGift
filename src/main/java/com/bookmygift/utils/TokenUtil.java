@@ -6,7 +6,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,11 @@ import java.util.function.Function;
 public class TokenUtil {
 
 	private final PropertiesRepository propertiesRepository;
+
+	public String extractUsernameFromRequest(HttpServletRequest servletRequest) {
+		String token = servletRequest.getHeader(HttpHeaders.AUTHORIZATION).replace("Bearer ", "");
+		return extractClaim(token, Claims::getSubject);
+	}
 
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);

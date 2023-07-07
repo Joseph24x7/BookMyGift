@@ -17,6 +17,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -29,61 +30,58 @@ import java.io.IOException;
 @Qualifier("JwtAuthenticationFilter")
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	private final TokenUtil tokenUtil;
-	private final UserDetailsService userDetailsService;
-	private final ObjectMapper objectMapper;
+    private final TokenUtil tokenUtil;
+    private final UserDetailsService userDetailsService;
+    private final ObjectMapper objectMapper;
 
-	@Override
-	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-									@NonNull FilterChain filterChain) throws IOException {
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws IOException {
 
-		try {
+        try {
 
-			final var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-			if (request.getRequestURI().contains("/api/v1/auth") || request.getRequestURI().contains("/v3/")
-					|| request.getRequestURI().contains("/swagger-ui/") || request.getRequestURI().contains("/swagger-ui.html")) {
+            String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+            if (request.getRequestURI().contains("/api/v1/auth")) {
 
-				filterChain.doFilter(request, response);
-				return;
+                filterChain.doFilter(request, response);
 
-			} else if (StringUtils.isEmpty(authHeader)) {
+            } else if (StringUtils.isNotBlank(authHeader)) {
 
-				throw new UnAuthorizedException(ErrorEnums.AUTHORIZATION_REQUIRED);
+                String username = tokenUtil.extractUsernameFromRequest(request);
+                String jwt = authHeader.replace("Bearer ", "");
 
-			}
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-			final var jwt = authHeader.replace("Bearer ", "");
-			final var username = tokenUtil.extractUsername(jwt);
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    if (tokenUtil.isTokenValid(jwt, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
 
-				var userDetails = this.userDetailsService.loadUserByUsername(username);
+                    filterChain.doFilter(request, response);
 
-				if (tokenUtil.isTokenValid(jwt, userDetails)) {
+                }
+            } else {
 
-					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                throw new UnAuthorizedException(ErrorEnums.AUTHORIZATION_REQUIRED);
 
-					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            }
 
-					SecurityContextHolder.getContext().setAuthentication(authToken);
+        } catch (UnAuthorizedException e) {
+            populateResponse(response, e.getErrorEnums().getErrorCode(), e.getMessage());
+        } catch (Exception e) {
+            populateResponse(response, ErrorEnums.INVALID_CREDENTIALS.getErrorCode(), e.getMessage());
+        }
+    }
 
-				}
-			}
-			filterChain.doFilter(request, response);
-
-		} catch (UnAuthorizedException e) {
-			populateResponse(response, e.getErrorEnums().getErrorCode(), e.getMessage());
-		} catch (Exception e) {
-			populateResponse(response, ErrorEnums.INVALID_CREDENTIALS.getErrorCode(), e.getMessage());
-		}
-	}
-
-	private void populateResponse(HttpServletResponse response, String errorCode, String errorMessage) throws IOException {
-		response.setStatus(HttpStatus.UNAUTHORIZED.value());
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, errorMessage);
-		problemDetail.setTitle(errorCode);
-		response.getWriter().write(objectMapper.writeValueAsString(problemDetail));
-	}
+    private void populateResponse(HttpServletResponse response, String errorCode, String errorMessage) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, errorMessage);
+        problemDetail.setTitle(errorCode);
+        response.getWriter().write(objectMapper.writeValueAsString(problemDetail));
+    }
 
 }

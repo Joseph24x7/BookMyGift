@@ -19,7 +19,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OrderInfo")
+@Table(name = "ORDER", schema = "myapp")
 public class Order implements Serializable {
 
     @Serial
@@ -27,25 +27,26 @@ public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
-    @Column(unique = true)
+    @Column(name = "ORDER_ID", unique = true)
     private String orderId;
 
-    @Column(unique = true)
+    @Column(name = "USERNAME")
     private String username;
 
-    @Column(unique = true)
+    @Column(name = "EMAIL_ID")
     private String emailId;
 
-    @Column
+    @Column(name = "GIFT_TYPE")
     @Enumerated(EnumType.STRING)
     private GiftType giftType;
 
-    @Column
+    @Column(name = "AMOUNT_PAID")
     private Double amountPaid;
 
-    @Column
+    @Column(name = "ORDER_STATUS")
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
