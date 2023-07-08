@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -20,7 +17,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "ORDER", schema = "myapp")
-public class Order implements Serializable {
+public class OrderEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -37,26 +34,27 @@ public class Order implements Serializable {
     private String username;
 
     @Column(name = "EMAIL_ID")
+    @ToString.Exclude
     private String emailId;
 
     @Column(name = "GIFT_TYPE")
     @Enumerated(EnumType.STRING)
-    private GiftType giftType;
+    private GiftTypeEnum giftType;
 
     @Column(name = "AMOUNT_PAID")
     private Double amountPaid;
 
     @Column(name = "ORDER_STATUS")
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatusEnum orderStatus;
 
     @JsonCreator
-    public Order(@JsonProperty("orderId") String orderId,
-                 @JsonProperty("username") String username,
-                 @JsonProperty("emailId") String emailId,
-                 @JsonProperty("giftType") GiftType giftType,
-                 @JsonProperty("amountPaid") Double amountPaid,
-                 @JsonProperty("orderStatus") OrderStatus orderStatus
+    public OrderEntity(@JsonProperty("orderId") String orderId,
+                       @JsonProperty("username") String username,
+                       @JsonProperty("emailId") String emailId,
+                       @JsonProperty("giftType") GiftTypeEnum giftType,
+                       @JsonProperty("amountPaid") Double amountPaid,
+                       @JsonProperty("orderStatus") OrderStatusEnum orderStatus
     ) {
         this.orderId = orderId;
         this.username = username;
@@ -67,9 +65,9 @@ public class Order implements Serializable {
     }
 
     @JsonCreator
-    public Order(String json) throws IOException {
+    public OrderEntity(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        Order order = mapper.readValue(json, Order.class);
+        OrderEntity order = mapper.readValue(json, OrderEntity.class);
         this.orderId = order.getOrderId();
         this.username = order.getUsername();
         this.emailId = order.getEmailId();

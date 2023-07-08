@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Table(name = "properties", schema = "myapp")
 @Getter
 @NoArgsConstructor
-public class Properties implements Serializable {
+public class PropertiesEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

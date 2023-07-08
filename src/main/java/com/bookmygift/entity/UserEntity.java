@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +24,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails, Serializable {
+public class UserEntity implements UserDetails, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -44,10 +41,12 @@ public class User implements UserDetails, Serializable {
 	@Column(name = "PASSWORD", nullable = false)
 	@NotBlank(message = "Password is required")
 	@JsonIgnore
+	@ToString.Exclude
 	private String password;
 
 	@Column(name = "EMAIL", nullable = false)
 	@NotNull(message = "Email is required")
+	@ToString.Exclude
 	private String email;
 
 	@Column(name = "FULL_NAME", nullable = false)
@@ -55,39 +54,42 @@ public class User implements UserDetails, Serializable {
 	private String fullName;
 
 	@Column(name = "ROLE", nullable = false)
-	@NotNull(message = "Role is required")
+	@NotNull(message = "RoleEnum is required")
 	@Enumerated(EnumType.STRING)
-    private Role role;
+	private RoleEnum role;
 
     @NotNull(message = "twoFaCode is required")
-    @Column(name = "TWO_FA_CODE")
+	@Column(name = "TWO_FA_CODE")
+	@ToString.Exclude
     private String twoFaCode;
 
     @NotNull(message = "twoFaExpiry is required")
-    @Column(name = "TWO_FA_EXPIRY")
+	@Column(name = "TWO_FA_EXPIRY")
+	@ToString.Exclude
     private String twoFaExpiry;
 
     @Column(name = "IS_VERIFIED")
     private boolean isVerified;
 
-    @JsonCreator
-    public User(String json) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        User user = mapper.readValue(json, User.class);
-        this.userId = user.getUserId();
-        this.username = user.getUsername();
-        this.email = user.getEmail();
-        this.fullName = user.getFullName();
-        this.role = user.getRole();
+	@JsonCreator
+	public UserEntity(String json) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		UserEntity user = mapper.readValue(json, UserEntity.class);
+		this.userId = user.getUserId();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+		this.fullName = user.getFullName();
+		this.role = user.getRole();
 		this.twoFaCode = user.getTwoFaCode();
 		this.twoFaExpiry = user.getTwoFaExpiry();
+		this.isVerified = user.isVerified();
 	}
 
 	@JsonCreator
-	public User(@JsonProperty("userId") Long userId, @JsonProperty("username") String username,
-				@JsonProperty("email") @NotNull String email, @JsonProperty("fullName") String fullName,
-				@JsonProperty("role") @NotNull Role role, @JsonProperty("twoFaCode") @NotNull String twoFaCode,
-				@JsonProperty("twoFaExpiry") @NotNull String twoFaExpiry) {
+	public UserEntity(@JsonProperty("userId") Long userId, @JsonProperty("username") String username,
+					  @JsonProperty("email") @NotNull String email, @JsonProperty("fullName") String fullName,
+					  @JsonProperty("role") @NotNull RoleEnum role, @JsonProperty("twoFaCode") @NotNull String twoFaCode,
+					  @JsonProperty("twoFaExpiry") @NotNull String twoFaExpiry, @JsonProperty("isVerified") boolean isVerified) {
 
 		this.userId = userId;
 		this.username = username;
@@ -96,6 +98,7 @@ public class User implements UserDetails, Serializable {
 		this.role = role;
 		this.twoFaCode = twoFaCode;
 		this.twoFaExpiry = twoFaExpiry;
+		this.isVerified = isVerified;
 	}
 
 	@Override

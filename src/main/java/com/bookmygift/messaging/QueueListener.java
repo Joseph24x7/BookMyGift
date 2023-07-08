@@ -1,7 +1,7 @@
 package com.bookmygift.messaging;
 
-import com.bookmygift.entity.Order;
-import com.bookmygift.entity.User;
+import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.UserEntity;
 import com.bookmygift.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -14,22 +14,22 @@ public class QueueListener {
     private final EmailService emailService;
 
     @RabbitListener(queues = "orderQueue", containerFactory = "rabbitListenerContainerFactory")
-    public void handleOrderMessage(Order order) {
+    public void handleOrderMessage(OrderEntity order) {
         emailService.sendOrderConfirmationEmail(order);
     }
 
     @RabbitListener(queues = "cancelQueue", containerFactory = "rabbitListenerContainerFactory")
-    public void handleCancelMessage(Order order) {
+    public void handleCancelMessage(OrderEntity order) {
         emailService.cancelOrderConfirmationEmail(order);
     }
 
     @RabbitListener(queues = "sendOtpQueue", containerFactory = "rabbitListenerContainerFactory")
-    public void handleSendOtpEmail(User user) {
+    public void handleSendOtpEmail(UserEntity user) {
         emailService.sendOtpEmail(user);
     }
 
     @RabbitListener(queues = "sendVerifySuccessQueue", containerFactory = "rabbitListenerContainerFactory")
-    public void handleSendVerifySuccessQueue(User user) {
+    public void handleSendVerifySuccessQueue(UserEntity user) {
         emailService.sendVerificationSuccessEmail(user);
     }
 }

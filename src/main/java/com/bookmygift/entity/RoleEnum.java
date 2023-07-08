@@ -1,6 +1,6 @@
 package com.bookmygift.entity;
 
-public enum Role {
+public enum RoleEnum {
 
     CUSTOMER, ADMIN
 }

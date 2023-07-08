@@ -1,22 +1,18 @@
 package com.bookmygift.response;
 
-import com.bookmygift.entity.User;
+import com.bookmygift.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
+@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@JsonInclude(value = Include.NON_NULL)
+@JsonInclude(value = Include.NON_EMPTY)
 public class AuthResponse {
 
+	@ToString.Exclude
 	private String token;
 	private AuthenticationStatus authenticationStatus;
-	private User user;
+	private UserEntity user;
 
 }

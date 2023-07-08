@@ -8,7 +8,7 @@ public enum ErrorEnums {
     AUTHORIZATION_FAILED("AUTHORIZATION_FAILED", "Username or Password is incorrect. Please contact the administrator."),
     USER_ALREADY_REGISTERED("USER_ALREADY_REGISTERED", "The selected username or email is not available."),
     TWO_FA_ALREADY_VERIFIED("TWO_FA_ALREADY_VERIFIED", "Two Factor Verified done already. Please try again after sometime."),
-    INVALID_ORDER_ID("INVALID_ORDER_ID", "The Order Id is Invalid"),
+    INVALID_ORDER_ID("INVALID_ORDER_ID", "The OrderEntity Id is Invalid"),
     TOKEN_REQUIRED("TOKEN_REQUIRED", "Please provide the token for authorization");
 
     private final String errorCode;

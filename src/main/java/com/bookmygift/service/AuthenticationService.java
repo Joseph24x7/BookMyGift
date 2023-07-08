@@ -1,7 +1,7 @@
 package com.bookmygift.service;
 
-import com.bookmygift.entity.Role;
-import com.bookmygift.entity.User;
+import com.bookmygift.entity.RoleEnum;
+import com.bookmygift.entity.UserEntity;
 import com.bookmygift.exception.BadRequestException;
 import com.bookmygift.exception.UnAuthorizedException;
 import com.bookmygift.repository.UserRepository;
@@ -43,7 +43,7 @@ public class AuthenticationService {
             throw new BadRequestException(ErrorEnums.USER_ALREADY_REGISTERED);
         });
 
-        User user = User.builder().username(username).password(passwordEncoder.encode(authRequest.getPassword())).email(authRequest.getEmail()).role(Role.CUSTOMER).fullName(authRequest.getFullName()).twoFaCode(generateTwoFaCode()).twoFaExpiry(getExpiryTimeForTwoFa()).build();
+        UserEntity user = UserEntity.builder().username(username).password(passwordEncoder.encode(authRequest.getPassword())).email(authRequest.getEmail()).role(RoleEnum.CUSTOMER).fullName(authRequest.getFullName()).twoFaCode(generateTwoFaCode()).twoFaExpiry(getExpiryTimeForTwoFa()).build();
 
         validatorUtil.validate(user);
 
@@ -62,7 +62,7 @@ public class AuthenticationService {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, authRequest.getPassword()));
 
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
+        UserEntity user = userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
 
         if (!isVerification) {
 
@@ -82,7 +82,7 @@ public class AuthenticationService {
 
         AuthResponse authResponse = authenticate(verifyRequest, true);
 
-        User user = authResponse.getUser();
+        UserEntity user = authResponse.getUser();
 
         if (user.isVerified()) {
             throw new BadRequestException(ErrorEnums.TWO_FA_ALREADY_VERIFIED);
@@ -113,7 +113,7 @@ public class AuthenticationService {
         return ZonedDateTime.now().plusMinutes(10).format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
     }
 
-    private AuthResponse createAuthResponse(User user, String jwtToken) {
+    private AuthResponse createAuthResponse(UserEntity user, String jwtToken) {
         return AuthResponse.builder().token(jwtToken).user(user).authenticationStatus(AuthenticationStatus.SUCCESS).build();
     }
 

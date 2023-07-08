@@ -1,7 +1,7 @@
 package com.bookmygift.service;
 
-import com.bookmygift.entity.Order;
-import com.bookmygift.entity.User;
+import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.UserEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,22 +17,22 @@ public class QueueService {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendOrderRoutingKey(Order order) {
+    public void sendOrderRoutingKey(OrderEntity order) {
         rabbitTemplate.convertAndSend("directExchange", "orderRoutingKey", objectMapper.writeValueAsString(order));
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendCancelRoutingKey(Order order) {
+    public void sendCancelRoutingKey(OrderEntity order) {
         rabbitTemplate.convertAndSend("directExchange", "cancelRoutingKey", objectMapper.writeValueAsString(order));
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendOtp(User user) {
+    public void sendOtp(UserEntity user) {
         rabbitTemplate.convertAndSend("directExchange", "sendOtpRoutingKey", objectMapper.writeValueAsString(user));
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendSuccessNotification(User user) {
+    public void sendSuccessNotification(UserEntity user) {
         rabbitTemplate.convertAndSend("directExchange", "sendVerifySuccessRoutingKey", objectMapper.writeValueAsString(user));
     }
 }

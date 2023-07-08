@@ -1,22 +1,19 @@
 package com.bookmygift.filter;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -24,65 +21,22 @@ import java.nio.charset.StandardCharsets;
 public class LoggingFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    public void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        MyHttpServletRequestWrapper requestWrapper = new MyHttpServletRequestWrapper(request);
+        String correlationId = generateCorrelationId();
 
-        log.debug("Request payload: {}", new String(requestWrapper.getBody(), StandardCharsets.UTF_8));
+        MDC.put("CorrelationId", correlationId);
 
-        filterChain.doFilter(requestWrapper, response);
+        log.debug("CorrelationId: {}, Request details: Method: {}, URL: {}, Content-Type: {}, Accept: {}",
+                correlationId, request.getMethod(), request.getRequestURL(), request.getContentType(), request.getHeader(HttpHeaders.ACCEPT));
 
-        log.debug("Responded with {} status", response.getStatus());
+        filterChain.doFilter(request, response);
+
+        log.debug("CorrelationId: {}, Responded with {} status", correlationId, response.getStatus());
 
     }
 
-}
-
-@Slf4j
-class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
-
-    private byte[] body;
-
-    public MyHttpServletRequestWrapper(HttpServletRequest request) {
-        super(request);
-        try {
-            body = IOUtils.toByteArray(request.getInputStream());
-        } catch (IOException ex) {
-            body = new byte[0];
-            log.warn("IOException occurred at ", ex);
-        }
+    private String generateCorrelationId() {
+        return UUID.randomUUID().toString();
     }
-
-    public byte[] getBody() {
-        return body;
-    }
-
-    @Override
-    public ServletInputStream getInputStream() {
-        return new ServletInputStream() {
-            final ByteArrayInputStream byteArrayStream = new ByteArrayInputStream(body);
-
-            @Override
-            public int read() {
-                return byteArrayStream.read();
-            }
-
-            @Override
-            public boolean isFinished() {
-                return byteArrayStream.available() == 0;
-            }
-
-            @Override
-            public boolean isReady() {
-                return true;
-            }
-
-            @Override
-            public void setReadListener(ReadListener listener) {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
-
 }
