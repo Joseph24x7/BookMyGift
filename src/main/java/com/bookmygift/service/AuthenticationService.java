@@ -49,7 +49,7 @@ public class AuthenticationService {
 
         userRepository.save(user);
 
-        queueService.sendOtp(user);
+        queueService.sendTwoFactorAuthentication(user);
 
         String jwtToken = tokenUtil.generateToken(user);
 
@@ -68,7 +68,7 @@ public class AuthenticationService {
 
             user.toBuilder().twoFaCode(generateTwoFaCode()).twoFaExpiry(getExpiryTimeForTwoFa()).build();
 
-            queueService.sendOtp(user);
+            queueService.sendTwoFactorAuthentication(user);
 
             userRepository.save(user);
         }
@@ -94,7 +94,7 @@ public class AuthenticationService {
 
             userRepository.save(user.toBuilder().isVerified(Boolean.TRUE).build());
 
-            queueService.sendSuccessNotification(authResponse.getUser());
+            queueService.sendVerificationSuccessNotification(authResponse.getUser());
 
             return authResponse;
 

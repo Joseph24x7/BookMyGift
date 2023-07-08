@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
             Optional<GiftTypeEnum> gift = GiftTypeEnum.fromValue(orderRequest.getGiftType());
             if (gift.isPresent()) {
                 spec = spec.and((root, query, cb) -> cb.equal(root.get("giftType"), gift.get()));
+            } else {
+                return Collections.emptyList();
             }
         }
 
@@ -32,6 +35,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSp
             Optional<OrderStatusEnum> order = OrderStatusEnum.fromValue(orderRequest.getOrderStatus());
             if (order.isPresent()) {
                 spec = spec.and((root, query, cb) -> cb.equal(root.get("orderStatus"), order.get()));
+            } else {
+                return Collections.emptyList();
             }
         }
 

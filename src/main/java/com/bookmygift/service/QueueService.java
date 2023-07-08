@@ -17,22 +17,22 @@ public class QueueService {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendOrderRoutingKey(OrderEntity order) {
+    public void sendPlaceOrderSuccessNotification(OrderEntity order) {
         rabbitTemplate.convertAndSend("directExchange", "orderRoutingKey", objectMapper.writeValueAsString(order));
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendCancelRoutingKey(OrderEntity order) {
+    public void sendOrderCancelledNotification(OrderEntity order) {
         rabbitTemplate.convertAndSend("directExchange", "cancelRoutingKey", objectMapper.writeValueAsString(order));
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendOtp(UserEntity user) {
+    public void sendTwoFactorAuthentication(UserEntity user) {
         rabbitTemplate.convertAndSend("directExchange", "sendOtpRoutingKey", objectMapper.writeValueAsString(user));
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendSuccessNotification(UserEntity user) {
+    public void sendVerificationSuccessNotification(UserEntity user) {
         rabbitTemplate.convertAndSend("directExchange", "sendVerifySuccessRoutingKey", objectMapper.writeValueAsString(user));
     }
 }
