@@ -56,7 +56,7 @@ public class AuthenticationService {
         return createAuthResponse(user, jwtToken);
     }
 
-    public AuthResponse authenticate(AuthRequest authRequest, boolean isVerification) {
+    public AuthResponse authenticateUser(AuthRequest authRequest, boolean isVerification) {
 
         String username = getUsernameFromEmail(authRequest.getEmail());
 
@@ -78,9 +78,9 @@ public class AuthenticationService {
         return createAuthResponse(user, jwtToken);
     }
 
-    public AuthResponse verify(VerifyRequest verifyRequest) {
+    public AuthResponse verifyUser(VerifyRequest verifyRequest) {
 
-        AuthResponse authResponse = authenticate(verifyRequest, true);
+        AuthResponse authResponse = authenticateUser(verifyRequest, true);
 
         UserEntity user = authResponse.getUser();
 

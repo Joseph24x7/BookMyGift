@@ -24,29 +24,29 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponse placeOrder(@RequestBody @Valid PlaceOrderRequest orderRequest, HttpServletRequest servletRequest) {
-        log.debug("Getting Place Order Request: {}", orderRequest);
+        log.debug("Entering placeOrder with PlaceOrderRequest: {}", orderRequest);
         orderRequest.setUsername(tokenUtil.extractUsernameFromRequest(servletRequest));
         OrderResponse orderResponse = bookMyGiftService.placeOrder(orderRequest);
-        log.debug("Returning Place Order Response: {}", orderResponse);
+        log.debug("Exiting placeOrder with OrderResponse: {}", orderResponse);
         return orderResponse;
     }
 
     @GetMapping
     public OrderResponse showMyOrders(@ModelAttribute ShowOrderRequest orderRequest, HttpServletRequest servletRequest) {
-        log.debug("Getting Show Order Request: {}", orderRequest);
+        log.debug("Entering showMyOrders with ShowOrderRequest: {}", orderRequest);
         orderRequest.setUsername(tokenUtil.extractUsernameFromRequest(servletRequest));
         OrderResponse orderResponse = bookMyGiftService.showMyOrders(orderRequest);
-        log.debug("Returning Show Order Response: {}", orderResponse);
+        log.debug("Exiting showMyOrders with OrderResponse: {}", orderResponse);
         return orderResponse;
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     public OrderResponse cancelOrder(@RequestParam(name = "orderId") String orderId, HttpServletRequest servletRequest) {
-        log.debug("Getting cancel Order Id: {}", orderId);
+        log.debug("Entering cancelOrder with OrderId: {}", orderId);
         String username = tokenUtil.extractUsernameFromRequest(servletRequest);
         OrderResponse orderResponse = bookMyGiftService.cancelOrder(orderId, username);
-        log.debug("Returning cancel Order Request: {}", orderResponse);
+        log.debug("Exiting cancelOrder with OrderResponse: {}", orderResponse);
         return orderResponse;
     }
 }
