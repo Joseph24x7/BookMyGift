@@ -21,7 +21,7 @@ import java.util.List;
 @Entity
 @Table(name = "USERS", schema = "myapp")
 @Builder(toBuilder = true)
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity implements UserDetails, Serializable {

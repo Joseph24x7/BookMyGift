@@ -7,6 +7,10 @@ import com.bookmygift.utils.ErrorEnums;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
@@ -20,21 +24,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class GlobalExceptionControllerTest {
 
-    private final GlobalExceptionController globalExceptionController = new GlobalExceptionController();
-    private final BadRequestException badRequestException = mock(BadRequestException.class);
-    private final UnAuthorizedException unAuthorizedException = mock(UnAuthorizedException.class);
-    private final ConstraintViolationException constraintViolationException = mock(ConstraintViolationException.class);
-    private final MethodArgumentNotValidException methodArgumentNotValidException = mock(MethodArgumentNotValidException.class);
-    private final BadCredentialsException badCredentialsException = mock(BadCredentialsException.class);
-    private final ConstraintViolation<?> constraintViolation = mock(ConstraintViolation.class);
+    @Mock
     private final FieldError fieldError = mock(FieldError.class);
+    @Mock
     private final BindingResult bindingResult = mock(BindingResult.class);
-    ErrorEnums invalidOrderIdEnum = ErrorEnums.INVALID_ORDER_ID;
-    ErrorEnums unauthorizedEnum = ErrorEnums.AUTHORIZATION_FAILED;
-
-    ErrorResponse badRequestResponse = ErrorResponse.builder().errorDetail("[BAD_REQUEST]").errorType(HttpStatus.BAD_REQUEST.getReasonPhrase()).build();
+    private final ErrorEnums invalidOrderIdEnum = ErrorEnums.INVALID_ORDER_ID;
+    private final ErrorEnums unauthorizedEnum = ErrorEnums.AUTHORIZATION_FAILED;
+    private final ErrorResponse badRequestResponse = ErrorResponse.builder().errorDetail("[BAD_REQUEST]").errorType(HttpStatus.BAD_REQUEST.getReasonPhrase()).build();
+    @InjectMocks
+    private GlobalExceptionController globalExceptionController;
+    @Mock
+    private BadRequestException badRequestException;
+    @Mock
+    private UnAuthorizedException unAuthorizedException;
+    @Mock
+    private ConstraintViolationException constraintViolationException;
+    @Mock
+    private MethodArgumentNotValidException methodArgumentNotValidException;
+    @Mock
+    private BadCredentialsException badCredentialsException;
+    @Mock
+    private ConstraintViolation<?> constraintViolation;
 
     @Test
     void handleBadRequestException() {
