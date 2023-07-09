@@ -21,11 +21,15 @@ jobs:
         with:
           java-version: '17'
 
+      - name: Download Maven
+        run: |
+          wget https://archive.apache.org/dist/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz
+          tar xzf apache-maven-3.9.3-bin.tar.gz
+
       - name: Set up Maven
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          maven-version: '3.9.3'
+        run: |
+          export MAVEN_HOME=$RUNNER_WORKSPACE/apache-maven-3.9.3
+          export PATH=$MAVEN_HOME/bin:$PATH
 
       - name: Build with Maven
         run: mvn clean install
