@@ -18,10 +18,8 @@ jobs:
 
       - name: Set up JDK and Maven
         run: |
-          wget -q https://download.java.net/java/GA/jdk17.0.1/2b70219e874a4f5aaa6bebe55d254c55/12/GPL/openjdk-17.0.1_linux-x64_bin.tar.gz
-          tar xzf openjdk-17.0.1_linux-x64_bin.tar.gz
-          export JAVA_HOME=$RUNNER_WORKSPACE/jdk-17.0.1
-          export PATH=$JAVA_HOME/bin:$PATH
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jdk
 
           wget -q https://archive.apache.org/dist/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz
           tar xzf apache-maven-3.9.3-bin.tar.gz
