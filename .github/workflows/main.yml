@@ -21,5 +21,11 @@ jobs:
         with:
           java-version: '17'
 
+      - name: Set up Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          maven-version: '3.9.3'
+
       - name: Build with Maven
         run: mvn clean install
