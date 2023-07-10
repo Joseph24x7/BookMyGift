@@ -145,6 +145,7 @@
                 </executions>
                 <configuration>
                     <excludes>
+                        <exclude>com/bookmygift/BookMyGiftApplication.class</exclude>
                         <exclude>com/bookmygift/config/**</exclude>
                         <exclude>com/bookmygift/entity/**</exclude>
                         <exclude>com/bookmygift/request/**</exclude>

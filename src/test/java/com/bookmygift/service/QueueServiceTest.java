@@ -12,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import static com.bookmygift.utils.ApplicationConstants.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,5 +62,41 @@ public class QueueServiceTest {
         queueService.sendVerificationSuccessNotification(user);
 
         verify(rabbitTemplate).convertAndSend(DIRECT_EXCHANGE, SEND_VERIFY_SUCCESS_ROUTING_KEY, objectMapper.writeValueAsString(user));
+    }
+
+    @Test
+    public void testSendPlaceOrderSuccessNotification_JsonProcessingException() throws JsonProcessingException {
+
+        OrderEntity order = new OrderEntity();
+        doThrow(JsonProcessingException.class).when(objectMapper).writeValueAsString(order);
+
+        assertThrows(JsonProcessingException.class, () -> queueService.sendPlaceOrderSuccessNotification(order));
+    }
+
+    @Test
+    public void testSendOrderCancelledNotification_JsonProcessingException() throws JsonProcessingException {
+
+        OrderEntity order = new OrderEntity();
+        doThrow(JsonProcessingException.class).when(objectMapper).writeValueAsString(order);
+
+        assertThrows(JsonProcessingException.class, () -> queueService.sendOrderCancelledNotification(order));
+    }
+
+    @Test
+    public void testSendTwoFactorAuthentication_JsonProcessingException() throws JsonProcessingException {
+
+        UserEntity user = new UserEntity();
+        doThrow(JsonProcessingException.class).when(objectMapper).writeValueAsString(user);
+
+        assertThrows(JsonProcessingException.class, () -> queueService.sendTwoFactorAuthentication(user));
+    }
+
+    @Test
+    public void testSendVerificationSuccessNotification_JsonProcessingException() throws JsonProcessingException {
+
+        UserEntity user = new UserEntity();
+        doThrow(JsonProcessingException.class).when(objectMapper).writeValueAsString(user);
+
+        assertThrows(JsonProcessingException.class, () -> queueService.sendVerificationSuccessNotification(user));
     }
 }
