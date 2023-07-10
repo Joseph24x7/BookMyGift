@@ -2,18 +2,68 @@ package com.bookmygift.service;
 
 import com.bookmygift.entity.OrderEntity;
 import com.bookmygift.entity.UserEntity;
-import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
 
-@Service
-@RequiredArgsConstructor
-public class EmailService {
+import static org.mockito.Mockito.verify;
 
-    private final JavaMailSender javaMailSender;
+@ExtendWith(MockitoExtension.class)
+public class EmailServiceTest {
 
-    public void sendOrderConfirmationEmail(OrderEntity order) {
+    @Mock
+    private JavaMailSender javaMailSender;
+
+    @InjectMocks
+    private EmailService emailService;
+
+    private OrderEntity order;
+    private UserEntity user;
+
+    @BeforeEach
+    public void setUp() {
+        order = OrderEntity.builder().emailId("test@example.com").orderId(String.valueOf(123)).username("John Doe").build();
+        user = UserEntity.builder().email("test@example.com").fullName("John Doe").twoFaCode("123456").build();
+    }
+
+    @Test
+    public void testSendOrderConfirmationEmail_OrderConfirmationSent() {
+
+        emailService.sendOrderConfirmationEmail(order);
+
+        verify(javaMailSender).send(createOrderConfirmationEmailMessage(order));
+    }
+
+    @Test
+    public void testCancelOrderConfirmationEmail_OrderCancellationSent() {
+
+        emailService.cancelOrderConfirmationEmail(order);
+
+        verify(javaMailSender).send(createCancelOrderConfirmationEmailMessage(order));
+    }
+
+    @Test
+    public void testSendOtpEmail_OTPSent() {
+
+        emailService.sendOtpEmail(user);
+
+        verify(javaMailSender).send(createOtpEmailMessage(user));
+    }
+
+    @Test
+    public void testSendVerificationSuccessEmail_VerificationSuccessSent() {
+
+        emailService.sendVerificationSuccessEmail(user);
+
+        verify(javaMailSender).send(createVerificationSuccessEmailMessage(user));
+    }
+
+    private SimpleMailMessage createOrderConfirmationEmailMessage(OrderEntity order) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(order.getEmailId());
         mailMessage.setSubject("Order Confirmation for Order ID: " + order.getOrderId());
@@ -22,10 +72,10 @@ public class EmailService {
                 + "Thank you for choosing us.\n\n"
                 + "Warm Regards,\n"
                 + "The My Company Name Team");
-        javaMailSender.send(mailMessage);
+        return mailMessage;
     }
 
-    public void cancelOrderConfirmationEmail(OrderEntity order) {
+    private SimpleMailMessage createCancelOrderConfirmationEmailMessage(OrderEntity order) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(order.getEmailId());
         mailMessage.setSubject("Order Cancellation for Order ID: " + order.getOrderId());
@@ -34,11 +84,10 @@ public class EmailService {
                 + "Thank you for choosing My Company Name, and we hope to have the opportunity to serve you again in the future.\n\n"
                 + "Warm Regards,\n"
                 + "The My Company Name Team");
-        javaMailSender.send(mailMessage);
+        return mailMessage;
     }
 
-    public void sendOtpEmail(UserEntity user) {
-
+    private SimpleMailMessage createOtpEmailMessage(UserEntity user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("OTP for Login");
@@ -46,12 +95,10 @@ public class EmailService {
         mailMessage.setText("Dear " + user.getFullName() + ",\n\n Your OTP for login is: " + user.getTwoFaCode()
                 + ".\n\n" + "Please enter this OTP to proceed with your login.\n\n" + "Thank you for choosing us.\n\n"
                 + "Warm Regards,\n" + "Book My Gift Team");
-
-        javaMailSender.send(mailMessage);
+        return mailMessage;
     }
 
-    public void sendVerificationSuccessEmail(UserEntity user) {
-
+    private SimpleMailMessage createVerificationSuccessEmailMessage(UserEntity user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Verification Success");
@@ -59,9 +106,6 @@ public class EmailService {
         mailMessage.setText(
                 "Dear " + user.getFullName() + ",\n\n Your verification is successful. Please enjoy using BookMyGift."
                         + "\n\n" + "Thank you for choosing us.\n\n" + "Warm Regards,\n" + "Book My Gift Team");
-
-        javaMailSender.send(mailMessage);
+        return mailMessage;
     }
-
 }
-

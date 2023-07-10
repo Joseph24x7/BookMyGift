@@ -143,7 +143,19 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>com/bookmygift/config/**</exclude>
+                        <exclude>com/bookmygift/entity/**</exclude>
+                        <exclude>com/bookmygift/request/**</exclude>
+                        <exclude>com/bookmygift/response/**</exclude>
+                        <exclude>com/bookmygift/exception/**</exclude>
+                        <exclude>com/bookmygift/logging/**</exclude>
+                        <exclude>com/bookmygift/repository/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
+
         </plugins>
     </build>
 
