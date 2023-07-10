@@ -20,6 +20,6 @@ jobs:
       - name: Log in to Docker Hub
         run: docker login -u joseph24x7 -p ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build Docker image
-        run: docker build -t joseph24x7/bookmyticket .
+        run: docker build -t joseph24x7/bookmygift .
       - name: Push image to Docker Hub
-        run: docker push joseph24x7/bookmyticket
+        run: docker push joseph24x7/bookmygift
