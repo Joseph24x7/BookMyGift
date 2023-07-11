@@ -34,6 +34,7 @@ public class LoggingFilter extends OncePerRequestFilter {
 
         log.debug("CorrelationId: {}, Responded with {} status", correlationId, response.getStatus());
 
+        MDC.remove ("CorrelationId");
     }
 
     private String generateCorrelationId() {
