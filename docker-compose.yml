@@ -16,7 +16,9 @@ services:
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=password
       - SPRING_RABBITMQ_HOST=rabbitmq
-  
+    networks:
+      - mynetwork
+
   postgres:
     container_name: postgres
     image: postgres:latest
@@ -28,6 +30,8 @@ services:
       - 5432:5432
     volumes:
       - ./data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
 
   rabbitmq:
     container_name: rabbitmq
@@ -40,13 +44,35 @@ services:
       - RABBITMQ_DEFAULT_PASS=password
       - RABBITMQ_ERLANG_COOKIE='secretpass'
       - RABBITMQ_USE_LONGNAME=true
+    networks:
+      - mynetwork
 
   postfix:
     image: postfixadmin:latest
     environment:
-      POSTFIX_SMTP_HOST: smtp.gmail.com
-      POSTFIX_SMTP_PORT: 587
-      POSTFIX_SMTP_USERNAME: gmail.com
-      POSTFIX_SMTP_PASSWORD: password
-      POSTFIX_SMTP_AUTH: true
-      POSTFIX_SMTP_STARTTLS_ENABLE: true
+      POSTFIX_SMTP_HOST: $$\{mail.host:}
+      POSTFIX_SMTP_PORT: $$\{mail.port:}
+      POSTFIX_SMTP_USERNAME: $$\{mail.username:}
+      POSTFIX_SMTP_PASSWORD: $$\{mail.password:}
+      POSTFIX_SMTP_AUTH: $$\{mail.properties.mail.smtp.auth:}
+      POSTFIX_SMTP_STARTTLS_ENABLE: $$\{mail.properties.mail.smtp.starttls.enable:}
+    networks:
+      - mynetwork
+
+  configserver:
+    container_name: configserver
+    image: joseph24x7/configserver:latest
+    ports:
+      - 8888:8888
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/myuser
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

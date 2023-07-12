@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: two-factor-auth
+
+  cloud:
+    config:
+      uri: ${cloud.config.uri:http://localhost:8888}
+      profile: ${cloud.config.profile:jdbc}
+      label: ${cloud.config.label:master}
+      name: ${cloud.config.name:bookmygift}
+  config:
+    activate:
+      on-profile:
+        active: ${config.activate.on-profile.active:jdbc}
+
+management:
+  security:
+    enabled: ${security.enabled:}

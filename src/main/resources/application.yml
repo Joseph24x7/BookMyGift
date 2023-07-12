@@ -3,41 +3,41 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/myuser
-    username: myuser
-    password: mypassword
+    url: ${datasource.url:}
+    username: ${datasource.username:}
+    password: ${datasource.password:}
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${jpa.hibernate.ddl-auto:}
+    show-sql: ${jpa.show-sql:}
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: ${jpa.properties.hibernate.dialect:}
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: admin
-    password: password
+    host: ${rabbitmq.host:}
+    port: ${rabbitmq.port:}
+    username: ${rabbitmq.username:}
+    password: ${rabbitmq.password:}
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: gmail.com
-    password: password
-    properties.mail.smtp.auth: true
-    properties.mail.smtp.starttls.enable: true
+    host: ${mail.host:}
+    port: ${mail.port:}
+    username: ${mail.username:}
+    password: ${mail.password:}
+    properties.mail.smtp.auth: ${mail.properties.mail.smtp.auth:}
+    properties.mail.smtp.starttls.enable: ${mail.properties.mail.smtp.starttls.enable:}
 
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
-        exclude: beans
+        include: ${endpoints.web.exposure.include:}
+        exclude: ${endpoints.web.exposure.exclude:}
   health:
-    show-details: always
+    show-details: ${health.show-details:}
 
 logging:
   pattern:
-    file: '%d{yyyy-MM-dd HH:mm:ss,SSS} %5p [%t] %c [%M] - %m%n'
+    file: ${pattern.file:}
   level:
-    com.bookmygift: DEBUG
-    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    com.bookmygift: ${level.com.bookmygift:}
+    org.springframework.web.filter.CommonsRequestLoggingFilter: ${level.org.springframework.web.filter.CommonsRequestLoggingFilter:}
