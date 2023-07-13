@@ -8,6 +8,7 @@ services:
     depends_on:
       - postgres
       - rabbitmq
+      - postfix
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/myuser
       - SPRING_DATASOURCE_USERNAME=myuser
@@ -16,6 +17,12 @@ services:
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=password
       - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=@gmail.com
+      - SPRING_MAIL_PASSWORD=pass
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
     networks:
       - mynetwork
 
@@ -43,19 +50,21 @@ services:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=password
       - RABBITMQ_ERLANG_COOKIE='secretpass'
-      - RABBITMQ_USE_LONGNAME=true
     networks:
       - mynetwork
 
   postfix:
+    container_name: postfix
     image: postfixadmin:latest
+    depends_on:
+      - configserver
     environment:
-      POSTFIX_SMTP_HOST: $$\{mail.host:}
-      POSTFIX_SMTP_PORT: $$\{mail.port:}
-      POSTFIX_SMTP_USERNAME: $$\{mail.username:}
-      POSTFIX_SMTP_PASSWORD: $$\{mail.password:}
-      POSTFIX_SMTP_AUTH: $$\{mail.properties.mail.smtp.auth:}
-      POSTFIX_SMTP_STARTTLS_ENABLE: $$\{mail.properties.mail.smtp.starttls.enable:}
+      POSTFIX_SMTP_HOST: smtp.gmail.com
+      POSTFIX_SMTP_PORT: 587
+      POSTFIX_SMTP_USERNAME: @gmail.com
+      POSTFIX_SMTP_PASSWORD: pass
+      POSTFIX_SMTP_AUTH: true
+      POSTFIX_SMTP_STARTTLS_ENABLE: true
     networks:
       - mynetwork
 
