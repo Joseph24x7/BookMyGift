@@ -1,6 +1,6 @@
 package com.bookmygift.messaging;
 
-import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.Order;
 import com.bookmygift.entity.UserEntity;
 import com.bookmygift.service.EmailService;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ public class QueueListenerTest {
     @InjectMocks
     private QueueListener queueListener;
 
-    OrderEntity order = OrderEntity.builder().build();
+    Order order = Order.builder().build();
     UserEntity user = UserEntity.builder().build();
 
     @Test

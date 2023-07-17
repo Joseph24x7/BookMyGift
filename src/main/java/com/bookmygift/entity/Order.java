@@ -17,7 +17,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "ORDER", schema = "myapp")
-public class OrderEntity implements Serializable {
+public class Order implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -49,12 +49,12 @@ public class OrderEntity implements Serializable {
     private OrderStatusEnum orderStatus;
 
     @JsonCreator
-    public OrderEntity(@JsonProperty("orderId") String orderId,
-                       @JsonProperty("username") String username,
-                       @JsonProperty("emailId") String emailId,
-                       @JsonProperty("giftType") GiftTypeEnum giftType,
-                       @JsonProperty("amountPaid") Double amountPaid,
-                       @JsonProperty("orderStatus") OrderStatusEnum orderStatus
+    public Order(@JsonProperty("orderId") String orderId,
+                 @JsonProperty("username") String username,
+                 @JsonProperty("emailId") String emailId,
+                 @JsonProperty("giftType") GiftTypeEnum giftType,
+                 @JsonProperty("amountPaid") Double amountPaid,
+                 @JsonProperty("orderStatus") OrderStatusEnum orderStatus
     ) {
         this.orderId = orderId;
         this.username = username;
@@ -65,9 +65,9 @@ public class OrderEntity implements Serializable {
     }
 
     @JsonCreator
-    public OrderEntity(String json) throws IOException {
+    public Order(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        OrderEntity order = mapper.readValue(json, OrderEntity.class);
+        Order order = mapper.readValue(json, Order.class);
         this.orderId = order.getOrderId();
         this.username = order.getUsername();
         this.emailId = order.getEmailId();

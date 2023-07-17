@@ -1,6 +1,6 @@
 package com.bookmygift.messaging;
 
-import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.Order;
 import com.bookmygift.entity.UserEntity;
 import com.bookmygift.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +14,12 @@ public class QueueListener {
     private final EmailService emailService;
 
     @RabbitListener(queues = "orderQueue", containerFactory = "rabbitListenerContainerFactory")
-    public void handleOrderMessage(OrderEntity order) {
+    public void handleOrderMessage(Order order) {
         emailService.sendOrderConfirmationEmail(order);
     }
 
     @RabbitListener(queues = "cancelQueue", containerFactory = "rabbitListenerContainerFactory")
-    public void handleCancelMessage(OrderEntity order) {
+    public void handleCancelMessage(Order order) {
         emailService.cancelOrderConfirmationEmail(order);
     }
 

@@ -1,6 +1,6 @@
 package com.bookmygift.service;
 
-import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.Order;
 import com.bookmygift.entity.UserEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +31,7 @@ public class QueueServiceTest {
     @Test
     public void test_sendPlaceOrderSuccessNotification() throws JsonProcessingException {
 
-        OrderEntity order = new OrderEntity();
+        Order order = new Order();
         queueService.sendPlaceOrderSuccessNotification(order);
 
         verify(rabbitTemplate).convertAndSend(DIRECT_EXCHANGE, ORDER_ROUTING_KEY, objectMapper.writeValueAsString(order));
@@ -40,7 +40,7 @@ public class QueueServiceTest {
     @Test
     public void test_sendOrderCancelledNotification() throws JsonProcessingException {
 
-        OrderEntity order = new OrderEntity();
+        Order order = new Order();
         queueService.sendOrderCancelledNotification(order);
 
         verify(rabbitTemplate).convertAndSend(DIRECT_EXCHANGE, CANCEL_ROUTING_KEY, objectMapper.writeValueAsString(order));
@@ -67,7 +67,7 @@ public class QueueServiceTest {
     @Test
     public void testSendPlaceOrderSuccessNotification_JsonProcessingException() throws JsonProcessingException {
 
-        OrderEntity order = new OrderEntity();
+        Order order = new Order();
         doThrow(JsonProcessingException.class).when(objectMapper).writeValueAsString(order);
 
         assertThrows(JsonProcessingException.class, () -> queueService.sendPlaceOrderSuccessNotification(order));
@@ -76,7 +76,7 @@ public class QueueServiceTest {
     @Test
     public void testSendOrderCancelledNotification_JsonProcessingException() throws JsonProcessingException {
 
-        OrderEntity order = new OrderEntity();
+        Order order = new Order();
         doThrow(JsonProcessingException.class).when(objectMapper).writeValueAsString(order);
 
         assertThrows(JsonProcessingException.class, () -> queueService.sendOrderCancelledNotification(order));

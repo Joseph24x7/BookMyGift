@@ -1,7 +1,7 @@
 package com.bookmygift.repository;
 
 import com.bookmygift.entity.GiftTypeEnum;
-import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.Order;
 import com.bookmygift.entity.OrderStatusEnum;
 import com.bookmygift.request.ShowOrderRequest;
 import io.micrometer.common.util.StringUtils;
@@ -13,12 +13,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderRepository extends JpaRepository<OrderEntity, Long>, JpaSpecificationExecutor<OrderEntity> {
+public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
-    Optional<OrderEntity> findByOrderIdAndUsername(String orderId, String username);
+    Optional<Order> findByOrderIdAndUsername(String orderId, String username);
 
-    default List<OrderEntity> findOrdersByCriteria(ShowOrderRequest orderRequest) {
-        Specification<OrderEntity> spec = Specification.where(null);
+    default List<Order> findOrdersByCriteria(ShowOrderRequest orderRequest) {
+        Specification<Order> spec = Specification.where(null);
 
         spec = spec.and((root, query, cb) -> cb.equal(root.get("username"), orderRequest.getUsername()));
 
