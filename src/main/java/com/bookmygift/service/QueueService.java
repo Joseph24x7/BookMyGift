@@ -1,7 +1,7 @@
 package com.bookmygift.service;
 
 import com.bookmygift.entity.Order;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +27,12 @@ public class QueueService {
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendTwoFactorAuthentication(UserEntity user) {
+    public void sendTwoFactorAuthentication(User user) {
         rabbitTemplate.convertAndSend("directExchange", "sendOtpRoutingKey", objectMapper.writeValueAsString(user));
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendVerificationSuccessNotification(UserEntity user) {
+    public void sendVerificationSuccessNotification(User user) {
         rabbitTemplate.convertAndSend("directExchange", "sendVerifySuccessRoutingKey", objectMapper.writeValueAsString(user));
     }
 }

@@ -1,7 +1,7 @@
 package com.bookmygift.service;
 
 import com.bookmygift.entity.Order;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -37,7 +37,7 @@ public class EmailService {
         javaMailSender.send(mailMessage);
     }
 
-    public void sendOtpEmail(UserEntity user) {
+    public void sendOtpEmail(User user) {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
@@ -50,7 +50,7 @@ public class EmailService {
         javaMailSender.send(mailMessage);
     }
 
-    public void sendVerificationSuccessEmail(UserEntity user) {
+    public void sendVerificationSuccessEmail(User user) {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());

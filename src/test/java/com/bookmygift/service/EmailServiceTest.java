@@ -1,7 +1,7 @@
 package com.bookmygift.service;
 
 import com.bookmygift.entity.Order;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,12 +23,12 @@ public class EmailServiceTest {
     private EmailService emailService;
 
     private Order order;
-    private UserEntity user;
+    private User user;
 
     @BeforeEach
     public void setUp() {
         order = Order.builder().emailId("test@example.com").orderId(String.valueOf(123)).username("John Doe").build();
-        user = UserEntity.builder().email("test@example.com").fullName("John Doe").twoFaCode("123456").build();
+        user = User.builder().email("test@example.com").fullName("John Doe").twoFaCode("123456").build();
     }
 
     @Test
@@ -87,7 +87,7 @@ public class EmailServiceTest {
         return mailMessage;
     }
 
-    private SimpleMailMessage createOtpEmailMessage(UserEntity user) {
+    private SimpleMailMessage createOtpEmailMessage(User user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("OTP for Login");
@@ -98,7 +98,7 @@ public class EmailServiceTest {
         return mailMessage;
     }
 
-    private SimpleMailMessage createVerificationSuccessEmailMessage(UserEntity user) {
+    private SimpleMailMessage createVerificationSuccessEmailMessage(User user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Verification Success");

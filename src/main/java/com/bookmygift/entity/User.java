@@ -24,7 +24,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity implements UserDetails, Serializable {
+public class User implements UserDetails, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -72,9 +72,9 @@ public class UserEntity implements UserDetails, Serializable {
     private boolean isVerified;
 
 	@JsonCreator
-	public UserEntity(String json) throws IOException {
+	public User(String json) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-		UserEntity user = mapper.readValue(json, UserEntity.class);
+		User user = mapper.readValue(json, User.class);
 		this.userId = user.getUserId();
 		this.username = user.getUsername();
 		this.email = user.getEmail();
@@ -86,10 +86,10 @@ public class UserEntity implements UserDetails, Serializable {
 	}
 
 	@JsonCreator
-	public UserEntity(@JsonProperty("userId") Long userId, @JsonProperty("username") String username,
-					  @JsonProperty("email") @NotNull String email, @JsonProperty("fullName") String fullName,
-					  @JsonProperty("role") @NotNull RoleEnum role, @JsonProperty("twoFaCode") @NotNull String twoFaCode,
-					  @JsonProperty("twoFaExpiry") @NotNull String twoFaExpiry, @JsonProperty("isVerified") boolean isVerified) {
+	public User(@JsonProperty("userId") Long userId, @JsonProperty("username") String username,
+				@JsonProperty("email") @NotNull String email, @JsonProperty("fullName") String fullName,
+				@JsonProperty("role") @NotNull RoleEnum role, @JsonProperty("twoFaCode") @NotNull String twoFaCode,
+				@JsonProperty("twoFaExpiry") @NotNull String twoFaExpiry, @JsonProperty("isVerified") boolean isVerified) {
 
 		this.userId = userId;
 		this.username = username;

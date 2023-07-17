@@ -3,7 +3,7 @@ package com.bookmygift.service;
 import com.bookmygift.entity.GiftTypeEnum;
 import com.bookmygift.entity.Order;
 import com.bookmygift.entity.OrderStatusEnum;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import com.bookmygift.exception.BadRequestException;
 import com.bookmygift.exception.UnAuthorizedException;
 import com.bookmygift.repository.OrderRepository;
@@ -30,7 +30,7 @@ public class OrderService {
 
         String username = orderRequest.getUsername();
 
-        UserEntity user = userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
 
         Order order = Order.builder().orderId(username.substring(0, 3).toUpperCase() + "_" + UUID.randomUUID()).username(username).emailId(user.getEmail()).
                 giftType(GiftTypeEnum.valueOf(orderRequest.getGiftType())).amountPaid(orderRequest.getAmountPaid()).orderStatus(OrderStatusEnum.ORDER_RECEIVED).build();

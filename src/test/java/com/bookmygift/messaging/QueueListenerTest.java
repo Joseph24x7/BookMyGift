@@ -1,7 +1,7 @@
 package com.bookmygift.messaging;
 
 import com.bookmygift.entity.Order;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import com.bookmygift.service.EmailService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ public class QueueListenerTest {
     private QueueListener queueListener;
 
     Order order = Order.builder().build();
-    UserEntity user = UserEntity.builder().build();
+    User user = User.builder().build();
 
     @Test
     public void shouldSendOrderConfirmationEmail() {

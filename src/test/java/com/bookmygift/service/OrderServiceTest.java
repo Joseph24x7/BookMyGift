@@ -2,7 +2,7 @@ package com.bookmygift.service;
 
 import com.bookmygift.entity.Order;
 import com.bookmygift.entity.OrderStatusEnum;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import com.bookmygift.exception.BadRequestException;
 import com.bookmygift.exception.UnAuthorizedException;
 import com.bookmygift.repository.OrderRepository;
@@ -41,12 +41,12 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     private PlaceOrderRequest validOrderRequest;
-    private UserEntity existingUser;
+    private User existingUser;
 
     @BeforeEach
     public void setup() {
         validOrderRequest = PlaceOrderRequest.builder().username("john123").giftType("FRAME").amountPaid(100.0).build();
-        existingUser = UserEntity.builder().username("john123").email("john@example.com").build();
+        existingUser = User.builder().username("john123").email("john@example.com").build();
     }
 
     @Test

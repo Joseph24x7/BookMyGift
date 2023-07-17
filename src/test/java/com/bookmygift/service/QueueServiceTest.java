@@ -1,7 +1,7 @@
 package com.bookmygift.service;
 
 import com.bookmygift.entity.Order;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ public class QueueServiceTest {
     @Test
     public void test_sendTwoFactorAuthentication() throws JsonProcessingException {
 
-        UserEntity user = new UserEntity();
+        User user = new User();
         queueService.sendTwoFactorAuthentication(user);
 
         verify(rabbitTemplate).convertAndSend(DIRECT_EXCHANGE, SEND_OTP_ROUTING_KEY, objectMapper.writeValueAsString(user));
@@ -58,7 +58,7 @@ public class QueueServiceTest {
     @Test
     public void test_sendVerificationSuccessNotification() throws JsonProcessingException {
 
-        UserEntity user = new UserEntity();
+        User user = new User();
         queueService.sendVerificationSuccessNotification(user);
 
         verify(rabbitTemplate).convertAndSend(DIRECT_EXCHANGE, SEND_VERIFY_SUCCESS_ROUTING_KEY, objectMapper.writeValueAsString(user));
@@ -85,7 +85,7 @@ public class QueueServiceTest {
     @Test
     public void testSendTwoFactorAuthentication_JsonProcessingException() throws JsonProcessingException {
 
-        UserEntity user = new UserEntity();
+        User user = new User();
         doThrow(JsonProcessingException.class).when(objectMapper).writeValueAsString(user);
 
         assertThrows(JsonProcessingException.class, () -> queueService.sendTwoFactorAuthentication(user));
@@ -94,7 +94,7 @@ public class QueueServiceTest {
     @Test
     public void testSendVerificationSuccessNotification_JsonProcessingException() throws JsonProcessingException {
 
-        UserEntity user = new UserEntity();
+        User user = new User();
         doThrow(JsonProcessingException.class).when(objectMapper).writeValueAsString(user);
 
         assertThrows(JsonProcessingException.class, () -> queueService.sendVerificationSuccessNotification(user));
