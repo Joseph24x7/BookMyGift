@@ -83,8 +83,8 @@ public class OrderServiceTest {
 
     @Test
     public void testShowMyOrders_ShouldReturnOrderResponse() {
-        List<Order> orderEntities = new ArrayList<>();
-        when(orderRepository.findOrdersByCriteria(any(ShowOrderRequest.class))).thenReturn(orderEntities);
+        List<Order> orders = new ArrayList<>();
+        when(orderRepository.findOrdersByCriteria(any(ShowOrderRequest.class))).thenReturn(orders);
 
         OrderResponse result = orderService.showMyOrders(ShowOrderRequest.builder().build());
 
@@ -92,7 +92,7 @@ public class OrderServiceTest {
 
         assertNotNull(result);
         assertNotNull(result.getOrders());
-        assertEquals(orderEntities, result.getOrders());
+        assertEquals(orders, result.getOrders());
     }
 
     @Test
