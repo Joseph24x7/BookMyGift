@@ -1,18 +1,13 @@
 package com.bookmygift.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "properties", schema = "myapp")
-@Getter
-@NoArgsConstructor
-public class PropertiesEntity implements Serializable {
-
+public class Properties implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -27,4 +22,18 @@ public class PropertiesEntity implements Serializable {
     @Column(name = "prop_value", nullable = false)
     private String propValue;
 
+    public Properties(){
+    }
+
+    public Long getPropId() {
+        return propId;
+    }
+
+    public String getPropName() {
+        return propName;
+    }
+
+    public String getPropValue() {
+        return propValue;
+    }
 }

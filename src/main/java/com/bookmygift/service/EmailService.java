@@ -1,7 +1,7 @@
 package com.bookmygift.service;
 
-import com.bookmygift.entity.OrderEntity;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.Order;
+import com.bookmygift.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,7 +13,7 @@ public class EmailService {
 
     private final JavaMailSender javaMailSender;
 
-    public void sendOrderConfirmationEmail(OrderEntity order) {
+    public void sendOrderConfirmationEmail(Order order) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(order.getEmailId());
         mailMessage.setSubject("Order Confirmation for Order ID: " + order.getOrderId());
@@ -25,7 +25,7 @@ public class EmailService {
         javaMailSender.send(mailMessage);
     }
 
-    public void cancelOrderConfirmationEmail(OrderEntity order) {
+    public void cancelOrderConfirmationEmail(Order order) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(order.getEmailId());
         mailMessage.setSubject("Order Cancellation for Order ID: " + order.getOrderId());
@@ -37,7 +37,7 @@ public class EmailService {
         javaMailSender.send(mailMessage);
     }
 
-    public void sendOtpEmail(UserEntity user) {
+    public void sendOtpEmail(User user) {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
@@ -50,7 +50,7 @@ public class EmailService {
         javaMailSender.send(mailMessage);
     }
 
-    public void sendVerificationSuccessEmail(UserEntity user) {
+    public void sendVerificationSuccessEmail(User user) {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());

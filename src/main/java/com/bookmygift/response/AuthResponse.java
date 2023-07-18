@@ -1,6 +1,6 @@
 package com.bookmygift.response;
 
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.*;
@@ -13,6 +13,6 @@ public class AuthResponse {
 	@ToString.Exclude
 	private String token;
 	private AuthenticationStatus authenticationStatus;
-	private UserEntity user;
+	private User user;
 
 }

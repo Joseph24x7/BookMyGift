@@ -1,7 +1,7 @@
 package com.bookmygift.service;
 
 import com.bookmygift.entity.RoleEnum;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import com.bookmygift.exception.BadRequestException;
 import com.bookmygift.exception.UnAuthorizedException;
 import com.bookmygift.repository.UserRepository;
@@ -70,8 +70,8 @@ public class AuthenticationServiceTest {
 
     }
 
-    private UserEntity getUser() {
-        return UserEntity.builder()
+    private User getUser() {
+        return User.builder()
                 .username("test")
                 .password("encodedPassword")
                 .email("test@example.com")
@@ -91,25 +91,25 @@ public class AuthenticationServiceTest {
 
         when(userRepository.findByUsername("test")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-        when(userRepository.save(any(UserEntity.class))).thenReturn(getUser());
-        when(tokenUtil.generateToken(any(UserEntity.class))).thenReturn("jwtToken");
+        when(userRepository.save(any(User.class))).thenReturn(getUser());
+        when(tokenUtil.generateToken(any(User.class))).thenReturn("jwtToken");
 
         AuthResponse response = authenticationService.registerUser(authRequest);
 
         assertEquals(getAuthResponse().toString(), response.toString());
-        verify(queueService, times(1)).sendTwoFactorAuthentication(any(UserEntity.class));
-        verify(validatorUtil, times(1)).validate(any(UserEntity.class));
+        verify(queueService, times(1)).sendTwoFactorAuthentication(any(User.class));
+        verify(validatorUtil, times(1)).validate(any(User.class));
     }
 
     @Test
     public void testRegisterUser_UserAlreadyRegistered() {
-        when(userRepository.findByUsername("test")).thenReturn(Optional.of(new UserEntity()));
+        when(userRepository.findByUsername("test")).thenReturn(Optional.of(new User()));
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> authenticationService.registerUser(authRequest));
 
         assertEquals(ErrorEnums.USER_ALREADY_REGISTERED, exception.getErrorEnums());
-        verify(userRepository, never()).save(any(UserEntity.class));
-        verify(queueService, never()).sendTwoFactorAuthentication(any(UserEntity.class));
+        verify(userRepository, never()).save(any(User.class));
+        verify(queueService, never()).sendTwoFactorAuthentication(any(User.class));
     }
 
     @Test
@@ -117,13 +117,13 @@ public class AuthenticationServiceTest {
 
         when(userRepository.findByUsername("test")).thenReturn(Optional.of(getUser()));
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
-        when(tokenUtil.generateToken(any(UserEntity.class))).thenReturn("jwtToken");
+        when(tokenUtil.generateToken(any(User.class))).thenReturn("jwtToken");
 
         AuthResponse response = authenticationService.authenticateUser(authRequest, false);
 
         assertEquals(getAuthResponse().toString(), response.toString());
-        verify(queueService, times(1)).sendTwoFactorAuthentication(any(UserEntity.class));
-        verify(userRepository, times(1)).save(any(UserEntity.class));
+        verify(queueService, times(1)).sendTwoFactorAuthentication(any(User.class));
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
@@ -134,36 +134,36 @@ public class AuthenticationServiceTest {
         UnAuthorizedException exception = assertThrows(UnAuthorizedException.class, () -> authenticationService.authenticateUser(authRequest, false));
 
         assertEquals(ErrorEnums.INVALID_CREDENTIALS, exception.getErrorEnums());
-        verify(queueService, never()).sendTwoFactorAuthentication(any(UserEntity.class));
-        verify(userRepository, never()).save(any(UserEntity.class));
+        verify(queueService, never()).sendTwoFactorAuthentication(any(User.class));
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     public void testVerifyUser_Success() {
 
-        when(userRepository.save(any(UserEntity.class))).thenReturn(getUser());
+        when(userRepository.save(any(User.class))).thenReturn(getUser());
         when(userRepository.findByUsername(getUser().getUsername())).thenReturn(Optional.of(getUser()));
 
         AuthResponse response = authenticationService.verifyUser(verifyRequest);
 
         assertEquals(getAuthResponse().toString(), response.toString());
-        verify(queueService, times(1)).sendVerificationSuccessNotification(any(UserEntity.class));
-        verify(userRepository, times(1)).save(any(UserEntity.class));
+        verify(queueService, times(1)).sendVerificationSuccessNotification(any(User.class));
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
     public void testVerifyUser_TwoFaAlreadyVerified() {
 
-        UserEntity userEntity = getUser();
-        userEntity.setVerified(true);
+        User user = getUser();
+        user.setVerified(true);
 
-        when(userRepository.findByUsername(getUser().getUsername())).thenReturn(Optional.of(userEntity));
+        when(userRepository.findByUsername(getUser().getUsername())).thenReturn(Optional.of(user));
         BadRequestException exception = assertThrows(BadRequestException.class, () -> authenticationService.verifyUser(verifyRequest));
 
         assertEquals(ErrorEnums.TWO_FA_ALREADY_VERIFIED, exception.getErrorEnums());
 
-        verify(queueService, never()).sendVerificationSuccessNotification(any(UserEntity.class));
-        verify(userRepository, never()).save(any(UserEntity.class));
+        verify(queueService, never()).sendVerificationSuccessNotification(any(User.class));
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
@@ -175,8 +175,8 @@ public class AuthenticationServiceTest {
         UnAuthorizedException exception = assertThrows(UnAuthorizedException.class, () -> authenticationService.verifyUser(verifyRequest));
 
         assertEquals(ErrorEnums.INVALID_2FA_CODE, exception.getErrorEnums());
-        verify(queueService, never()).sendVerificationSuccessNotification(any(UserEntity.class));
-        verify(userRepository, never()).save(any(UserEntity.class));
+        verify(queueService, never()).sendVerificationSuccessNotification(any(User.class));
+        verify(userRepository, never()).save(any(User.class));
     }
 
 }

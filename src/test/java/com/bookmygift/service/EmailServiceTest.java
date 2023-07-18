@@ -1,7 +1,7 @@
 package com.bookmygift.service;
 
-import com.bookmygift.entity.OrderEntity;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.Order;
+import com.bookmygift.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,13 +22,13 @@ public class EmailServiceTest {
     @InjectMocks
     private EmailService emailService;
 
-    private OrderEntity order;
-    private UserEntity user;
+    private Order order;
+    private User user;
 
     @BeforeEach
     public void setUp() {
-        order = OrderEntity.builder().emailId("test@example.com").orderId(String.valueOf(123)).username("John Doe").build();
-        user = UserEntity.builder().email("test@example.com").fullName("John Doe").twoFaCode("123456").build();
+        order = Order.builder().emailId("test@example.com").orderId(String.valueOf(123)).username("John Doe").build();
+        user = User.builder().email("test@example.com").fullName("John Doe").twoFaCode("123456").build();
     }
 
     @Test
@@ -63,7 +63,7 @@ public class EmailServiceTest {
         verify(javaMailSender).send(createVerificationSuccessEmailMessage(user));
     }
 
-    private SimpleMailMessage createOrderConfirmationEmailMessage(OrderEntity order) {
+    private SimpleMailMessage createOrderConfirmationEmailMessage(Order order) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(order.getEmailId());
         mailMessage.setSubject("Order Confirmation for Order ID: " + order.getOrderId());
@@ -75,7 +75,7 @@ public class EmailServiceTest {
         return mailMessage;
     }
 
-    private SimpleMailMessage createCancelOrderConfirmationEmailMessage(OrderEntity order) {
+    private SimpleMailMessage createCancelOrderConfirmationEmailMessage(Order order) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(order.getEmailId());
         mailMessage.setSubject("Order Cancellation for Order ID: " + order.getOrderId());
@@ -87,7 +87,7 @@ public class EmailServiceTest {
         return mailMessage;
     }
 
-    private SimpleMailMessage createOtpEmailMessage(UserEntity user) {
+    private SimpleMailMessage createOtpEmailMessage(User user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("OTP for Login");
@@ -98,7 +98,7 @@ public class EmailServiceTest {
         return mailMessage;
     }
 
-    private SimpleMailMessage createVerificationSuccessEmailMessage(UserEntity user) {
+    private SimpleMailMessage createVerificationSuccessEmailMessage(User user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Verification Success");

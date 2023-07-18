@@ -1,8 +1,8 @@
 package com.bookmygift.service;
 
-import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.Order;
 import com.bookmygift.entity.OrderStatusEnum;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import com.bookmygift.exception.BadRequestException;
 import com.bookmygift.exception.UnAuthorizedException;
 import com.bookmygift.repository.OrderRepository;
@@ -41,31 +41,31 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     private PlaceOrderRequest validOrderRequest;
-    private UserEntity existingUser;
+    private User existingUser;
 
     @BeforeEach
     public void setup() {
         validOrderRequest = PlaceOrderRequest.builder().username("john123").giftType("FRAME").amountPaid(100.0).build();
-        existingUser = UserEntity.builder().username("john123").email("john@example.com").build();
+        existingUser = User.builder().username("john123").email("john@example.com").build();
     }
 
     @Test
     public void testPlaceOrder_ValidRequest_ShouldReturnOrderResponse() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(existingUser));
-        when(orderRepository.save(any(OrderEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        doNothing().when(queueService).sendPlaceOrderSuccessNotification(any(OrderEntity.class));
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        doNothing().when(queueService).sendPlaceOrderSuccessNotification(any(Order.class));
 
         OrderResponse result = orderService.placeOrder(validOrderRequest);
 
         verify(userRepository).findByUsername("john123");
 
-        ArgumentCaptor<OrderEntity> orderCaptor = ArgumentCaptor.forClass(OrderEntity.class);
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
         verify(orderRepository).save(orderCaptor.capture());
-        OrderEntity savedOrder = orderCaptor.getValue();
+        Order savedOrder = orderCaptor.getValue();
 
         assertNotNull(result);
-        assertNotNull(result.getOrderEntity());
-        assertEquals(savedOrder, result.getOrderEntity());
+        assertNotNull(result.getOrder());
+        assertEquals(savedOrder, result.getOrder());
 
         verify(queueService).sendPlaceOrderSuccessNotification(savedOrder);
     }
@@ -83,46 +83,46 @@ public class OrderServiceTest {
 
     @Test
     public void testShowMyOrders_ShouldReturnOrderResponse() {
-        List<OrderEntity> orderEntities = new ArrayList<>();
-        when(orderRepository.findOrdersByCriteria(any(ShowOrderRequest.class))).thenReturn(orderEntities);
+        List<Order> orders = new ArrayList<>();
+        when(orderRepository.findOrdersByCriteria(any(ShowOrderRequest.class))).thenReturn(orders);
 
         OrderResponse result = orderService.showMyOrders(ShowOrderRequest.builder().build());
 
         verify(orderRepository).findOrdersByCriteria(any(ShowOrderRequest.class));
 
         assertNotNull(result);
-        assertNotNull(result.getOrderEntities());
-        assertEquals(orderEntities, result.getOrderEntities());
+        assertNotNull(result.getOrders());
+        assertEquals(orders, result.getOrders());
     }
 
     @Test
     public void testCancelOrder_ValidOrderIdAndUsername_ShouldReturnOrderResponse() {
-        OrderEntity existingOrder = new OrderEntity();
+        Order existingOrder = new Order();
         existingOrder.setOrderId("ABC_123");
         existingOrder.setUsername("john123");
         existingOrder.setOrderStatus(OrderStatusEnum.ORDER_RECEIVED);
         when(orderRepository.findByOrderIdAndUsername(anyString(), anyString())).thenReturn(Optional.of(existingOrder));
-        when(orderRepository.save(any(OrderEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        doNothing().when(queueService).sendOrderCancelledNotification(any(OrderEntity.class));
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        doNothing().when(queueService).sendOrderCancelledNotification(any(Order.class));
 
         OrderResponse result = orderService.cancelOrder("ABC_123", "john123");
 
         verify(orderRepository).findByOrderIdAndUsername("ABC_123", "john123");
 
-        ArgumentCaptor<OrderEntity> orderCaptor = ArgumentCaptor.forClass(OrderEntity.class);
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
         verify(orderRepository).save(orderCaptor.capture());
-        OrderEntity savedOrder = orderCaptor.getValue();
+        Order savedOrder = orderCaptor.getValue();
 
         assertNotNull(result);
-        assertNotNull(result.getOrderEntity());
-        assertEquals(savedOrder, result.getOrderEntity());
+        assertNotNull(result.getOrder());
+        assertEquals(savedOrder, result.getOrder());
 
         verify(queueService).sendOrderCancelledNotification(savedOrder);
     }
 
     @Test
     public void testCancelOrder_OrderAlreadyCancelled_ShouldThrowBadRequestException() {
-        OrderEntity existingOrder = new OrderEntity();
+        Order existingOrder = new Order();
         existingOrder.setOrderId("ABC_123");
         existingOrder.setUsername("john123");
         existingOrder.setOrderStatus(OrderStatusEnum.CANCELLED);

@@ -1,7 +1,7 @@
 package com.bookmygift.controller;
 
 import com.bookmygift.entity.GiftTypeEnum;
-import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.Order;
 import com.bookmygift.entity.OrderStatusEnum;
 import com.bookmygift.request.PlaceOrderRequest;
 import com.bookmygift.request.ShowOrderRequest;
@@ -44,11 +44,11 @@ class OrderControllerTest {
     void setUp() {
         placeOrderRequest = PlaceOrderRequest.builder().giftType("FRAME").amountPaid(300.0D).username("user1").build();
         showOrderRequest = ShowOrderRequest.builder().giftType("FRAME").orderStatus("ORDER_RECEIVED").username("user1").build();
-        OrderEntity orderEntity = OrderEntity.builder()
+        Order order = Order.builder()
                 .emailId("example@email.com").orderId("order1").giftType(GiftTypeEnum.FRAME).orderStatus(OrderStatusEnum.ORDER_RECEIVED)
                 .amountPaid(300.0D).username("user1").build();
-        orderResponseWithEntities = OrderResponse.builder().orderEntities(Collections.singletonList(orderEntity)).build();
-        orderResponseWithEntity = OrderResponse.builder().orderEntity(orderEntity).build();
+        orderResponseWithEntities = OrderResponse.builder().orders(Collections.singletonList(order)).build();
+        orderResponseWithEntity = OrderResponse.builder().order(order).build();
     }
 
     @Test

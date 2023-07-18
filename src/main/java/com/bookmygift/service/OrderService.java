@@ -1,9 +1,9 @@
 package com.bookmygift.service;
 
 import com.bookmygift.entity.GiftTypeEnum;
-import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.Order;
 import com.bookmygift.entity.OrderStatusEnum;
-import com.bookmygift.entity.UserEntity;
+import com.bookmygift.entity.User;
 import com.bookmygift.exception.BadRequestException;
 import com.bookmygift.exception.UnAuthorizedException;
 import com.bookmygift.repository.OrderRepository;
@@ -30,30 +30,30 @@ public class OrderService {
 
         String username = orderRequest.getUsername();
 
-        UserEntity user = userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
 
-        OrderEntity order = OrderEntity.builder().orderId(username.substring(0, 3).toUpperCase() + "_" + UUID.randomUUID()).username(username).emailId(user.getEmail()).
+        Order order = Order.builder().orderId(username.substring(0, 3).toUpperCase() + "_" + UUID.randomUUID()).username(username).emailId(user.getEmail()).
                 giftType(GiftTypeEnum.valueOf(orderRequest.getGiftType())).amountPaid(orderRequest.getAmountPaid()).orderStatus(OrderStatusEnum.ORDER_RECEIVED).build();
 
         orderRepository.save(order);
 
         queueService.sendPlaceOrderSuccessNotification(order);
 
-        return OrderResponse.builder().orderEntity(order).build();
+        return OrderResponse.builder().order(order).build();
 
     }
 
     public OrderResponse showMyOrders(ShowOrderRequest orderRequest) {
 
-        List<OrderEntity> orderEntities = orderRepository.findOrdersByCriteria(orderRequest);
+        List<Order> orders = orderRepository.findOrdersByCriteria(orderRequest);
 
-        return OrderResponse.builder().orderEntities(orderEntities).build();
+        return OrderResponse.builder().orders(orders).build();
 
     }
 
     public OrderResponse cancelOrder(String orderId, String username) {
 
-        OrderEntity order = orderRepository.findByOrderIdAndUsername(orderId, username).orElseThrow(() -> new BadRequestException(ErrorEnums.INVALID_ORDER_ID));
+        Order order = orderRepository.findByOrderIdAndUsername(orderId, username).orElseThrow(() -> new BadRequestException(ErrorEnums.INVALID_ORDER_ID));
 
         if (OrderStatusEnum.CANCELLED.equals(order.getOrderStatus())) {
 
@@ -67,7 +67,7 @@ public class OrderService {
 
         queueService.sendOrderCancelledNotification(order);
 
-        return OrderResponse.builder().orderEntity(order).build();
+        return OrderResponse.builder().order(order).build();
 
     }
 

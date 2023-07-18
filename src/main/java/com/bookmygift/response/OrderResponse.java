@@ -1,6 +1,6 @@
 package com.bookmygift.response;
 
-import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.entity.Order;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.List;
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class OrderResponse {
 
-    private OrderEntity orderEntity;
-    private List<OrderEntity> orderEntities;
+    private Order order;
+    private List<Order> orders;
 
 }
