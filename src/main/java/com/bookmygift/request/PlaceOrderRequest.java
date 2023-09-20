@@ -19,6 +19,6 @@ public class PlaceOrderRequest {
     private Double amountPaid;
 
     @JsonProperty
-    private transient String username;
+    private transient String email;
 
 }

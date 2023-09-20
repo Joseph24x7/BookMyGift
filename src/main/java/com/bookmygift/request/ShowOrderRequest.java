@@ -11,6 +11,6 @@ public class ShowOrderRequest {
     private String giftType;
     private String orderStatus;
     @JsonProperty
-    private transient String username;
+    private transient String email;
 
 }

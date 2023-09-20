@@ -15,12 +15,12 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
-    Optional<Order> findByOrderIdAndUsername(String orderId, String username);
+    Optional<Order> findByOrderIdAndEmailId(String orderId, String emailId);
 
     default List<Order> findOrdersByCriteria(ShowOrderRequest orderRequest) {
         Specification<Order> spec = Specification.where(null);
 
-        spec = spec.and((root, query, cb) -> cb.equal(root.get("username"), orderRequest.getUsername()));
+        spec = spec.and((root, query, cb) -> cb.equal(root.get("emailId"), orderRequest.getEmail()));
 
         if (StringUtils.isNotBlank(orderRequest.getGiftType())) {
             Optional<GiftTypeEnum> gift = GiftTypeEnum.fromValue(orderRequest.getGiftType());

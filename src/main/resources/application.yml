@@ -23,8 +23,6 @@ spring:
     port: ${mail.port:}
     username: ${mail.username:}
     password: ${mail.password:}
-    properties.mail.smtp.auth: ${mail.properties.mail.smtp.auth:}
-    properties.mail.smtp.starttls.enable: ${mail.properties.mail.smtp.starttls.enable:}
 
 management:
   endpoints:

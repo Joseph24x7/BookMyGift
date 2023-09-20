@@ -3,11 +3,11 @@ package com.bookmygift.service;
 import com.bookmygift.entity.GiftTypeEnum;
 import com.bookmygift.entity.Order;
 import com.bookmygift.entity.OrderStatusEnum;
-import com.bookmygift.entity.User;
+import com.bookmygift.entity.UserEntity;
 import com.bookmygift.exception.BadRequestException;
 import com.bookmygift.exception.UnAuthorizedException;
 import com.bookmygift.repository.OrderRepository;
-import com.bookmygift.repository.UserRepository;
+import com.bookmygift.repository.UserInfoRepository;
 import com.bookmygift.request.PlaceOrderRequest;
 import com.bookmygift.request.ShowOrderRequest;
 import com.bookmygift.response.OrderResponse;
@@ -23,16 +23,16 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
     private final QueueService queueService;
+    private final UserInfoRepository userInfoRepository;
 
     public OrderResponse placeOrder(PlaceOrderRequest orderRequest) {
 
-        String username = orderRequest.getUsername();
+        String email = orderRequest.getEmail();
 
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
+        UserEntity user = userInfoRepository.findByEmail(email).orElseThrow(() -> new UnAuthorizedException(ErrorEnums.INVALID_CREDENTIALS));
 
-        Order order = Order.builder().orderId(username.substring(0, 3).toUpperCase() + "_" + UUID.randomUUID()).username(username).emailId(user.getEmail()).
+        Order order = Order.builder().orderId(email.substring(0, 3).toUpperCase() + "_" + UUID.randomUUID()).emailId(user.getEmail()).
                 giftType(GiftTypeEnum.valueOf(orderRequest.getGiftType())).amountPaid(orderRequest.getAmountPaid()).orderStatus(OrderStatusEnum.ORDER_RECEIVED).build();
 
         orderRepository.save(order);
@@ -51,9 +51,9 @@ public class OrderService {
 
     }
 
-    public OrderResponse cancelOrder(String orderId, String username) {
+    public OrderResponse cancelOrder(String orderId, String email) {
 
-        Order order = orderRepository.findByOrderIdAndUsername(orderId, username).orElseThrow(() -> new BadRequestException(ErrorEnums.INVALID_ORDER_ID));
+        Order order = orderRepository.findByOrderIdAndEmailId(orderId, email).orElseThrow(() -> new BadRequestException(ErrorEnums.INVALID_ORDER_ID));
 
         if (OrderStatusEnum.CANCELLED.equals(order.getOrderStatus())) {
 

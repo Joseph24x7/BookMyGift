@@ -1,6 +1,6 @@
 spring:
   application:
-    name: two-factor-auth
+    name: book-my-gift
 
   cloud:
     config:
@@ -8,11 +8,3 @@ spring:
       profile: ${cloud.config.profile:jdbc}
       label: ${cloud.config.label:master}
       name: ${cloud.config.name:bookmygift}
-  config:
-    activate:
-      on-profile:
-        active: ${config.activate.on-profile.active:jdbc}
-
-management:
-  security:
-    enabled: ${security.enabled:}

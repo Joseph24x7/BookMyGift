@@ -40,16 +40,6 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue sendOtpQueue() {
-        return new Queue("sendOtpQueue", false);
-    }
-
-    @Bean
-    public Queue sendVerifySuccessQueue() {
-        return new Queue("sendVerifySuccessQueue", false);
-    }
-
-    @Bean
     public Binding orderBinding(DirectExchange directExchange, Queue orderQueue) {
         return BindingBuilder.bind(orderQueue).to(directExchange).with("orderRoutingKey");
     }
@@ -57,16 +47,6 @@ public class RabbitMQConfig {
     @Bean
     public Binding cancelBinding(DirectExchange directExchange, Queue cancelQueue) {
         return BindingBuilder.bind(cancelQueue).to(directExchange).with("cancelRoutingKey");
-    }
-
-    @Bean
-    public Binding sendOtpBinding(DirectExchange directExchange, Queue sendOtpQueue) {
-        return BindingBuilder.bind(sendOtpQueue).to(directExchange).with("sendOtpRoutingKey");
-    }
-
-    @Bean
-    public Binding sendVerifySuccessBinding(DirectExchange directExchange, Queue sendVerifySuccessQueue) {
-        return BindingBuilder.bind(sendVerifySuccessQueue).to(directExchange).with("sendVerifySuccessRoutingKey");
     }
 
     @Bean
