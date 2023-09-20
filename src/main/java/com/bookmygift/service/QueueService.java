@@ -1,6 +1,7 @@
 package com.bookmygift.service;
 
-import com.bookmygift.entity.Order;
+import com.bookmygift.entity.OrderEntity;
+import com.bookmygift.utils.ApplicationConstants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,13 @@ public class QueueService {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendPlaceOrderSuccessNotification(Order order) {
-        rabbitTemplate.convertAndSend("directExchange", "orderRoutingKey", objectMapper.writeValueAsString(order));
+    public void sendPlaceOrderSuccessNotification(OrderEntity orderEntity) {
+        rabbitTemplate.convertAndSend(ApplicationConstants.DIRECT_EXCHANGE, ApplicationConstants.ORDER_ROUTING_KEY, objectMapper.writeValueAsString(orderEntity));
     }
 
     @SneakyThrows(JsonProcessingException.class)
-    public void sendOrderCancelledNotification(Order order) {
-        rabbitTemplate.convertAndSend("directExchange", "cancelRoutingKey", objectMapper.writeValueAsString(order));
+    public void sendOrderCancelledNotification(OrderEntity orderEntity) {
+        rabbitTemplate.convertAndSend(ApplicationConstants.DIRECT_EXCHANGE, ApplicationConstants.CANCEL_ROUTING_KEY, objectMapper.writeValueAsString(orderEntity));
     }
 
 }

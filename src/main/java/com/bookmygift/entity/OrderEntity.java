@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Data
 @Builder
 @NoArgsConstructor
-public class Order implements Serializable {
+public class OrderEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -46,11 +46,11 @@ public class Order implements Serializable {
     private OrderStatusEnum orderStatus;
 
     @JsonCreator
-    public Order(@JsonProperty("orderId") String orderId,
-                 @JsonProperty("emailId") String emailId,
-                 @JsonProperty("giftType") GiftTypeEnum giftType,
-                 @JsonProperty("amountPaid") Double amountPaid,
-                 @JsonProperty("orderStatus") OrderStatusEnum orderStatus
+    public OrderEntity(@JsonProperty("orderId") String orderId,
+                       @JsonProperty("emailId") String emailId,
+                       @JsonProperty("giftType") GiftTypeEnum giftType,
+                       @JsonProperty("amountPaid") Double amountPaid,
+                       @JsonProperty("orderStatus") OrderStatusEnum orderStatus
     ) {
         this.orderId = orderId;
         this.emailId = emailId;
@@ -60,17 +60,17 @@ public class Order implements Serializable {
     }
 
     @JsonCreator
-    public Order(String json) throws IOException {
+    public OrderEntity(String json) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        Order order = mapper.readValue(json, Order.class);
-        this.orderId = order.getOrderId();
-        this.emailId = order.getEmailId();
-        this.giftType = order.getGiftType();
-        this.amountPaid = order.getAmountPaid();
-        this.orderStatus = order.getOrderStatus();
+        OrderEntity orderEntity = mapper.readValue(json, OrderEntity.class);
+        this.orderId = orderEntity.getOrderId();
+        this.emailId = orderEntity.getEmailId();
+        this.giftType = orderEntity.getGiftType();
+        this.amountPaid = orderEntity.getAmountPaid();
+        this.orderStatus = orderEntity.getOrderStatus();
     }
 
-    public Order(Long id, String orderId, String emailId, GiftTypeEnum giftType, Double amountPaid, OrderStatusEnum orderStatus) {
+    public OrderEntity(Long id, String orderId, String emailId, GiftTypeEnum giftType, Double amountPaid, OrderStatusEnum orderStatus) {
         this.id = id;
         this.orderId = orderId;
         this.emailId = emailId;

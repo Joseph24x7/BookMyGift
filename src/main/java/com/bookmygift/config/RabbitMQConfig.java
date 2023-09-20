@@ -1,5 +1,6 @@
 package com.bookmygift.config;
 
+import com.bookmygift.utils.ApplicationConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -26,27 +27,27 @@ public class RabbitMQConfig {
 
     @Bean
     public DirectExchange directExchange() {
-        return new DirectExchange("directExchange");
+        return new DirectExchange(ApplicationConstants.DIRECT_EXCHANGE);
     }
 
     @Bean
     public Queue orderQueue() {
-        return new Queue("orderQueue", false);
+        return new Queue(ApplicationConstants.ORDER_QUEUE, false);
     }
 
     @Bean
     public Queue cancelQueue() {
-        return new Queue("cancelQueue", false);
+        return new Queue(ApplicationConstants.CANCEL_QUEUE, false);
     }
 
     @Bean
     public Binding orderBinding(DirectExchange directExchange, Queue orderQueue) {
-        return BindingBuilder.bind(orderQueue).to(directExchange).with("orderRoutingKey");
+        return BindingBuilder.bind(orderQueue).to(directExchange).with(ApplicationConstants.ORDER_ROUTING_KEY);
     }
 
     @Bean
     public Binding cancelBinding(DirectExchange directExchange, Queue cancelQueue) {
-        return BindingBuilder.bind(cancelQueue).to(directExchange).with("cancelRoutingKey");
+        return BindingBuilder.bind(cancelQueue).to(directExchange).with(ApplicationConstants.CANCEL_ROUTING_KEY);
     }
 
     @Bean

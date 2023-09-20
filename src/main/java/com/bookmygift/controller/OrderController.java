@@ -4,7 +4,6 @@ import com.bookmygift.request.PlaceOrderRequest;
 import com.bookmygift.request.ShowOrderRequest;
 import com.bookmygift.response.OrderResponse;
 import com.bookmygift.service.OrderService;
-import com.bookmygift.utils.TokenUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService bookMyGiftService;
-    private final TokenUtil tokenUtil;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
